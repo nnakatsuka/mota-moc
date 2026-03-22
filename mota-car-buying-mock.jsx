@@ -1,0 +1,390 @@
+import { useState } from "react";
+
+const CARS = [
+  { id: "2127615", name: "ホンダ ZR-V", year: "令和5年", km: "2.4万km", repair: false, color: "シルバー", area: "神奈川", price: 245, deadline: "12時", status: null },
+  { id: "2127616", name: "トヨタ ヴェルファイア", year: "令和3年", km: "5.8万km", repair: false, color: "パール", area: "東京", price: 420, deadline: null, status: "入賞確実" },
+  { id: "2127617", name: "日産 エクストレイル", year: "令和4年", km: "3.1万km", repair: false, color: "ブラック", area: "埼玉", price: 280, deadline: "18時", status: null },
+  { id: "2127618", name: "マツダ CX-5", year: "令和2年", km: "6.4万km", repair: true, color: "レッド", area: "大阪", price: 198, deadline: "18時", status: null },
+  { id: "2127619", name: "スバル フォレスター", year: "令和3年", km: "4.2万km", repair: false, color: "ホワイト", area: "福岡", price: 230, deadline: "12時", status: null },
+  { id: "2127620", name: "レクサス RX", year: "令和4年", km: "1.8万km", repair: false, color: "ブラック", area: "愛知", price: 510, deadline: "18時", status: null },
+  { id: "2127621", name: "BMW 3シリーズ", year: "令和2年", km: "3.5万km", repair: false, color: "ブルー", area: "神奈川", price: 330, deadline: "12時", status: null },
+  { id: "2127622", name: "トヨタ RAV4", year: "令和5年", km: "0.8万km", repair: false, color: "カーキ", area: "千葉", price: 295, deadline: "18時", status: null },
+];
+
+const DETAIL = {
+  grade: "CT200h バージョンL",
+  fullName: "レクサス CT200h バージョンL",
+  assessDate: "2026/3/19",
+  specs: [
+    ["車種", "CT200h VL", "修復歴", "修復済", "ローン残債", "—"],
+    ["エリア", "北海道厚岸郡", "車体色", "シルバー系", "ハンドル", "右"],
+    ["型式", "DAA-ZWA10", "車検期限", "未入力", "売却希望時期", "3ヶ月以内"],
+    ["排気量", "1,797cc", "燃料", "その他", "ミッション", "CVT"],
+    ["走行距離", "〜5,000km", "乗車定員", "5名", "年式", "令和2年式"],
+  ],
+  equipment: ["禁煙車", "サンルーフ", "傷・へこみあり", "ペット乗車実績あり", "全周囲モニター", "純正オプションサウンド", "純正後席モニター", "純正フルエアロ", "レザーシート", "ワンオーナー", "新車時保証書あり"],
+  photos: ["外装1", "外装2", "内装1", "内装2", "エンジン", "その他"],
+};
+
+function Header() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#1a1a1a", padding: "10px 20px", color: "#fff" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+        <span style={{ fontWeight: 700, fontSize: 16, letterSpacing: 1 }}>MOTA モータ</span>
+        <span style={{ fontSize: 13, opacity: 0.6, cursor: "pointer" }}>マイページ</span>
+        <span style={{ fontSize: 13, fontWeight: 600, borderBottom: "2px solid #e85d30", paddingBottom: 2 }}>車買取</span>
+        <span style={{ fontSize: 13, opacity: 0.6, cursor: "pointer" }}>車買取Plus</span>
+      </div>
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <span style={{ fontSize: 11, padding: "3px 10px", border: "1px solid #e85d30", borderRadius: 4, color: "#e85d30" }}>対応漏れ 12時30</span>
+        <span style={{ fontSize: 11, padding: "3px 10px", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 4, opacity: 0.7 }}>18時 1</span>
+        <span style={{ fontSize: 12, opacity: 0.5, marginLeft: 12, cursor: "pointer" }}>ログアウト</span>
+      </div>
+    </div>
+  );
+}
+
+function SubTabs({ activeTab, setActiveTab }) {
+  const tabs = ["入札受付中", "入賞確実な車両", "入札受付終了"];
+  return (
+    <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #e5e2da" }}>
+      {tabs.map(t => (
+        <button key={t} onClick={() => setActiveTab(t)} style={{
+          padding: "10px 18px", fontSize: 13, fontWeight: activeTab === t ? 600 : 400,
+          color: activeTab === t ? "#c0392b" : "#888", background: "none", border: "none",
+          borderBottom: activeTab === t ? "2.5px solid #c0392b" : "2.5px solid transparent",
+          cursor: "pointer", transition: "all 0.15s"
+        }}>{t}</button>
+      ))}
+    </div>
+  );
+}
+
+function FilterSidebar({ open, setOpen }) {
+  if (!open) return null;
+  return (
+    <div style={{ width: 230, minWidth: 230, borderRight: "1px solid #e5e2da", padding: 16, fontSize: 12, background: "#faf9f6" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <span style={{ fontWeight: 600, fontSize: 14 }}>絞り込み</span>
+        <div style={{ display: "flex", gap: 10 }}>
+          <span style={{ color: "#2980b9", cursor: "pointer" }}>クリア</span>
+          <span style={{ color: "#2980b9", cursor: "pointer" }} onClick={() => setOpen(false)}>◀ 閉じる</span>
+        </div>
+      </div>
+      {[
+        { label: "入札状況", type: "select" },
+        { label: "入札締切時間", type: "select" },
+        { label: "メーカー", type: "select" },
+        { label: "車種", type: "input", ph: "複数選択可" },
+        { label: "都道府県", type: "input", ph: "複数選択可" },
+      ].map((f, i) => (
+        <div key={i} style={{ marginBottom: 10 }}>
+          <div style={{ color: "#888", marginBottom: 3 }}>{f.label}</div>
+          {f.type === "select"
+            ? <select style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #d5d2ca", borderRadius: 4, background: "#fff" }}><option>-</option></select>
+            : <input style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #d5d2ca", borderRadius: 4 }} placeholder={f.ph} />
+          }
+        </div>
+      ))}
+      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+        {["修復歴", "写真"].map(l => (
+          <div key={l} style={{ flex: 1 }}>
+            <div style={{ color: "#888", marginBottom: 3 }}>{l}</div>
+            <select style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #d5d2ca", borderRadius: 4, background: "#fff" }}><option>-</option></select>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ color: "#888", marginBottom: 3 }}>メモ / 査定番号</div>
+        <input style={{ width: "100%", padding: "6px 8px", fontSize: 12, border: "1px solid #d5d2ca", borderRadius: 4 }} placeholder="キーワード" />
+      </div>
+      <button style={{ width: "100%", padding: "8px 0", fontSize: 13, fontWeight: 600, background: "#1a1a1a", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}>
+        絞り込む
+      </button>
+    </div>
+  );
+}
+
+function CarTable({ pattern, onSelect, filterOpen }) {
+  const cols = pattern === "A"
+    ? ["査定番号", "車両名", "年式", "走行距離", "修復", "色"]
+    : ["査定番号", "車両名", "年式", "走行距離", "修復", "色", "所在地", "査定額", "締切"];
+
+  return (
+    <div style={{ flex: 1, overflowX: "auto" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 14px", fontSize: 13, color: "#888" }}>
+        <span>全 <strong style={{ color: "#1a1a1a" }}>{CARS.length}</strong> 件</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <select style={{ fontSize: 12, padding: "4px 8px", border: "1px solid #d5d2ca", borderRadius: 4, background: "#fff" }}>
+            <option>新着順</option><option>締切順</option><option>金額順</option>
+          </select>
+          {pattern === "B" && <span style={{ fontSize: 11, color: "#aaa" }}>表示 30 / 60 / 100件</span>}
+        </div>
+      </div>
+      <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+        <thead>
+          <tr style={{ borderBottom: "1px solid #e5e2da" }}>
+            {cols.map(c => (
+              <th key={c} style={{ padding: "8px 10px", textAlign: c === "査定額" || c === "締切" ? "right" : "left", fontWeight: 500, color: "#888", fontSize: 11, whiteSpace: "nowrap" }}>{c}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {CARS.map((car, i) => (
+            <tr key={car.id} onClick={() => onSelect(car)} style={{ borderBottom: "1px solid #f0ede6", cursor: "pointer", transition: "background 0.1s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#f7f5f0"}
+              onMouseLeave={e => e.currentTarget.style.background = i === 0 && pattern === "B" ? "#faf8f3" : ""}
+            >
+              <td style={{ padding: "11px 10px", fontWeight: 500, color: "#2980b9" }}>{car.id}</td>
+              <td style={{ padding: "11px 10px", fontWeight: 500, whiteSpace: "nowrap" }}>{car.name}</td>
+              <td style={{ padding: "11px 10px", whiteSpace: "nowrap" }}>{car.year}</td>
+              <td style={{ padding: "11px 10px", whiteSpace: "nowrap" }}>{car.km}</td>
+              <td style={{ padding: "11px 10px", color: car.repair ? "#c0392b" : "inherit", fontWeight: car.repair ? 600 : 400 }}>{car.repair ? "あり" : "なし"}</td>
+              <td style={{ padding: "11px 10px" }}>{car.color}</td>
+              {pattern === "B" && <td style={{ padding: "11px 10px" }}>{car.area}</td>}
+              {pattern === "B" && <td style={{ padding: "11px 10px", textAlign: "right", fontWeight: 600 }}>{car.price}万</td>}
+              {pattern === "B" && (
+                <td style={{ padding: "11px 10px", textAlign: "right" }}>
+                  {car.status
+                    ? <span style={{ fontSize: 10, padding: "2px 8px", background: "#e8f5e9", color: "#2e7d32", borderRadius: 4 }}>{car.status}</span>
+                    : <span style={{ color: "#c0392b", fontWeight: 500 }}>{car.deadline}</span>
+                  }
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ListPage({ pattern, setPattern, onSelect }) {
+  const [filterOpen, setFilterOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState("入札受付中");
+  const [topFilterOpen, setTopFilterOpen] = useState(false);
+
+  return (
+    <div style={{ background: "#faf9f6", minHeight: "100vh" }}>
+      <Header />
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+        {/* Pattern toggle */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0 4px" }}>
+          <SubTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div style={{ display: "flex", gap: 4, background: "#e5e2da", borderRadius: 6, padding: 2 }}>
+            {["A", "B"].map(p => (
+              <button key={p} onClick={() => setPattern(p)} style={{
+                padding: "5px 14px", fontSize: 11, fontWeight: 600, border: "none", borderRadius: 4, cursor: "pointer",
+                background: pattern === p ? "#1a1a1a" : "transparent", color: pattern === p ? "#fff" : "#888",
+                transition: "all 0.15s"
+              }}>パターン{p}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Pattern B top filter toggle */}
+        {pattern === "B" && (
+          <div style={{ display: "flex", justifyContent: "flex-end", padding: "6px 0" }}>
+            <button onClick={() => setTopFilterOpen(!topFilterOpen)} style={{
+              fontSize: 12, padding: "6px 14px", border: "1px solid #d5d2ca", borderRadius: 6, background: "#fff", cursor: "pointer"
+            }}>{topFilterOpen ? "▲ 絞り込みを閉じる" : "▼ 絞り込みを開く"}</button>
+          </div>
+        )}
+        {pattern === "B" && topFilterOpen && (
+          <div style={{ background: "#fff", border: "1px solid #e5e2da", borderRadius: 8, padding: 16, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
+            {["入札状況", "締切時間", "メーカー", "車種", "都道府県"].map(l => (
+              <div key={l} style={{ minWidth: 140 }}>
+                <div style={{ fontSize: 11, color: "#888", marginBottom: 3 }}>{l}</div>
+                <select style={{ width: "100%", padding: "5px 8px", fontSize: 12, border: "1px solid #d5d2ca", borderRadius: 4 }}><option>-</option></select>
+              </div>
+            ))}
+            <button style={{ padding: "6px 20px", fontSize: 12, fontWeight: 600, background: "#1a1a1a", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", height: 32 }}>絞り込む</button>
+          </div>
+        )}
+
+        {/* Table area */}
+        <div style={{ display: "flex", background: "#fff", border: "1px solid #e5e2da", borderRadius: 10, overflow: "hidden", marginTop: 4 }}>
+          {pattern === "A" && <FilterSidebar open={filterOpen} setOpen={setFilterOpen} />}
+          {pattern === "A" && !filterOpen && (
+            <div style={{ width: 36, minWidth: 36, borderRight: "1px solid #e5e2da", display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: 14, cursor: "pointer", background: "#faf9f6" }}
+              onClick={() => setFilterOpen(true)}>
+              <span style={{ fontSize: 12, color: "#2980b9", writingMode: "vertical-rl" }}>▶ フィルタ</span>
+            </div>
+          )}
+          <CarTable pattern={pattern} onSelect={onSelect} filterOpen={filterOpen} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailPage({ car, onBack }) {
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [message, setMessage] = useState("");
+  const [memo, setMemo] = useState("");
+  const [bidDone, setBidDone] = useState(false);
+  const [memoSaved, setMemoSaved] = useState(false);
+  const carIdx = CARS.findIndex(c => c.id === car.id);
+
+  return (
+    <div style={{ background: "#faf9f6", minHeight: "100vh" }}>
+      <Header />
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+        {/* Breadcrumb + nav */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0 8px" }}>
+          <span style={{ fontSize: 13, color: "#2980b9", cursor: "pointer" }} onClick={onBack}>← 入札一覧に戻る</span>
+          <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#888" }}>
+            <span style={{ cursor: carIdx > 0 ? "pointer" : "default", opacity: carIdx > 0 ? 1 : 0.3 }}>◀ 前の車両</span>
+            <span style={{ cursor: carIdx < CARS.length - 1 ? "pointer" : "default", opacity: carIdx < CARS.length - 1 ? 1 : 0.3 }}>次の車両 ▶</span>
+          </div>
+        </div>
+
+        {/* Title */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: "0 0 8px", letterSpacing: -0.5 }}>{DETAIL.fullName}</h1>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {car.deadline && <span style={{ fontSize: 11, padding: "2px 10px", background: "#fce4e4", color: "#c0392b", borderRadius: 4, fontWeight: 600 }}>{car.deadline}締切</span>}
+              {car.repair && <span style={{ fontSize: 11, padding: "2px 10px", background: "#fce4e4", color: "#c0392b", borderRadius: 4, fontWeight: 600 }}>修復済</span>}
+              <span style={{ fontSize: 11, padding: "2px 10px", border: "1px solid #d5d2ca", borderRadius: 4 }}>査定番号 {car.id}</span>
+              <span style={{ fontSize: 11, padding: "2px 10px", border: "1px solid #d5d2ca", borderRadius: 4 }}>車台番号 —</span>
+            </div>
+          </div>
+          <span style={{ fontSize: 13, color: "#888" }}>査定日 {DETAIL.assessDate}</span>
+        </div>
+
+        {/* Main content */}
+        <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+          {/* Left */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Basic info */}
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>基本情報</div>
+            <div style={{ border: "1px solid #e5e2da", borderRadius: 8, overflow: "hidden", marginBottom: 20, background: "#fff" }}>
+              <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+                <tbody>
+                  {DETAIL.specs.map((row, ri) => (
+                    <tr key={ri} style={{ borderBottom: ri < DETAIL.specs.length - 1 ? "1px solid #f0ede6" : "none" }}>
+                      {row.map((cell, ci) => (
+                        <td key={ci} style={{
+                          padding: "8px 10px",
+                          color: ci % 2 === 0 ? "#888" : cell === "修復済" ? "#c0392b" : "#1a1a1a",
+                          fontWeight: cell === "修復済" ? 700 : ci % 2 === 0 ? 400 : 500,
+                          background: ci % 2 === 0 ? "#faf9f6" : "transparent",
+                          whiteSpace: "nowrap",
+                          width: ci % 2 === 0 ? "70px" : "auto"
+                        }}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Equipment */}
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>装備情報</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+              {DETAIL.equipment.map(eq => (
+                <span key={eq} style={{ fontSize: 11, padding: "4px 12px", border: "1px solid #d5d2ca", borderRadius: 20, background: "#fff", whiteSpace: "nowrap" }}>{eq}</span>
+              ))}
+            </div>
+
+            {/* Photos */}
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>写真（クリックで拡大）</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 20, overflowX: "auto", paddingBottom: 4 }}>
+              {DETAIL.photos.map(p => (
+                <div key={p} style={{
+                  width: 100, height: 72, flexShrink: 0, border: "1px solid #e5e2da", borderRadius: 8,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#aaa",
+                  background: "#f5f3ee", cursor: "pointer", transition: "border-color 0.15s"
+                }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = "#2980b9"}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = "#e5e2da"}
+                >{p}</div>
+              ))}
+            </div>
+
+            {/* PR Comment */}
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>PRコメント</div>
+            <div style={{ fontSize: 12, color: "#aaa", padding: "10px 12px", border: "1px solid #e5e2da", borderRadius: 8, marginBottom: 20, background: "#fff" }}>（未入力）</div>
+
+            {/* Free memo */}
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>フリーメモ（社内用・ユーザー非表示）</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+              <textarea value={memo} onChange={e => { setMemo(e.target.value); setMemoSaved(false); }}
+                style={{ flex: 1, fontSize: 12, padding: "8px 10px", border: "1px solid #d5d2ca", borderRadius: 6, minHeight: 50, resize: "vertical", fontFamily: "inherit" }}
+                placeholder="300文字以内" maxLength={300} />
+              <button onClick={() => setMemoSaved(true)} style={{
+                padding: "8px 20px", fontSize: 12, fontWeight: 600, border: "none", borderRadius: 6, cursor: "pointer", alignSelf: "flex-start", whiteSpace: "nowrap",
+                background: memoSaved ? "#e8f5e9" : "#1a1a1a", color: memoSaved ? "#2e7d32" : "#fff", transition: "all 0.2s"
+              }}>{memoSaved ? "✓ 保存済" : "更新"}</button>
+            </div>
+          </div>
+
+          {/* Right sidebar */}
+          <div style={{ width: 280, minWidth: 280 }}>
+            {/* Bid form */}
+            <div style={{ border: "1px solid #e5e2da", borderRadius: 10, padding: 18, background: "#fff", marginBottom: 14 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>入札フォーム</div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>下限金額</div>
+                <input type="text" value={minPrice} onChange={e => setMinPrice(e.target.value)}
+                  style={{ width: "100%", fontSize: 14, padding: "8px 10px", border: "1px solid #d5d2ca", borderRadius: 6 }} placeholder="万円" />
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>上限金額</div>
+                <input type="text" value={maxPrice} onChange={e => setMaxPrice(e.target.value)}
+                  style={{ width: "100%", fontSize: 14, padding: "8px 10px", border: "1px solid #d5d2ca", borderRadius: 6 }} placeholder="万円" />
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>メッセージ（任意）</div>
+                <textarea value={message} onChange={e => setMessage(e.target.value)}
+                  style={{ width: "100%", fontSize: 12, padding: "8px 10px", border: "1px solid #d5d2ca", borderRadius: 6, minHeight: 64, resize: "vertical", fontFamily: "inherit" }}
+                  placeholder="400文字以内" maxLength={400} />
+              </div>
+              <div style={{ fontSize: 11, color: "#888", marginBottom: 10 }}>他に <strong style={{ color: "#1a1a1a" }}>0社</strong> が入札　{DETAIL.assessDate} 18:</div>
+              <button onClick={() => setBidDone(true)} style={{
+                width: "100%", padding: "12px 0", fontSize: 15, fontWeight: 700, border: "none", borderRadius: 8, cursor: "pointer", transition: "all 0.2s",
+                background: bidDone ? "#e8f5e9" : "#c0392b", color: bidDone ? "#2e7d32" : "#fff",
+              }}>{bidDone ? "✓ 入札済み" : "入札する"}</button>
+              <div style={{ fontSize: 10, color: "#aaa", marginTop: 8, lineHeight: 1.6 }}>入札受付期間中であれば、入札も変更可能です。入札申込期限と、出品者に入札は開示されます。</div>
+            </div>
+
+            {/* Bid skip */}
+            <div style={{ border: "1px solid #e5e2da", borderRadius: 10, padding: 16, background: "#fff", marginBottom: 14 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>入札見送り設定</div>
+              <div style={{ fontSize: 11, color: "#888", marginBottom: 8, lineHeight: 1.5 }}>この車両の入札を行わない場合の送りを設定してください。</div>
+              <button style={{ fontSize: 12, padding: "6px 16px", border: "1px solid #d5d2ca", borderRadius: 6, background: "#fff", cursor: "pointer" }}>入札見送り</button>
+            </div>
+
+            {/* Price guide */}
+            <div style={{ border: "1px solid #e5e2da", borderRadius: 10, padding: 16, background: "#fff" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>入札のご注意（上限基準）</div>
+              {["〜49万9千円", "50〜99万9千円", "100〜199万9千円", "200〜299万9千円", "300〜499万9千円", "500万円〜"].map((r, i) => (
+                <div key={i} style={{ fontSize: 11, color: "#888", padding: "4px 0", borderBottom: i < 5 ? "1px solid #f0ede6" : "none" }}>{r}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [page, setPage] = useState("list");
+  const [pattern, setPattern] = useState("A");
+  const [selectedCar, setSelectedCar] = useState(null);
+
+  if (page === "detail" && selectedCar) {
+    return <DetailPage car={selectedCar} onBack={() => setPage("list")} />;
+  }
+
+  return (
+    <ListPage
+      pattern={pattern}
+      setPattern={setPattern}
+      onSelect={(car) => { setSelectedCar(car); setPage("detail"); }}
+    />
+  );
+}
