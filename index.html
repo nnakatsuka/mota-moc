@@ -67,7 +67,7 @@ const DETAIL = {
   ],
   equipment:["禁煙車","サンルーフ","傷・へこみあり","ペット乗車実績あり","全周囲モニター","純正オプション サウンドシステム","純正後席モニター","純正フルエアロ","レザーシート","ワンオーナー","新車時の保証書 取扱説明書あり"],
   photos:[
-    {label:"外装1",img:"https://images.unsplash.com/photo-1669725943425-063092bdc423?w=400&h=300&fit=crop"},
+    {label:"外装1",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop"},
     {label:"外装2",img:"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop"},
     {label:"内装1",img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop"},
     {label:"内装2",img:"https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&h=300&fit=crop"},
@@ -273,51 +273,59 @@ function FilterPanel({layout}) {
     );
   }
 
+  const g={display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px 16px"};
+  const lb={fontSize:11,fontWeight:500,marginBottom:2};
   return (
-    <div style={{display:"flex",flexDirection:"column",gap:14}}>
-      <div style={{display:"flex",gap:16,alignItems:"flex-end",flexWrap:"wrap"}}>
-        <div style={{minWidth:160}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>入札状況</div>
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      <div style={g}>
+        <div><div style={lb}>入札状況</div>
           <Dropdown options={["未入札","入札済","見送り"]} value={bidStatus} onChange={setBidStatus}/></div>
-        <div style={{minWidth:160}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>入札締切時間</div>
+        <div><div style={lb}>入札締切時間</div>
           <Dropdown options={["12時","18時"]} value={bidDeadline} onChange={setBidDeadline}/></div>
       </div>
-      <div>
-        <div style={{fontSize:12,fontWeight:500,marginBottom:4}}>車両種別</div>
+      <div style={{gridColumn:"1/-1"}}>
+        <div style={lb}>車両種別</div>
         <div style={{display:"flex",gap:0,border:"1px solid #d5d2ca",borderRadius:6,overflow:"hidden",width:"fit-content"}}>
           {["全て","MOTA車買取対象車両のみに絞る","車買取サポート対象車両のみに絞る"].map(c=>(
-            <button key={c} onClick={()=>setCarCategory(c)} style={{padding:"8px 20px",fontSize:12,border:"none",cursor:"pointer",
+            <button key={c} onClick={()=>setCarCategory(c)} style={{padding:"6px 14px",fontSize:11,border:"none",cursor:"pointer",
               background:carCategory===c?"#f0ede6":"#fff",fontWeight:carCategory===c?600:400,color:s.dark,borderRight:"1px solid #d5d2ca"}}>{c}</button>
           ))}
         </div>
       </div>
-      <div style={{display:"flex",gap:16,alignItems:"flex-end",flexWrap:"wrap"}}>
-        <div style={{minWidth:200}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>メーカー</div>
+      <div style={g}>
+        <div><div style={lb}>メーカー</div>
           <Dropdown options={Object.keys(MAKERS)} value={maker} onChange={v=>{setMaker(v);setCarTypes([])}} placeholder="- 入力または選択"/></div>
+        <div><div style={lb}>車種</div>
+          <MultiDropdown options={carOptions} values={carTypes} onChange={setCarTypes} placeholder={maker?"車種を選択":"メーカー名を入力してくだ"}/></div>
       </div>
-      <div><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>車種</div>
-        <MultiDropdown options={carOptions} values={carTypes} onChange={setCarTypes} placeholder={maker?"車種を選択":"メーカー名を入力してくだ"} style={{maxWidth:600}}/></div>
-      <div><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>都道府県</div>
-        <MultiDropdown options={PREFS} values={prefs} onChange={setPrefs} style={{maxWidth:600}}/></div>
-      <div style={{display:"flex",gap:16,alignItems:"flex-end",flexWrap:"wrap"}}>
-        <div style={{minWidth:160}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>売却希望時期</div>
+      <div style={g}>
+        <div><div style={lb}>都道府県</div>
+          <MultiDropdown options={PREFS} values={prefs} onChange={setPrefs}/></div>
+        <div><div style={lb}>売却希望時期</div>
           <Dropdown options={["1ヶ月以内","3ヶ月以内","未定"]} value={sellTiming} onChange={setSellTiming}/></div>
-        <div style={{minWidth:160}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>修復歴</div>
-          <Dropdown options={["なし","修復済","未修復","走行不可"]} value={repairHist} onChange={setRepairHist}/></div>
-        <div style={{minWidth:160}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>写真の有無</div>
-          <Dropdown options={["あり","なし"]} value={hasPhoto} onChange={setHasPhoto}/></div>
       </div>
-      <div style={{display:"flex",gap:16,alignItems:"flex-end",flexWrap:"wrap"}}>
-        <div style={{minWidth:160}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>情報の変更</div>
-          <Dropdown options={["あり","なし"]} value={infoChange} onChange={setInfoChange}/></div>
-        <div style={{minWidth:180}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>査定番号</div>
-          <input style={{...sel,width:"100%"}} placeholder="数値で入力" value={assessNo} onChange={e=>setAssessNo(e.target.value)}/></div>
-        <div style={{minWidth:200}}><div style={{fontSize:12,fontWeight:500,marginBottom:4}}>メモ検索</div>
+      <div style={g}>
+        <div style={{display:"flex",gap:12}}>
+          <div style={{flex:1}}><div style={lb}>修復歴</div>
+            <Dropdown options={["なし","修復済","未修復","走行不可"]} value={repairHist} onChange={setRepairHist}/></div>
+          <div style={{flex:1}}><div style={lb}>写真の有無</div>
+            <Dropdown options={["あり","なし"]} value={hasPhoto} onChange={setHasPhoto}/></div>
+        </div>
+        <div style={{display:"flex",gap:12}}>
+          <div style={{flex:1}}><div style={lb}>情報の変更</div>
+            <Dropdown options={["あり","なし"]} value={infoChange} onChange={setInfoChange}/></div>
+          <div style={{flex:1}}><div style={lb}>査定番号</div>
+            <input style={{...sel,width:"100%"}} placeholder="数値で入力" value={assessNo} onChange={e=>setAssessNo(e.target.value)}/></div>
+        </div>
+      </div>
+      <div style={g}>
+        <div><div style={lb}>メモ検索</div>
           <input style={{...sel,width:"100%"}} placeholder="キーワードを入力" value={memoKw} onChange={e=>setMemoKw(e.target.value)}/></div>
-      </div>
-      <div style={{display:"flex",gap:12,justifyContent:"center",marginTop:4}}>
-        <button onClick={()=>{setMaker("");setCarTypes([]);setPrefs([]);setBidStatus("");setBidDeadline("");setSellTiming("");setRepairHist("");setHasPhoto("");setInfoChange("");setAssessNo("");setMemoKw("");setCarCategory("全て")}}
-          style={{padding:"10px 48px",fontSize:13,border:"1px solid #d5d2ca",borderRadius:6,background:"#fff",cursor:"pointer"}}>クリア</button>
-        <button style={{padding:"10px 48px",fontSize:13,fontWeight:600,background:s.dark,color:"#fff",border:"none",borderRadius:6,cursor:"pointer"}}>絞り込む</button>
+        <div style={{display:"flex",gap:10,alignItems:"flex-end",justifyContent:"flex-end"}}>
+          <button onClick={()=>{setMaker("");setCarTypes([]);setPrefs([]);setBidStatus("");setBidDeadline("");setSellTiming("");setRepairHist("");setHasPhoto("");setInfoChange("");setAssessNo("");setMemoKw("");setCarCategory("全て")}}
+            style={{padding:"7px 32px",fontSize:12,border:"1px solid #d5d2ca",borderRadius:6,background:"#fff",cursor:"pointer"}}>クリア</button>
+          <button style={{padding:"7px 32px",fontSize:12,fontWeight:600,background:s.dark,color:"#fff",border:"none",borderRadius:6,cursor:"pointer"}}>絞り込む</button>
+        </div>
       </div>
     </div>
   );
@@ -423,8 +431,8 @@ function ListPage({pattern, setPattern, onSelect}) {
           </div>
         )}
         {pattern==="B"&&topFilterOpen&&(
-          <div style={{background:"#fff",border:`1px solid ${s.border}`,borderRadius:8,padding:20,marginBottom:8}}>
-            <div style={{fontSize:16,fontWeight:600,marginBottom:14}}>入札受付中の車両一覧</div>
+          <div style={{background:"#fff",border:`1px solid ${s.border}`,borderRadius:8,padding:14,marginBottom:6}}>
+            <div style={{fontSize:14,fontWeight:600,marginBottom:8}}>入札受付中の車両一覧</div>
             <FilterPanel layout="top"/>
           </div>
         )}
