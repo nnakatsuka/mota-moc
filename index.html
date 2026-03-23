@@ -409,7 +409,7 @@ function CarTable({pattern, onSelect}) {
 function ListPage({pattern, setPattern, onSelect}) {
   const [filterOpen, setFilterOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("入札受付中");
-  const [topFilterOpen, setTopFilterOpen] = useState(false);
+  const [topFilterOpen, setTopFilterOpen] = useState(true);
   const [alertFilter, setAlertFilter] = useState(null);
   const [showAlerts, setShowAlerts] = useState(true);
 
@@ -611,7 +611,7 @@ function DetailPage({car, onBack, onNavigate}) {
                         {cells.map(c=>{
                           const isRepair=c.val==="修復済"||c.val==="走行不可";
                           return [
-                            <td key={c.ci} style={{padding:"6px 8px",color:s.muted,background:s.filterBg,whiteSpace:"nowrap"}}>{c.label}</td>,
+                            <td key={c.ci} style={{padding:"6px 8px",color:"#666",background:"#efede6",whiteSpace:"nowrap",fontSize:11}}>{c.label}</td>,
                             <td key={c.ci+1} colSpan={c.span} style={{padding:"6px 8px",color:isRepair?s.accent:s.dark,fontWeight:isRepair?700:500,whiteSpace:"nowrap"}}>{c.val}</td>
                           ];
                         })}
@@ -625,7 +625,7 @@ function DetailPage({car, onBack, onNavigate}) {
             <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>装備情報</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
               {DETAIL.equipment.map(eq=>(
-                <span key={eq} style={{fontSize:11,padding:"4px 12px",border:`1px solid #d5d2ca`,borderRadius:20,background:"#fff",whiteSpace:"nowrap"}}>{eq}</span>
+                <span key={eq} style={{fontSize:11,padding:"5px 14px",borderRadius:20,whiteSpace:"nowrap",background:"#efede6",color:"#4a4a47",fontWeight:500}}>{eq}</span>
               ))}
             </div>
 
@@ -645,7 +645,7 @@ function DetailPage({car, onBack, onNavigate}) {
             </div>
 
             <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>PRコメント</div>
-            <div style={{fontSize:12,color:"#aaa",padding:"10px 12px",border:`1px solid ${s.border}`,borderRadius:8,background:"#fff",marginBottom:12}}>（未入力）</div>
+            <div style={{fontSize:12,color:s.muted,marginBottom:12,lineHeight:1.7}}>（未入力）</div>
 
           </div>
 
