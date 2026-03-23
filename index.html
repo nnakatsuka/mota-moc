@@ -56,14 +56,13 @@ const DETAIL = {
   fullName:"レクサス CT200h バージョンL",
   assessDate:"2026/3/23",
   specs:[
-    ["車種","レクサスCT200h","修復歴","なし","ローン残債","－"],
-    ["エリア","北海道厚岸郡厚岸町","車体色","白(ホワイト)系","ハンドル","右"],
-    ["査定番号","2127680","車検期限","未入力","電動スライドドア","－"],
-    ["型式","DAA-ZWA10","燃料","その他","カーナビ","－"],
-    ["車台番号","－","ミッション","CVT","売却希望時期","3ヶ月以内"],
-    ["排気量","1,797cc","乗車定員","5名","乗り換え検討","－"],
-    ["走行距離","〜5,000キロ","ドア枚数","5枚","",""],
-    ["年式","2012(平成24)年式","","","",""],
+    ["車種","レクサスCT200h","修復歴","なし","車検期限","未入力"],
+    ["エリア","北海道厚岸郡厚岸町","年式","2012(平成24)年式","ローン残債","－"],
+    ["査定番号","2127680","車体色","白(ホワイト)系","ハンドル","右"],
+    ["型式","DAA-ZWA10","燃料","その他","電動スライドドア","－"],
+    ["車台番号","－","ミッション","CVT","カーナビ","－"],
+    ["排気量","1,797cc","乗車定員","5名","売却希望時期","3ヶ月以内"],
+    ["走行距離","〜5,000キロ","ドア枚数","5枚","乗り換え検討","－"],
   ],
   equipment:["禁煙車","サンルーフ","傷・へこみあり","ペット乗車実績あり","全周囲モニター","純正オプション サウンドシステム","純正後席モニター","純正フルエアロ","レザーシート","ワンオーナー","新車時の保証書 取扱説明書あり"],
   photos:[
@@ -625,7 +624,7 @@ function DetailPage({car, onBack, onNavigate}) {
             <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>装備情報</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
               {DETAIL.equipment.map(eq=>(
-                <span key={eq} style={{fontSize:11,padding:"5px 14px",borderRadius:20,whiteSpace:"nowrap",background:"#efede6",color:"#4a4a47",fontWeight:500}}>{eq}</span>
+                <span key={eq} style={{fontSize:11,padding:"5px 14px",border:"1px solid #d5d2ca",borderRadius:20,whiteSpace:"nowrap",background:"#fff",color:"#4a4a47",fontWeight:500}}>{eq}</span>
               ))}
             </div>
 
