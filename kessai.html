@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あんしん決済 Smart版｜全STEP画面イメージ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:#f0f2f5;color:#1a1a1a;font-size:14px;}
+
+/* ===== ナビゲーション ===== */
+.page-nav{position:sticky;top:0;z-index:100;background:#1a1a1a;display:flex;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
+.nav-tab{padding:11px 14px 11px 12px;font-size:11px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.45);transition:all 0.15s;white-space:nowrap;position:relative;border-left:3px solid transparent;border-bottom:3px solid transparent;}
+.nav-tab.active{color:white;background:rgba(255,255,255,0.10);border-bottom-color:transparent;}
+.nav-tab:hover{color:white;background:rgba(255,255,255,0.06);}
+/* CLマイページ：オレンジ */
+.nav-cl{border-left-color:#f39c12 !important;background:rgba(243,156,18,0.07);}
+.nav-cl:hover{background:rgba(243,156,18,0.14) !important;}
+.nav-cl.active{background:rgba(243,156,18,0.20) !important;border-bottom-color:transparent !important;}
+/* あんしん決済管理画面：赤 */
+.nav-anshin{border-left-color:#e74c3c !important;background:rgba(231,76,60,0.07);}
+.nav-anshin:hover{background:rgba(231,76,60,0.14) !important;}
+.nav-anshin.active{background:rgba(231,76,60,0.20) !important;border-bottom-color:transparent !important;}
+/* あんしん決済管理画面（売主）：スカイブルー */
+.nav-seller{border-left-color:#3498db !important;background:rgba(52,152,219,0.07);}
+.nav-seller:hover{background:rgba(52,152,219,0.14) !important;}
+.nav-seller.active{background:rgba(52,152,219,0.20) !important;border-bottom-color:transparent !important;}
+/* 凡例ラベル */
+.nav-legend{display:flex;align-items:center;gap:12px;padding:6px 18px;background:#111;border-bottom:1px solid #333;}
+.nav-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,0.55);}
+.nav-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.nav-sub{font-size:9px;font-weight:400;opacity:0.6;display:block;margin-top:1px;}
+.nav-step-num{display:inline-block;background:#c0392b;color:white;border-radius:3px;font-size:9px;font-weight:900;padding:1px 5px;margin-right:4px;}
+.nav-tab.active .nav-step-num{background:white;color:#c0392b;}
+.nav-cl.active .nav-step-num{color:#f39c12;}
+.nav-anshin.active .nav-step-num{color:#e74c3c;}
+.nav-seller.active .nav-step-num{color:#3498db;}
+
+.screen{display:none;}
+.screen.active{display:block;zoom:0.78;transform-origin:top left;}
+
+/* ===== 共通ヘッダー ===== */
+.mota-header{background:#111;color:white;display:flex;align-items:center;justify-content:space-between;padding:10px 32px;}
+.mota-logo{font-size:20px;font-weight:900;letter-spacing:-1px;}
+.mota-header-right{font-size:12px;color:#aaa;}
+.mota-gnav{background:#111;display:flex;border-bottom:1px solid #333;}
+.mota-gnav-item{padding:13px 36px;font-size:14px;color:#999;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;}
+.mota-gnav-item.active{color:white;border-bottom-color:#c0392b;font-weight:700;}
+
+/* ===== 共通：ステップバー ===== */
+.step-bar-wrap{background:white;border-bottom:1px solid #e0e0e0;padding:14px 24px;overflow-x:auto;}
+.step-bar{display:flex;align-items:center;gap:0;min-width:900px;}
+.sb-item{display:flex;align-items:center;flex:1;}
+.sb-box{flex:1;padding:7px 10px;text-align:center;font-size:10px;font-weight:700;background:#f5f5f5;color:#999;border:1px solid #e0e0e0;position:relative;clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);}
+.sb-box.done{background:#e8f5e9;color:#2e7d32;border-color:#a5d6a7;}
+.sb-box.current{background:#1a1a1a;color:white;border-color:#1a1a1a;}
+.sb-num{display:block;font-size:9px;font-weight:400;opacity:0.7;margin-bottom:1px;}
+
+/* ===== 管理画面共通 ===== */
+.admin-wrap{max-width:1080px;margin:0 auto;padding:24px 28px;}
+.admin-page-title{font-size:18px;font-weight:700;margin-bottom:20px;}
+.section-title{font-size:14px;font-weight:700;margin:24px 0 10px;padding-bottom:8px;border-bottom:2px solid #e0e0e0;}
+.info-grid{display:grid;grid-template-columns:180px 1fr;border:1px solid #e0e0e0;margin-bottom:2px;}
+.ig-label{padding:11px 14px;background:#f7f7f7;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;}
+.ig-val{padding:11px 14px;font-size:13px;}
+.ig-val input,.ig-val select{width:100%;border:1px solid #ccc;border-radius:2px;padding:7px 10px;font-size:13px;font-family:inherit;background:white;}
+.ig-val input[style*="max-width"]{width:auto;}
+.btn-primary{background:#1a1a1a;color:white;border:none;border-radius:3px;padding:10px 28px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-secondary{background:white;color:#333;border:1px solid #bbb;border-radius:3px;padding:10px 28px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-green{background:#1D6B35;color:white;border:none;border-radius:3px;padding:10px 28px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-red{background:#c0392b;color:white;border:none;border-radius:3px;padding:10px 28px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.tag{display:inline-block;padding:3px 10px;border-radius:2px;font-size:11px;font-weight:700;}
+.tag-red{background:#c0392b;color:white;}
+.tag-green{background:#1D6B35;color:white;}
+.tag-gray{background:#999;color:white;}
+.tag-blue{background:#1E56A0;color:white;}
+.tag-orange{background:#e67e22;color:white;}
+.tag-yellow{background:#f39c12;color:white;}
+.alert-box{border-radius:4px;padding:12px 16px;font-size:13px;line-height:1.8;margin-bottom:16px;}
+.alert-info{background:#e8f4fd;border:1px solid #bee3f8;color:#1E56A0;}
+.alert-warn{background:#fff8e1;border:1px solid #ffd54f;color:#856404;}
+.alert-success{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;}
+.checklist{background:#f7f7f7;border:1px solid #e0e0e0;border-radius:4px;padding:14px 16px;margin-bottom:12px;}
+.checklist-title{font-size:12px;font-weight:700;color:#555;margin-bottom:8px;}
+.check-item{display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 0;}
+.check-item input{width:16px;height:16px;accent-color:#1D6B35;}
+
+/* ===== CLマイページ ===== */
+.mota-tabs{background:white;display:flex;border-bottom:1px solid #e0e0e0;padding:0 32px;}
+.mota-tab-item{padding:12px 0;margin-right:36px;font-size:13px;color:#999;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.mota-tab-item.active{color:#c0392b;border-bottom-color:#c0392b;font-weight:700;}
+.mota-body{max-width:1060px;margin:0 auto;padding:24px 32px;}
+.mota-page-title{font-size:20px;font-weight:700;margin-bottom:20px;}
+.v-card{background:white;border:1px solid #e0e0e0;margin-bottom:8px;}
+.v-card-main{padding:12px 16px;display:flex;align-items:flex-start;gap:10px;}
+.v-badge{background:#c0392b;color:white;font-size:11px;font-weight:700;padding:3px 8px;border-radius:2px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.v-info{flex:1;}
+.v-name{font-size:15px;font-weight:700;margin-bottom:2px;}
+.v-year{font-size:12px;color:#666;}
+.v-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.v-price{font-size:13px;font-weight:700;}
+.seiyaku-btn{background:#1D6B35;color:white;border:none;border-radius:3px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.v-meta{padding:0 16px 8px;font-size:11px;color:#888;}
+.v-memo{margin:0 16px 12px;border:1px solid #ececec;padding:7px 10px;font-size:12px;color:#bbb;background:#fafafa;display:flex;align-items:center;justify-content:space-between;}
+.v-memo-btn{font-size:11px;color:#1E56A0;border:1px solid #1E56A0;background:white;padding:3px 8px;border-radius:2px;cursor:pointer;}
+.anshin-badge{background:#1D6B35;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;margin-left:8px;}
+
+/* ===== CS向けフォーム共通 ===== */
+.cs-outer{background:white;min-height:100vh;}
+.cs-wrap{max-width:780px;margin:0 auto;padding:36px 20px 60px;}
+.cs-page-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+.cs-caution{color:#cc0000;font-size:13px;line-height:1.8;margin-bottom:28px;}
+.cs-sec-title{font-size:15px;font-weight:700;margin:28px 0 10px;padding-bottom:8px;border-bottom:2px solid #e0e0e0;}
+.cs-table{width:100%;border-collapse:collapse;}
+.cs-table tr{border:1px solid #e0e0e0;}
+.cs-table th{width:220px;padding:13px 16px;background:#f7f7f7;font-weight:500;font-size:13px;text-align:left;vertical-align:top;border-right:1px solid #e0e0e0;}
+.cs-table td{padding:10px 16px;vertical-align:top;}
+.cs-input{width:100%;border:1px solid #ccc;border-radius:2px;padding:9px 12px;font-size:14px;font-family:inherit;background:white;}
+.cs-hint{font-size:11px;color:#888;margin-top:4px;line-height:1.6;}
+.confirm-info-box{background:#f8fafd;border:1px solid #d0dcf0;border-radius:4px;padding:16px 20px;margin-bottom:8px;}
+.cib-label{font-size:12px;font-weight:700;color:#1E56A0;margin-bottom:10px;}
+.cib-table{width:100%;border-collapse:collapse;}
+.cib-table tr{border-bottom:1px solid #e4ecf5;}
+.cib-table tr:last-child{border-bottom:none;}
+.cib-table th{padding:9px 12px;text-align:left;font-size:12px;color:#666;font-weight:500;width:200px;background:#f0f4fb;}
+.cib-table td{padding:9px 12px;font-size:14px;font-weight:600;color:#1a1a1a;}
+.cib-amount{font-size:17px;font-weight:700;color:#1D6B35;}
+.cib-doc{display:inline-flex;align-items:center;gap:5px;color:#1E56A0;font-size:13px;border:1px solid #1E56A0;padding:4px 12px;border-radius:2px;cursor:pointer;}
+.confirm-action-area{margin-top:16px;border-top:1px solid #dce6f5;padding-top:14px;}
+.confirm-action-label{font-size:13px;font-weight:700;color:#333;margin-bottom:10px;}
+.confirm-btn-group{display:flex;gap:10px;}
+.btn-confirm-ok{flex:1;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #1D6B35;background:#1D6B35;color:white;}
+.btn-confirm-ng{flex:1;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #dc2626;background:white;color:#dc2626;}
+.cs-submit-area{text-align:right;margin-top:32px;padding-top:20px;border-top:1px solid #e0e0e0;}
+.cs-submit{background:#1a1a1a;color:white;border:none;border-radius:4px;padding:12px 52px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* ===== 送信完了 ===== */
+.complete-outer{background:white;min-height:100vh;}
+.complete-wrap{max-width:600px;margin:0 auto;padding:60px 20px;text-align:center;}
+.complete-icon{font-size:54px;margin-bottom:14px;}
+.complete-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+.complete-body{font-size:13px;color:#555;line-height:1.9;margin-bottom:32px;}
+
+/* ===== SMS ===== */
+.sms-outer{background:#f0f2f5;min-height:100vh;padding:20px;}
+.sms-wrap{max-width:380px;margin:0 auto;}
+.sms-header{background:#1a1a1a;color:white;padding:12px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;}
+.sms-body{background:white;border-radius:0 0 8px 8px;padding:16px;}
+.sms-bubble{background:#e8e8e8;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.8;color:#1a1a1a;max-width:85%;margin-bottom:8px;}
+.sms-bubble-right{background:#34C759;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.8;color:white;max-width:85%;margin-bottom:8px;margin-left:auto;}
+
+/* ===== あんしん決済管理画面 ===== */
+.payment-header{background:#111;color:white;display:flex;align-items:center;justify-content:space-between;padding:10px 28px;}
+.payment-logo{font-size:16px;font-weight:900;letter-spacing:-0.5px;color:white;}
+.payment-logo span{color:#c0392b;}
+.payment-gnav{background:#222;display:flex;border-bottom:1px solid #444;}
+.payment-gnav-item{padding:12px 24px;font-size:13px;color:#999;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;}
+.payment-gnav-item.active{color:white;border-bottom-color:#c0392b;font-weight:700;}
+.payment-body{max-width:1080px;margin:0 auto;padding:24px 28px;}
+
+/* ===== 物件リスト ===== */
+.property-table{width:100%;border-collapse:collapse;background:white;border:1px solid #e0e0e0;}
+.property-table th{padding:10px 12px;background:#f5f5f5;font-size:11px;color:#555;font-weight:700;border-bottom:2px solid #e0e0e0;white-space:nowrap;}
+.property-table td{padding:10px 12px;font-size:12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+.property-table tr:hover td{background:#fafafa;}
+
+/* ===== STEP①リスト カラム幅統一 ===== */
+.cl-col-check{width:16px;flex-shrink:0;}
+.cl-col-id{width:60px;flex-shrink:0;}
+.cl-col-badge{width:44px;flex-shrink:0;display:flex;align-items:center;}
+.cl-col-name{width:150px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;}
+.cl-col-customer{width:70px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;}
+.cl-col-year{width:52px;flex-shrink:0;}
+.cl-col-km{width:60px;flex-shrink:0;}
+.cl-col-area{width:150px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;}
+.cl-col-price{width:52px;flex-shrink:0;}
+.cl-col-repair{width:42px;flex-shrink:0;font-size:11px;color:#888;}
+.cl-col-photo{width:42px;flex-shrink:0;font-size:11px;color:#888;}
+.cl-col-change{width:48px;flex-shrink:0;}
+.cl-col-deadline{width:36px;flex-shrink:0;text-align:right;}
+.status-pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+.status-1{background:#fff3cd;color:#856404;border:1px solid #ffc107;}
+.status-2{background:#e8f4fd;color:#1E56A0;border:1px solid #bee3f8;}
+.status-3{background:#e8f5e9;color:#1D6B35;border:1px solid #a5d6a7;}
+.status-4{background:#fce4ec;color:#c0392b;border:1px solid #f48fb1;}
+.status-5{background:#f3e5f5;color:#7b1fa2;border:1px solid #ce93d8;}
+.status-6{background:#e0f2f1;color:#00695c;border:1px solid #80cbc4;}
+.status-7{background:#e8eaf6;color:#3949ab;border:1px solid #9fa8da;}
+.link-blue{color:#1E56A0;text-decoration:none;font-weight:500;cursor:pointer;}
+.link-blue:hover{text-decoration:underline;}
+
+/* ===== 論点タグ ===== */
+.issue-tag{display:inline-block;background:#fff3cd;border:1px solid #ffc107;color:#856404;font-size:10px;font-weight:700;padding:1px 6px;border-radius:2px;margin-left:6px;vertical-align:middle;}
+.design-note{font-size:11px;color:#999;background:#f5f5f5;border-radius:4px;padding:12px 14px;text-align:left;line-height:1.7;margin-top:16px;}
+.design-note strong{color:#555;display:block;margin-bottom:4px;}
+
+/* ===== ステップ説明バー ===== */
+.step-desc-bar{background:#1a1a1a;color:white;padding:12px 28px;display:flex;align-items:center;gap:16px;}
+.step-desc-num{background:#c0392b;color:white;font-size:11px;font-weight:900;padding:3px 10px;border-radius:3px;white-space:nowrap;}
+.step-desc-title{font-size:14px;font-weight:700;}
+.step-desc-actor{font-size:11px;color:#aaa;margin-left:auto;}
+
+/* ===== 引渡し確認 ===== */
+.handover-box{background:white;border:1px solid #e0e0e0;border-radius:4px;padding:20px 24px;margin-bottom:16px;}
+.handover-title{font-size:15px;font-weight:700;margin-bottom:12px;}
+.handover-list{list-style:none;}
+.handover-list li{padding:6px 0;font-size:13px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:8px;}
+.handover-list li::before{content:'□';font-size:16px;color:#aaa;}
+.handover-list li.checked::before{content:'✅';font-size:14px;}
+
+/* ===== 受取連絡（キャンセル・減額） ===== */
+.action-card{background:white;border:1px solid #e0e0e0;border-radius:4px;padding:20px 24px;margin-bottom:12px;}
+.action-card-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.action-card-body{font-size:13px;color:#555;line-height:1.8;}
+
+/* ===== 送金完了 ===== */
+.transfer-complete{text-align:center;padding:48px 20px;}
+.tc-icon{font-size:60px;margin-bottom:16px;}
+.tc-title{font-size:24px;font-weight:700;margin-bottom:8px;}
+.tc-amount{font-size:36px;font-weight:900;color:#1D6B35;margin-bottom:8px;}
+.tc-body{font-size:13px;color:#666;line-height:1.9;}
+
+/* ===== 請求書プレビュー ===== */
+.invoice-box{background:white;border:1px solid #ccc;border-radius:4px;padding:32px;max-width:640px;margin:0 auto;}
+.invoice-title{font-size:22px;font-weight:700;text-align:center;margin-bottom:4px;}
+.invoice-sub{font-size:12px;color:#666;text-align:center;margin-bottom:24px;}
+.invoice-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;font-size:12px;}
+.invoice-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.invoice-table th{background:#1a1a1a;color:white;padding:8px 12px;font-size:12px;text-align:left;}
+.invoice-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid #e0e0e0;}
+.invoice-total{text-align:right;font-size:16px;font-weight:700;color:#1a1a1a;}
+.pay-method{background:#f0f4ff;border:1px solid #c5d3f0;border-radius:4px;padding:14px 16px;margin-top:16px;font-size:12px;}
+
+/* ===== 入金確認 ===== */
+.amount-confirm-box{background:#e8f5e9;border:2px solid #1D6B35;border-radius:6px;padding:20px 24px;text-align:center;margin-bottom:20px;}
+.acb-label{font-size:12px;color:#1D6B35;font-weight:700;margin-bottom:4px;}
+.acb-amount{font-size:32px;font-weight:900;color:#1D6B35;}
+.acb-note{font-size:11px;color:#555;margin-top:4px;}
+
+</style>
+</head>
+<body>
+
+<!-- ===== ナビゲーション ===== -->
+<div class="page-nav">
+  <div class="nav-tab nav-cl active" onclick="showScreen('s01',this)"><span class="nav-step-num">③</span>買取店 成約申告<span class="nav-sub">CLマイページ（買取）｜成約ボタン押下</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s02',this)"><span class="nav-step-num">④</span>成約情報登録<span class="nav-sub">あんしん決済管理画面（買取店）｜対象選択・契約書登録</span></div>
+  <div class="nav-tab nav-seller" onclick="showScreen('s03',this)"><span class="nav-step-num">⑤</span>売主確認・口座登録<span class="nav-sub">あんしん決済管理画面（売主）｜金額確認・口座入力</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s04',this)"><span class="nav-step-num">⑥</span>請求書発行<span class="nav-sub">あんしん決済管理画面（MOTA）｜自動発行・確認</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s05',this)"><span class="nav-step-num">⑥</span>入金<span class="nav-sub">あんしん決済管理画面（買取店）｜ペイジー振込</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s06',this)"><span class="nav-step-num">⑦</span>引渡し連絡<span class="nav-sub">あんしん決済管理画面（買取店）｜入金確認→引渡し連絡</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s09',this)"><span class="nav-step-num">⑨⑩</span>検査・受領連絡<span class="nav-sub">あんしん決済管理画面（買取店）｜検査→受領連絡</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s11',this)"><span class="nav-step-num">⑪</span>送金<span class="nav-sub">あんしん決済管理画面（買取店）｜MOTAから売主へ振込</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('s12',this)"><span class="nav-step-num">Fin</span>送金完了連絡<span class="nav-sub">SMS通知</span></div>
+  <div class="nav-tab nav-cl" onclick="showScreen('summary',this)"><span class="nav-step-num" style="background:#1E56A0;">📊</span>サマリー・CSV<span class="nav-sub">成約実績・CSV出力</span></div>
+  <div class="nav-tab nav-anshin" onclick="showScreen('notify-setting',this)"><span class="nav-step-num" style="background:#7b1fa2;">⚙</span>通知先設定<span class="nav-sub">査定員SMS・経理メール設定</span></div>
+</div>
+<div class="nav-legend">
+  <div class="nav-legend-item"><div class="nav-legend-dot" style="background:#f39c12;"></div>🚗 CLマイページ（買取）</div>
+  <div class="nav-legend-item"><div class="nav-legend-dot" style="background:#e74c3c;"></div>❤️ あんしん決済管理画面（MOTA） / あんしん決済管理画面（買取店）</div>
+  <div class="nav-legend-item"><div class="nav-legend-dot" style="background:#3498db;"></div>📱 あんしん決済管理画面（売主）</div>
+</div>
+
+<!-- ===================================================================
+     STEP 01｜CLマイページ：成約ボタン押下
+=================================================================== -->
+<div class="screen active" id="screen-s01">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">③ STEP</span>
+    <span class="step-desc-title">買取店 成約申告 — 買取マイページで成約ボタンを押下</span><span style="background:#1a1a1a;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">🚗 CLマイページ（買取）</span>
+    <span class="step-desc-actor">アクター：買取店</span>
+  </div>
+
+  <!-- ヘッダー -->
+  <div style="background:#1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:10px 24px;">
+    <span style="color:white;font-size:18px;font-weight:900;letter-spacing:-0.5px;">MöTA モータ</span>
+    <span style="color:#aaa;font-size:12px;">[ ログアウト</span>
+  </div>
+
+  <!-- グローバルナビ -->
+  <div style="background:#1a1a1a;display:flex;border-bottom:1px solid #333;">
+    <div style="padding:13px 40px;font-size:13px;color:#888;cursor:pointer;">マイページ</div>
+    <div style="padding:13px 40px;font-size:13px;color:white;font-weight:700;border-bottom:3px solid #c0392b;margin-bottom:-1px;cursor:pointer;">車買取</div>
+    <div style="padding:13px 40px;font-size:13px;color:#888;cursor:pointer;">車買取Plus</div>
+  </div>
+
+  <!-- タブ -->
+  <div style="background:white;display:flex;border-bottom:1px solid #e0e0e0;padding:0 24px;">
+    <div style="padding:12px 0;margin-right:32px;font-size:13px;color:#c0392b;font-weight:700;border-bottom:2px solid #c0392b;margin-bottom:-1px;cursor:pointer;">入札受付中</div>
+    <div style="padding:12px 0;margin-right:32px;font-size:13px;color:#999;cursor:pointer;">入賞確定な車両</div>
+    <div style="padding:12px 0;font-size:13px;color:#999;cursor:pointer;">入札受付終了</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:8px 0;">
+      <span style="font-size:12px;color:#555;">対応状況</span>
+      <div style="background:#4CAF50;border-radius:20px;width:40px;height:22px;position:relative;cursor:pointer;"><div style="position:absolute;top:3px;right:3px;width:16px;height:16px;background:white;border-radius:50%;"></div></div>
+    </div>
+  </div>
+
+  <!-- サマリーカード：フルwidth（絞り込みの上） -->
+  <div style="background:#f5f4f0;padding:16px 24px;border-bottom:1px solid #e0e0e0;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:white;border:1px solid #e0e0e0;padding:14px 18px;">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">入札対応残数</div>
+        <div style="font-size:11px;color:#888;margin-bottom:10px;">「入札済」「入札見送り」車両を除く、未入札の車両の件数</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;white-space:nowrap;">本日18時締切</span><span style="font-size:13px;">入札対応残数 <strong>2</strong> 件</span></div>
+          <span style="color:#ccc;font-size:16px;">›</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;white-space:nowrap;">翌日12時締切</span><span style="font-size:13px;">入札対応残数 <strong>0</strong> 件</span></div>
+          <span style="color:#ccc;font-size:16px;">›</span>
+        </div>
+      </div>
+      <div style="background:white;border:1px solid #e0e0e0;padding:14px 18px;">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:2px;">現時点で入賞確実な車両件数</div>
+        <div style="font-size:11px;color:#888;margin-bottom:10px;">「入札見送り」車両含む、未入札かつ、現時点で入札が3社未満の車両の件数</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;white-space:nowrap;">本日18時締切</span><span style="font-size:13px;">現時点で入賞確実な車両 <strong>2</strong> 件</span></div>
+          <span style="color:#ccc;font-size:16px;">›</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;white-space:nowrap;">翌日12時締切</span><span style="font-size:13px;">現時点で入賞確実な車両 <strong>0</strong> 件</span></div>
+          <span style="color:#ccc;font-size:16px;">›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メインレイアウト（左サイドバー＋コンテンツ） -->
+  <div style="display:flex;background:#f5f4f0;min-height:calc(100vh - 180px);">
+
+    <!-- 左サイドバー（絞り込み） -->
+    <div style="width:200px;flex-shrink:0;background:white;border-right:1px solid #e0e0e0;padding:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #e8e8e8;">
+        <span style="font-size:13px;font-weight:700;">絞り込み</span>
+        <span style="font-size:12px;color:#1E56A0;cursor:pointer;">◀ 閉じる</span>
+      </div>
+
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">入札状況</div>
+        <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;background:white;"><option>-</option></select>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">入札締切時間</div>
+        <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;background:white;"><option>-</option></select>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">車両種別</div>
+        <div style="display:flex;gap:3px;flex-wrap:wrap;">
+          <button style="font-size:10px;padding:3px 8px;border:1px solid #ccc;border-radius:2px;background:white;cursor:pointer;">全て</button>
+          <button style="font-size:10px;padding:3px 8px;border:1px solid #ccc;border-radius:2px;background:white;cursor:pointer;">MOTA車買取</button>
+          <button style="font-size:10px;padding:3px 8px;border:1px solid #ccc;border-radius:2px;background:white;cursor:pointer;">車取サポート</button>
+        </div>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">メーカー</div>
+        <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;background:white;"><option>- 入力または選択</option></select>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">車種</div>
+        <input style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;" placeholder="メーカー名を入力してください">
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">都道府県</div>
+        <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;background:white;"><option>- 入力または選択</option></select>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="display:flex;gap:6px;margin-bottom:6px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#666;margin-bottom:3px;">売却希望時期</div>
+            <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 4px;font-size:11px;font-family:inherit;background:white;"><option>-</option></select>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#666;margin-bottom:3px;">修復歴</div>
+            <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 4px;font-size:11px;font-family:inherit;background:white;"><option>-</option></select>
+          </div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="display:flex;gap:6px;margin-bottom:6px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#666;margin-bottom:3px;">写真の有無</div>
+            <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 4px;font-size:11px;font-family:inherit;background:white;"><option>-</option></select>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#666;margin-bottom:3px;">情報の変更</div>
+            <select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 4px;font-size:11px;font-family:inherit;background:white;"><option>-</option></select>
+          </div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">査定番号</div>
+        <input style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;" placeholder="数値で入力">
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:6px;">成約状況</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+            <input type="radio" name="filter-seiyaku" value="all" checked style="accent-color:#1a1a1a;"> すべて
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+            <input type="radio" name="filter-seiyaku" value="seiyaku" style="accent-color:#1D6B35;"> <span style="color:#1D6B35;font-weight:700;">成約のみ</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+            <input type="radio" name="filter-seiyaku" value="miseiyaku" style="accent-color:#888;"> <span style="color:#555;">未成約のみ</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+            <input type="radio" name="filter-seiyaku" value="unset" style="accent-color:#e67e22;"> <span style="color:#e67e22;">未選択のみ</span>
+          </label>
+        </div>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;">
+        <div style="font-size:11px;color:#666;margin-bottom:5px;">メモ検索</div>
+        <input style="width:100%;border:1px solid #ccc;border-radius:2px;padding:5px 6px;font-size:12px;font-family:inherit;" placeholder="キーワードを入力">
+      </div>
+      <div style="padding:12px 14px;display:flex;gap:6px;">
+        <button style="flex:1;padding:7px;border:1px solid #ccc;border-radius:2px;background:white;font-size:12px;font-family:inherit;cursor:pointer;">クリア</button>
+        <button style="flex:1;padding:7px;border:none;border-radius:2px;background:#1a1a1a;color:white;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;">絞り込む</button>
+      </div>
+    </div>
+
+    <!-- 右コンテンツ -->
+    <div style="flex:1;padding:16px 20px;overflow:auto;">
+
+      <!-- 一括操作バー -->
+      <div style="background:#fff8e1;border:1px solid #ffd54f;border-radius:4px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;cursor:pointer;">
+          <input type="checkbox" id="check-all" style="width:15px;height:15px;accent-color:#1a1a1a;" onclick="toggleAll(this)">
+          全選択
+        </label>
+        <span id="selected-count" style="font-size:12px;font-weight:700;color:#1a1a1a;background:#e0e0e0;padding:2px 10px;border-radius:20px;">0件選択中</span>
+        <span style="font-size:12px;color:#888;">選択した物件を一括で：</span>
+        <button onclick="alert('選択物件を一括「成約」に登録します')" style="background:#1D6B35;color:white;border:none;border-radius:3px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">✅ まとめて成約に登録</button>
+        <button onclick="alert('選択物件を一括「未成約」に登録します')" style="background:white;color:#555;border:1px solid #bbb;border-radius:3px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">✗ まとめて未成約に登録</button>
+        <span style="font-size:11px;color:#a07800;margin-left:auto;">※ ラジオボタン選択後、まとめて登録ボタンを押すことで一括保存されます</span>
+      </div>
+
+      <!-- リストヘッダー -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:700;">全 30 件</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <select style="border:1px solid #ccc;border-radius:2px;padding:5px 8px;font-size:12px;font-family:inherit;background:white;"><option>新着順</option></select>
+          <span style="font-size:11px;color:#888;">表示 30 / 60 / 100件</span>
+        </div>
+      </div>
+
+      <!-- 車両リスト（カード型） -->
+      <div>
+        <div style="background:#f5f5f5;border:1px solid #e0e0e0;display:flex;align-items:center;gap:6px;padding:8px 12px;font-size:11px;font-weight:700;color:#555;white-space:nowrap;overflow-x:auto;">
+          <span class="cl-col-check"></span>
+          <span class="cl-col-id">査定番号</span>
+          <span class="cl-col-badge"></span>
+          <span class="cl-col-name">車両名</span>
+          <span class="cl-col-customer">お客様名</span>
+          <span class="cl-col-year">年式</span>
+          <span class="cl-col-km">走行距離</span>
+          <span class="cl-col-area">エリア</span>
+          <span class="cl-col-price">査定額</span>
+          <span class="cl-col-repair">修復</span>
+          <span class="cl-col-photo">写真</span>
+          <span class="cl-col-change">情報変更</span>
+          <span class="cl-col-deadline" style="margin-left:auto;">締切</span>
+          <span style="width:220px;flex-shrink:0;color:#1D6B35;">成約 / 未成約 ｜ メモ</span>
+        </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127615</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">ホンダ ZR-V</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和5年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">2.4万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">神奈川県横浜市青葉区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">田中 裕子</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">245万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#c0392b;white-space:nowrap;margin-left:auto;">12時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127615" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127615" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127615 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127616</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">トヨタ ヴェルファイア</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和3年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">5.8万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">東京都世田谷区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">山本 健太</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">420万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="background:#1D6B35;color:white;font-size:10px;padding:2px 6px;border-radius:2px;">入賞確実</span></span>
+                <span style="font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;margin-left:auto;">18時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127616" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127616" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127616 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127617</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">日産 エクストレイル</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和4年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">3.1万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">埼玉県さいたま市浦和区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">佐藤 美穂</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">280万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#c0392b;white-space:nowrap;margin-left:auto;">12時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127617" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127617" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127617 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127618</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">マツダ CX-5</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和2年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">6.4万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">大阪府大阪市北区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">鈴木 大輔</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">198万</span>
+                <span class="cl-col-repair">修復 あり</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;margin-left:auto;">18時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127618" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127618" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127618 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127619</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">スバル フォレスター</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和3年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">4.2万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">福岡県福岡市博多区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">中村 さやか</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">230万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#c0392b;white-space:nowrap;margin-left:auto;">12時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127619" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127619" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127619 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127620</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">レクサス RX</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和4年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">1.8万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">愛知県名古屋市千種区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">高橋 誠</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">660万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;margin-left:auto;">18時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127620" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127620" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127620 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127621</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">BMW 3シリーズ</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和2年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">3.5万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">神奈川県川崎市中原区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">伊藤 麻衣</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">330万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#c0392b;white-space:nowrap;margin-left:auto;">12時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127621" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127621" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127621 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127622</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">トヨタ RAV4</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和5年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">0.8万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">千葉県千葉市稲毛区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">渡辺 拓也</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">295万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;margin-left:auto;">18時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127622" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127622" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127622 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127623</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">トヨタ アルファード</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和4年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">1.2万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">東京都渋谷区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">小林 奈々</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">580万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#c0392b;white-space:nowrap;margin-left:auto;">12時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127623" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127623" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127623 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #e0e0e0;border-bottom:2px solid #ececec;margin-bottom:1px;display:grid;grid-template-columns:1fr 48px;">
+              <div style="padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;grid-column:1;">
+                <input type="checkbox" class="card-check cl-col-check" onchange="updateCount()" style="width:16px;height:16px;accent-color:#1a1a1a;flex-shrink:0;"><span style="color:#1E56A0;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;width:60px;flex-shrink:0;">2127624</span>
+                <span class="cl-col-badge"><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;">未入札</span></span>
+                <span class="cl-col-name" style="font-size:13px;font-weight:700;white-space:nowrap;">ホンダ ヴェゼル</span>
+                <span class="cl-col-year" style="font-size:12px;color:#555;white-space:nowrap;">令和5年</span>
+                <span class="cl-col-km" style="font-size:12px;color:#555;white-space:nowrap;">0.5万km</span>
+                <span class="cl-col-area" style="font-size:12px;color:#555;white-space:nowrap;">大阪府堺市堺区</span><span class="cl-col-customer" style="font-size:11px;background:#f0f4fb;color:#1E56A0;border-radius:2px;padding:2px 7px;white-space:nowrap;font-weight:500;">加藤 剛</span>
+                <span class="cl-col-price" style="font-size:13px;font-weight:700;white-space:nowrap;">265万</span>
+                <span class="cl-col-repair">修復 なし</span>
+                <span class="cl-col-photo">写真 なし</span>
+                <span class="cl-col-change" style="font-size:11px;"><span style="color:#999;">なし</span></span>
+                <span style="font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;margin-left:auto;">18時</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                  <div style="display:flex;gap:0;border:1px solid #ccc;border-radius:3px;overflow:hidden;font-size:12px;font-family:inherit;">
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127624" value="seiyaku" style="accent-color:#1D6B35;width:13px;height:13px;">
+                      <span style="font-weight:700;color:#1D6B35;">成約</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px;padding:5px 12px;background:white;cursor:pointer;white-space:nowrap;">
+                      <input type="radio" name="seiyaku-2127624" value="miseiyaku" style="accent-color:#888;width:13px;height:13px;">
+                      <span style="color:#888;">未成約</span>
+                    </label>
+                  </div>
+                  <button onclick="alert('2127624 の成約状況を保存しました')" style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:0 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:36px;">保存</button>
+                  <button onclick="alert('あんしん決済管理画面へ遷移')" title="あんしん決済管理画面へ" style="background:#c0392b;color:white;border:none;border-radius:0 0 0 0;padding:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;width:48px;min-height:100%;line-height:1;grid-column:2;grid-row:1/3;border-left:1px solid rgba(255,255,255,0.2);">
+                    <svg width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 30L3 15C1 13 0 11 0 9C0 4 4 0 9 0C12 0 14.8 1.5 16.5 4L18 6L19.5 4C21.2 1.5 24 0 27 0C32 0 36 4 36 9C36 11 35 13 33 15L18 30Z" fill="white"/>
+                      <text x="18" y="21" text-anchor="middle" font-size="13" font-weight="900" font-family="Arial,sans-serif" fill="#c0392b" letter-spacing="-0.5">M</text>
+                    </svg>
+                  </button>
+                </div>
+                  <input type="text" placeholder="📝 フリーメモ（ユーザー非表示）" style="border:1px solid #ddd;border-radius:2px;padding:0 8px;font-size:11px;font-family:inherit;color:#555;background:#fafafa;height:36px;width:180px;flex-shrink:0;">
+                  <button style="white-space:nowrap;border:1px solid #1E56A0;background:white;color:#1E56A0;padding:0 10px;font-size:11px;font-weight:700;border-radius:2px;cursor:pointer;font-family:inherit;height:36px;flex-shrink:0;">更新</button>
+              </div>
+            </div>
+            <div style="padding:8px 14px;font-size:11px;color:#aaa;text-align:center;background:#fafafa;border:1px solid #e0e0e0;">… 以下20件省略 …</div>
+      </div>
+
+      <div class="design-note" style="margin-top:14px;">
+        <strong>📌 設計メモ</strong>
+        ・「成約」ラジオボタン・保存ボタン・ハート＆Mボタンは<strong>あんしん決済対応店舗のみに表示</strong>（非対応店舗には当該列ごと非表示）<br>
+        ・ハート＆Mボタン（あんしん決済管理画面への導線）も同様に<strong>あんしん決済対応店舗のみに表示</strong><br>
+        ・成約ラジオ選択→保存ボタン押下でステータス確定。ハート＆Mボタン押下であんしん決済管理画面（STEP②③④）へ遷移<br>
+        ・【論点】成約前に誤って押してしまう店舗への対応（3/25定例で課題提起済み）
+      </div>
+
+      <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e0e0e0;font-size:11px;color:#aaa;text-align:center;line-height:2.2;">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 02｜あんしん決済管理画面：成約情報登録（買取店）
+=================================================================== -->
+<div class="screen" id="screen-s02">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">④ STEP</span>
+    <span class="step-desc-title">買取店 成約情報登録 — あんしん決済管理画面で成約情報を入力</span><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（買取店）</span>
+    <span class="step-desc-actor">アクター：買取店</span>
+  </div>
+  <div class="payment-header">
+    <div class="payment-logo">MöTA <span>あんしん決済</span> 管理画面</div>
+    <div style="font-size:12px;color:#aaa;">ログアウト</div>
+  </div>
+  <div class="payment-gnav">
+    <div class="payment-gnav-item">物件一覧</div>
+    <div class="payment-gnav-item active">成約情報登録</div>
+  </div>
+
+  <div class="step-bar-wrap">
+    <div class="step-bar">
+      <div class="sb-item"><div class="sb-box current"><span class="sb-num">STEP ④</span>成約情報登録</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑤</span>成約情報確認</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑥</span>請求書発行</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑥</span>入金</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑦</span>入金確認</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑦</span>引渡連絡</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑨⑩</span>鑑定・検査</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑪</span>受取・送金</div></div>
+    </div>
+  </div>
+
+  <div class="payment-body">
+    <div class="admin-page-title">物件詳細｜成約情報を入力してください。</div>
+    <div style="background:#f7f7f7;border:1px solid #e0e0e0;border-radius:3px;padding:10px 16px;font-size:13px;margin-bottom:20px;display:flex;gap:24px;">
+      <span>査定番号：<strong>2119387</strong></span>
+      <span>車名：<strong>トヨタ ヴォクシー ZS</strong></span>
+      <span>売主氏名：<strong>菅原綾香</strong></span>
+    </div>
+
+    <div class="info-grid"><div class="ig-label">成約情報受領日</div><div class="ig-val">2026-03-11</div></div>
+    <div class="section-title" style="color:#c0392b;">あんしん決済対象リード 対象有無チェック <span class="tag tag-red" style="font-size:10px;">必須</span></div>
+    <div style="background:#f7f7f7;border:1px solid #e0e0e0;border-radius:4px;padding:16px 20px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:10px;">以下の条件をすべて満たす場合、あんしん決済対象リードとなります</div>
+      <div style="font-size:13px;line-height:2.2;color:#333;">
+        ・個人名義車両である（法人名義は対象外）<br>
+        ・所有者が存命である<br>
+        ・リース車両でない<br>
+        ・権利の付着がない
+      </div>
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button id="btn-apply-target" onclick="switchTab('target')" style="flex:1;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #1D6B35;background:#1D6B35;color:white;">✅ あんしん決済対象</button>
+        <button id="btn-apply-nontarget" onclick="switchTab('nontarget')" style="flex:1;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #c0392b;background:white;color:#c0392b;">❌ あんしん決済非対象</button>
+      </div>
+    </div>
+
+    <!-- 対象・対象外の分岐コンテンツ -->
+    <div style="margin-top:0;">
+      <!-- 対象リードの場合 -->
+      <div id="pane-target" style="background:white;border:2px solid #1D6B35;border-radius:4px;padding:20px;">
+        <div style="font-size:13px;color:#1D6B35;font-weight:700;margin-bottom:16px;">✅ あんしん決済対象 — 以下の情報を登録してください</div>
+        <div class="info-grid"><div class="ig-label">買取予定金額 <span style="color:#c0392b;">*</span></div><div class="ig-val"><input type="number" placeholder="例：1500000" style="max-width:240px;"></div></div>
+        <div class="info-grid"><div class="ig-label">書類フォルダ（契約書・車検証）<span style="color:#c0392b;">*</span></div><div class="ig-val"><div style="border:1px dashed #bbb;border-radius:4px;padding:20px;text-align:center;color:#aaa;font-size:13px;cursor:pointer;">📎 ファイルをドロップ、またはクリックして選択<div style="font-size:11px;margin-top:4px;">売買契約書・車検証（PDF/画像）</div></div></div></div>
+        <div style="font-size:13px;font-weight:700;margin:16px 0 8px;color:#555;border-top:1px solid #e0e0e0;padding-top:16px;">ローン会社情報（ある場合のみ）</div>
+        <div style="font-size:12px;color:#c0392b;margin-bottom:8px;">※正常な送金処理のため、照会者がMOTAに登録済みの店舗名であることをご確認ください。</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e0e0e0;">
+          <div style="display:contents;">
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">ローン会社名</div>
+            <div style="padding:8px 12px;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">ローン残債額</div>
+            <div style="padding:8px 12px;border-bottom:1px solid #e0e0e0;"><input type="number" placeholder="¥0" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+          </div>
+          <div style="display:contents;">
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">ローン残債支払い期日</div>
+            <div style="padding:8px 12px;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;"><input type="date" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;" placeholder="年/月/日"></div>
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">金融機関コード</div>
+            <div style="padding:8px 12px;border-bottom:1px solid #e0e0e0;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+          </div>
+          <div style="display:contents;">
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">金融機関名</div>
+            <div style="padding:8px 12px;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">支店コード</div>
+            <div style="padding:8px 12px;border-bottom:1px solid #e0e0e0;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+          </div>
+          <div style="display:contents;">
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">支店名</div>
+            <div style="padding:8px 12px;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;">預金種目</div>
+            <div style="padding:8px 12px;border-bottom:1px solid #e0e0e0;"><select style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"><option>選択してください</option><option>普通預金</option><option>当座預金</option></select></div>
+          </div>
+          <div style="display:contents;">
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;">口座番号</div>
+            <div style="padding:8px 12px;border-right:1px solid #e0e0e0;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+            <div style="padding:11px 14px;background:#f5f5f5;font-size:12px;color:#555;font-weight:500;border-right:1px solid #e0e0e0;">口座名義</div>
+            <div style="padding:8px 12px;"><input type="text" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:6px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 対象外リードの場合 -->
+      <div id="pane-nontarget" style="background:white;border:2px solid #c0392b;border-radius:4px;padding:20px;display:none;">
+        <div style="font-size:13px;color:#c0392b;font-weight:700;margin-bottom:16px;">❌ あんしん決済非対象 — 非対象の申請理由を選択してください</div>
+        <div class="info-grid">
+          <div class="ig-label">非対象申請理由 <span style="color:#c0392b;">*</span></div>
+          <div class="ig-val">
+            <select style="width:100%;max-width:420px;border:1px solid #ccc;border-radius:2px;padding:8px 10px;font-size:13px;font-family:inherit;background:white;">
+              <option value="">選択してください</option>
+              <option value="houjin">法人名義車両のため</option>
+              <option value="lease">リース車両のため</option>
+              <option value="kenri">権利の付着があるため</option>
+              <option value="seizon">所有者が存命でないため</option>
+              <option value="sonota">その他</option>
+            </select>
+            <div class="cs-hint" style="margin-top:6px;">非対象として登録すると、売主のSTEP④ページには「非対象理由の確認」と「承認有無の登録」が表示されます。</div>
+          </div>
+        </div>
+        <div id="nontarget-other" style="margin-top:8px;display:none;">
+          <div class="info-grid">
+            <div class="ig-label">その他理由（自由記述）</div>
+            <div class="ig-val"><input type="text" placeholder="理由を入力してください" style="width:100%;border:1px solid #ccc;border-radius:2px;padding:8px 10px;font-size:13px;font-family:inherit;background:white;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn-secondary">一時保存</button>
+      <button class="btn-primary">登録して完了 →</button>
+    </div>
+
+    <div class="design-note">
+      <strong>📌 設計メモ（0331更新）</strong>
+      ・対象リード / 対象外リードで登録内容を出し分け（新規追加）<br>
+      ・対象リード：買取予定金額・契約書UP・ローン情報を登録<br>
+      ・対象外リード：非対象申請理由をプルダウンで選択（法人名義/リース/権利付着/その他）<br>
+      ・登録完了 → MOTASYSが売主へSMSでSTEP03ページURLを自動送信<br>
+      ・1日経過・未登録時：査定担当者へリマインドSMSを自動送信
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 03｜CS専用ページ：成約情報確認 + 口座登録
+=================================================================== -->
+<div class="screen" id="screen-s03">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑤ STEP</span>
+    <span class="step-desc-title">売主 成約情報確認 — 専用URLからアクセス・内容確認・口座情報登録</span><span style="background:#1E56A0;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">📱 あんしん決済管理画面（売主）</span>
+    <span class="step-desc-actor">アクター：売主</span>
+  </div>
+  <div class="cs-outer">
+    <div style="background:#1a1a1a;padding:10px 20px;">
+      <span style="color:white;font-size:16px;font-weight:900;">MöTA あんしん決済</span>
+    </div>
+    <div class="cs-wrap">
+      <div class="cs-page-title">契約者情報登録</div>
+      <div style="background:#f0f4fb;border:1px solid #d0dcf0;border-radius:4px;padding:10px 16px;font-size:13px;margin-bottom:16px;color:#1E56A0;">
+        <strong>買取店：</strong>○○モータース株式会社 &nbsp;｜&nbsp; <strong>担当者：</strong>田中 一郎
+      </div>
+      <div class="cs-caution">
+        必ず車検証に記載の使用者ご本人様が回答してください。<br>
+        ご家族・知人等の代理人からのお申し込みは無効となります。
+      </div>
+
+      <!-- 出し分けタブ（対象 / 対象外） -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:12px;color:#888;margin-bottom:8px;">※ 買取店が登録した対象リード有無により、表示内容が切り替わります（MOTASYSが自動判別）</div>
+        <div style="display:flex;gap:4px;border-bottom:2px solid #1a1a1a;">
+          <div id="cs-tab-target" style="padding:8px 20px;font-size:12px;font-weight:700;background:#1a1a1a;color:white;cursor:pointer;border-radius:4px 4px 0 0;" onclick="switchCsTab('target')">✅ あんしん決済対象リード表示</div>
+          <div id="cs-tab-nontarget" style="padding:8px 20px;font-size:12px;font-weight:700;background:#f5f5f5;color:#999;cursor:pointer;border-radius:4px 4px 0 0;" onclick="switchCsTab('nontarget')">❌ あんしん決済対象外リード表示</div>
+        </div>
+      </div>
+
+      <!-- ===== 対象リードの場合 ===== -->
+      <div id="cs-pane-target">
+
+        <!-- 対象外チェック（買取店の誤登録をキャッチ） -->
+        <div class="cs-sec-title">対象外チェック</div>
+        <div style="background:#fff8e1;border:1px solid #ffd54f;border-radius:4px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#856404;">
+          ⚠️ 買取店が「あんしん決済対象」として申請していますが、実際には対象外である場合はこちらから登録してください。
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:24px;">
+          <button style="flex:1;padding:10px;border-radius:4px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #e0e0e0;background:#f5f5f5;color:#999;">⬜ 対象外として登録する（買取店の誤申請）</button>
+        </div>
+
+        <div class="cs-sec-title">成約情報のご確認</div>
+        <div class="confirm-info-box">
+          <div class="cib-label">📋 買取店が登録した内容です。内容をご確認ください。</div>
+          <table class="cib-table">
+            <tr><th>買取予定金額</th><td><span class="cib-amount">¥ 1,500,000</span></td></tr>
+            <tr><th>ローン金額</th><td>なし</td></tr>
+            <tr><th>ご利用手数料</th><td><span style="font-size:14px;font-weight:600;color:#1a1a1a;">¥ ●●●（検討中）</span><div style="font-size:11px;color:#888;margin-top:3px;">※ 500円未満を予定</div></td></tr>
+            <tr><th>お客様へのお支払い予定額</th><td><span class="cib-amount">¥ 1,500,000</span></td></tr>
+            <tr><th>売買契約書</th><td><span class="cib-doc">📄 売買契約書を確認する</span></td></tr>
+          </table>
+          <div class="confirm-action-area">
+            <div class="confirm-action-label">上記の内容は正しいですか？</div>
+            <div class="confirm-btn-group">
+              <button class="btn-confirm-ok">✅ 内容を確認しました（OK）</button>
+              <button class="btn-confirm-ng">⚠️ 内容が正しくない（差し戻し）</button>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#888;margin-top:8px;background:#f5f5f5;border-radius:3px;padding:8px 10px;line-height:1.7;">
+            💡 <strong>差し戻しフローについて：</strong>「差し戻し」を押すと買取店に修正依頼が送られます。買取店が再登録後、このページで改めて確認できます。以前登録した口座情報は保持されるため、再度の口座入力は不要です。
+          </div>
+        </div>
+
+        <div class="cs-sec-title">利用規約への同意</div>
+        <table class="cs-table">
+          <tr>
+            <th><a href="#" style="color:#1E56A0;text-decoration:none;">MOTA決済ご利用規約</a>に同意する</th>
+            <td><div style="display:flex;align-items:center;gap:10px;"><input type="checkbox" style="width:18px;height:18px;accent-color:#1E56A0;"><label>同意する</label></div></td>
+          </tr>
+        </table>
+
+        <div class="cs-sec-title">お申込み情報</div>
+        <table class="cs-table">
+          <tr>
+            <th>名前</th>
+            <td><input class="cs-input" type="text" placeholder="例：菅原 綾香"><div class="cs-hint">省略せずに正確に入力してください</div></td>
+          </tr>
+          <tr>
+            <th>MOTA買取申込時の電話番号</th>
+            <td><input class="cs-input" type="tel" placeholder="090-XXXX-XXXX" style="max-width:280px;"></td>
+          </tr>
+          <tr>
+            <th>入庫予定日</th>
+            <td>
+              <input class="cs-input" type="date" style="max-width:220px;">
+              <div class="cs-hint">車両を買取店へ引き渡す予定の日付を入力してください</div>
+            </td>
+          </tr>
+        </table>
+
+        <div class="cs-sec-title">口座情報</div>
+        <table class="cs-table">
+          <tr><th>金融機関名</th><td><input class="cs-input" type="text"><div class="cs-hint">〝〜銀行〟〝〜信用金庫〟など正確に入力してください</div></td></tr>
+          <tr><th>金融機関コード</th><td><input class="cs-input" type="text" style="max-width:180px;"><div class="cs-hint">4桁の金融機関コード</div></td></tr>
+          <tr><th>支店名</th><td><input class="cs-input" type="text"><div class="cs-hint">〝〜支店〟まで正確に入力してください</div></td></tr>
+          <tr><th>支店コード</th><td><input class="cs-input" type="text" style="max-width:180px;"><div class="cs-hint">3桁の支店コード</div></td></tr>
+          <tr>
+            <th>口座種別</th>
+            <td><select class="cs-input" style="max-width:220px;"><option>選択してください</option><option>普通預金</option><option>当座預金</option><option>定期預金</option><option>貯蓄預金</option></select></td>
+          </tr>
+          <tr><th>口座番号</th><td><input class="cs-input" type="text" style="max-width:220px;"><div class="cs-hint">7桁の口座番号</div></td></tr>
+          <tr><th>口座名義人</th><td><input class="cs-input" type="text"><div class="cs-hint">全角カタカナ30字以内</div></td></tr>
+        </table>
+
+        <div class="cs-submit-area">
+          <button class="cs-submit" onclick="showScreen('s03c', document.querySelectorAll('.nav-tab')[4])">送信</button>
+        </div>
+      </div>
+
+      <!-- ===== 対象外リードの場合 ===== -->
+      <div id="cs-pane-nontarget" style="display:none;">
+        <div class="alert-warn alert-box">⚠️ 買取店より、本車両はあんしん決済の<strong>対象外リード</strong>として申請されています。内容をご確認いただき、承認有無を登録してください。</div>
+
+        <div class="cs-sec-title">非対象申請内容の確認</div>
+        <div class="confirm-info-box">
+          <div class="cib-label">📋 買取店が申請した非対象理由です。内容をご確認ください。</div>
+          <table class="cib-table">
+            <tr><th>非対象申請理由</th><td>法人名義車両のため</td></tr>
+          </table>
+        </div>
+
+        <div class="cs-sec-title">承認有無の登録</div>
+        <div style="background:#f7f7f7;border:1px solid #e0e0e0;border-radius:4px;padding:20px;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;">上記の内容を確認し、対象外申請を承認しますか？</div>
+          <div style="display:flex;gap:12px;">
+            <button style="flex:1;padding:12px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #1D6B35;background:#1D6B35;color:white;">✅ 承認する（あんしん決済なし）</button>
+            <button style="flex:1;padding:12px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:2px solid #dc2626;background:white;color:#dc2626;">❌ 承認しない（内容に誤りあり）</button>
+          </div>
+          <div class="cs-hint" style="margin-top:10px;">承認した場合、この取引はあんしん決済なしで進みます。承認しない場合は買取店に修正を依頼します。</div>
+        </div>
+
+        <div class="cs-submit-area">
+          <button class="cs-submit">登録する</button>
+        </div>
+
+        <div class="design-note">
+          <strong>📌 設計メモ（0331新規追加）</strong>
+          ・対象外リードの場合：CSには「対象外エビデンス確認＋承認有無登録」のみ表示<br>
+          ・口座情報・金額確認・規約同意などは表示しない<br>
+          ・CSが承認 → あんしん決済なしで取引続行<br>
+          ・CSが承認しない → CL側に修正依頼が送られる
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 03完了｜送信完了
+=================================================================== -->
+<div class="screen" id="screen-s03c">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑤完 STEP</span>
+    <span class="step-desc-title">送信完了 — 口座情報登録完了</span><span style="background:#1E56A0;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">📱 あんしん決済管理画面（売主）</span>
+    <span class="step-desc-actor">アクター：売主</span>
+  </div>
+  <div class="complete-outer">
+    <div style="background:#1a1a1a;padding:10px 20px;">
+      <span style="color:white;font-size:16px;font-weight:900;">MöTA あんしん決済</span>
+    </div>
+    <div class="complete-wrap">
+      <div class="complete-icon">✅</div>
+      <div class="complete-title">登録が完了しました</div>
+      <div class="complete-body">
+        口座情報の登録が完了しました。<br>
+        買取代金の入金確認後、ご連絡いたします。<br>
+        しばらくお待ちください。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 04｜請求書発行（自動発行・CL確認）
+=================================================================== -->
+<div class="screen" id="screen-s04">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑥ STEP</span>
+    <span class="step-desc-title">請求書発行 — システム自動発行・MOTA管理画面確認</span><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（MOTA）</span>
+    <span class="step-desc-actor">アクター：MOTASYS（自動）→ MOTA運用（確認）</span>
+  </div>
+
+  <!-- アカウント切り替え説明バナー -->
+  <div style="background:#fff8e1;border-bottom:2px solid #ffc107;padding:10px 28px;display:flex;align-items:center;gap:24px;font-size:12px;">
+    <span style="font-weight:700;color:#856404;">🔑 ⑥ ログインアカウントによる画面の出し分け</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="background:#c0392b;color:white;padding:3px 10px;border-radius:3px;font-weight:700;">MOTAアカウント でログイン</span>
+      <span style="color:#555;">→ 以下の</span>
+      <span style="font-weight:700;color:#c0392b;">請求書発行画面</span>
+      <span style="color:#555;">が表示される</span>
+    </div>
+    <div style="color:#bbb;font-size:16px;">｜</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="background:#f39c12;color:white;padding:3px 10px;border-radius:3px;font-weight:700;">CLアカウント でログイン</span>
+      <span style="color:#555;">→</span>
+      <span style="font-weight:700;color:#f39c12;">入金画面（⑥入金タブ）</span>
+      <span style="color:#555;">が表示される</span>
+    </div>
+  </div>
+
+  <!-- MOTA管理画面（DX版スタイル） -->
+  <div style="background:#1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:10px 28px;">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <span style="color:white;font-size:17px;font-weight:900;letter-spacing:-0.5px;">MöTA モータ</span>
+      <div style="display:flex;gap:4px;">
+        <span style="color:white;font-size:13px;font-weight:700;border-bottom:2px solid #c0392b;padding-bottom:8px;cursor:pointer;">成約</span>
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">オペレータ</span>
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">通知</span>
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">入金／送金</span>
+      </div>
+    </div>
+    <button style="border:1px solid #555;background:transparent;color:white;padding:6px 18px;border-radius:3px;font-size:12px;cursor:pointer;">ログアウト</button>
+  </div>
+
+  <div style="background:#f0f0ee;min-height:100vh;padding:28px 32px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:20px;">請求書発行</div>
+
+    <div style="background:white;border-radius:4px;padding:28px 32px;max-width:1000px;">
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">請求書発行済み</div>
+      <div style="font-size:12px;color:#555;line-height:2;margin-bottom:24px;">
+        以下の内容で請求書を自動発行しました。必要に応じて内容をご確認ください。<br>
+        ※買取店側には自動で送付されます。<br>
+        ※自動で作成された請求書は物件詳細の書類フォルダにPDFでアップロードされます。
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:800px;margin-bottom:32px;">
+        <!-- 買取店向け請求書 -->
+        <div>
+          <div style="border:1px solid #e0e0e0;border-radius:4px;padding:28px;text-align:center;cursor:pointer;background:#fafafa;">
+            <div style="width:56px;height:56px;background:#c0392b;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px;">📄</div>
+            <div style="font-size:13px;font-weight:700;color:#c0392b;">買取店向け請求書を確認する</div>
+          </div>
+          <div style="font-size:12px;color:#555;margin-top:10px;text-align:center;">
+            買取店向けバーチャル口座情報<br>
+            <strong>4850643</strong>
+          </div>
+        </div>
+        <!-- 売主向け請求書 -->
+        <div>
+          <div style="border:1px solid #e0e0e0;border-radius:4px;padding:28px;text-align:center;cursor:pointer;background:#fafafa;">
+            <div style="width:56px;height:56px;background:#c0392b;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px;">📄</div>
+            <div style="font-size:13px;font-weight:700;color:#c0392b;">売主向け請求書を確認する</div>
+          </div>
+          <div style="font-size:12px;color:#555;margin-top:10px;text-align:center;">
+            売主向けバーチャル口座情報<br>
+            <strong>4850360</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;margin-top:32px;padding-top:20px;border-top:1px solid #e0e0e0;">
+        <button style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;">← 一覧へ戻る</button>
+      </div>
+    </div>
+
+    <!-- 通知イメージ（SMS + メール）-->
+    <div style="margin-top:28px;max-width:1000px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:14px;border-bottom:2px solid #e0e0e0;padding-bottom:8px;">買取店への通知（自動送信）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+        <!-- SMS：確認依頼のみ -->
+        <div class="sms-outer" style="padding:0;">
+          <div class="sms-wrap" style="max-width:100%;">
+            <div class="sms-header">📱 SMS（決済実行者・査定担当者宛）</div>
+            <div class="sms-body">
+              <div class="sms-bubble">
+                【MOTA あんしん決済】<br>
+                請求書が発行されました。<br>
+                査定番号：2119387 / 菅原綾香様<br>
+                請求金額：¥1,500,000<br>
+                詳細はメールをご確認ください。
+              </div>
+              <div style="font-size:10px;color:#aaa;text-align:right;margin-top:4px;">2026/03/13 09:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- メール：ペイジー決済URL付き -->
+        <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;">
+          <div style="background:#f5f5f5;padding:10px 16px;font-size:12px;font-weight:700;color:#333;border-bottom:1px solid #e0e0e0;">
+            📧 メール（登録経理メールアドレス宛）
+          </div>
+          <div style="padding:16px;font-size:12px;line-height:2;color:#333;">
+            <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+              <span style="color:#888;">件名：</span>【MOTA あんしん決済】請求書発行のご案内 / 2119387 菅原綾香様
+            </div>
+            <p>平素よりお世話になっております。MOTA株式会社です。</p>
+            <p>以下の内容で請求書を発行しました。期日までにペイジーにてお支払いください。</p>
+            <br>
+            <p>■ 査定番号：2119387<br>
+            ■ 売主氏名：菅原 綾香 様<br>
+            ■ 請求金額：¥1,500,000<br>
+            ■ 支払期限：2026年03月18日</p>
+            <br>
+            <p>▼ ペイジー決済はこちら<br>
+            <span style="color:#1E56A0;text-decoration:underline;cursor:pointer;">https://payment-tool.autoc-one.jp/pay/xxxxxxxx</span></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="design-note" style="margin-top:16px;max-width:1000px;">
+      <strong>📌 設計メモ</strong>
+      ・買取店・売主合意した金額の請求書をシステム自動発行（承認フロー不要）<br>
+      ・MOTA管理画面（成約タブ）から請求書確認・完了ボタン押下でステップ進行<br>
+      ・買取店へはSMS（ペイジー支払いURL付き）を自動送信<br>
+      ・振込期日超過・未入金時：決済実行者へリマインドSMSを自動送信
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 05｜入金（買取店がペイジーで振込）
+=================================================================== -->
+<div class="screen" id="screen-s05">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑥ STEP</span>
+    <span class="step-desc-title">入金 — CLがペイジー（Pay-easy）でMOTAへ買取代金を振込</span><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（買取店）</span>
+    <span class="step-desc-actor">アクター：買取店</span>
+  </div>
+
+  <!-- MOTA管理画面（DX版スタイル） -->
+  <div style="background:#1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:10px 28px;">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <span style="color:white;font-size:17px;font-weight:900;letter-spacing:-0.5px;">MöTA モータ</span>
+      <span style="color:white;font-size:13px;font-weight:700;border-bottom:2px solid #c0392b;padding-bottom:8px;cursor:pointer;">成約</span>
+    </div>
+    <button style="border:1px solid #555;background:transparent;color:white;padding:6px 18px;border-radius:3px;font-size:12px;cursor:pointer;">ログアウト</button>
+  </div>
+
+  <div style="background:#f0f0ee;min-height:100vh;padding:40px 0;">
+    <div style="max-width:580px;margin:0 auto;">
+      <div style="font-size:18px;font-weight:700;text-align:center;margin-bottom:24px;">振込内容確認</div>
+
+      <div style="background:white;border-radius:4px;padding:28px 32px;">
+        <!-- 上部：案内文＋請求書確認ボタン -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;">
+          <div style="font-size:14px;line-height:1.9;color:#1a1a1a;">
+            送金内容を確認の上、ペイジーで支払うボタンを押してください。<br>
+            MOTA側で入金を確認完了後、⑤引渡連絡をいたします。
+          </div>
+          <button style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">請求書を確認する</button>
+        </div>
+
+        <!-- 表示データ -->
+        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+          <tr>
+            <td style="padding:10px 14px;background:#e8e8e8;font-size:12px;font-weight:500;width:140px;border:1px solid #d0d0d0;">送金金額</td>
+            <td style="padding:10px 14px;font-size:16px;font-weight:700;border:1px solid #d0d0d0;">¥1,500,000</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;background:#e8e8e8;font-size:12px;font-weight:500;border:1px solid #d0d0d0;">支払い期限</td>
+            <td style="padding:10px 14px;font-size:13px;border:1px solid #d0d0d0;">2026年03月18日</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;background:#e8e8e8;font-size:12px;font-weight:500;border:1px solid #d0d0d0;">売主名</td>
+            <td style="padding:10px 14px;font-size:13px;border:1px solid #d0d0d0;">菅原 綾香</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;background:#e8e8e8;font-size:12px;font-weight:500;border:1px solid #d0d0d0;">車種名</td>
+            <td style="padding:10px 14px;font-size:13px;border:1px solid #d0d0d0;">トヨタ ヴォクシー ZS</td>
+          </tr>
+        </table>
+
+        <button style="width:100%;background:#c0392b;color:white;border:none;border-radius:4px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;">💳 ペイジーで支払う</button>
+      </div>
+
+      <div style="margin-top:20px;">
+        <button style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;">← 一覧へ戻る</button>
+      </div>
+    </div>
+
+    <div class="design-note" style="max-width:580px;margin:16px auto 0;">
+      <strong>📌 設計メモ</strong>
+      ・CLはこの画面で振込先口座・金額・期限を確認してペイジーで振り込む<br>
+      ・「請求書を確認する」ボタンで請求書PDFを閲覧・DL可能<br>
+      ・ATM・ネットバンキングどちらでも支払い可能<br>
+      ・ローン残債が買取代金より多い場合（追い金）：CSも別途不足分をMOTAへ入金
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 06｜入金確認（自動）→ CS SMS通知
+=================================================================== -->
+<div class="screen" id="screen-s06">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑦ STEP</span>
+    <span class="step-desc-title">入金確認 — 決済会社からの入金通知受信・CSへSMS自動通知</span><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（買取店）</span>
+    <span class="step-desc-actor">アクター：MOTASYS（自動）→ CS・CL（通知受信）</span>
+  </div>
+
+  <div class="payment-body" style="max-width:1000px;margin:0 auto;padding-top:32px;">
+    <div class="amount-confirm-box">
+      <div class="acb-label">✅ 入金確認完了</div>
+      <div class="acb-amount">¥1,500,000</div>
+      <div class="acb-note">契約金額と一致 — 2026年03月18日 14:32 確認</div>
+    </div>
+
+    <!-- CL・CS向けSMS通知 横並び -->
+    <div class="section-title">SMS通知（自動）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+
+      <!-- CL向けSMS -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#333;margin-bottom:8px;padding:6px 12px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;">📱 買取店（査定担当者・決済実行者）へのSMS</div>
+        <div class="sms-outer" style="padding:0;">
+          <div class="sms-wrap" style="max-width:100%;">
+            <div class="sms-header">📱 CL向けSMS</div>
+            <div class="sms-body">
+              <div class="sms-bubble">
+                【MOTA あんしん決済】<br>
+                入金を確認しました。<br>
+                査定番号：2119387 / 菅原綾香様<br>
+                入金額：¥1,500,000<br>
+                車両・書類の引渡しを進めてください。
+              </div>
+              <div style="font-size:10px;color:#aaa;text-align:right;">2026/03/18 14:33</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CS向けSMS -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#333;margin-bottom:8px;padding:6px 12px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;">📱 売主（CS）へのSMS</div>
+        <div class="sms-outer" style="padding:0;">
+          <div class="sms-wrap" style="max-width:100%;">
+            <div class="sms-header">📱 CS向けSMS</div>
+            <div class="sms-body">
+              <div class="sms-bubble">
+                【MOTA あんしん決済】<br>
+                買取代金の入金を確認しました。<br>
+                査定番号：2119387 / 菅原綾香様<br>
+                入金額：¥1,500,000<br>
+                車両・譲渡書類を買取店へ引き渡してください。<br>
+                引渡し後、以下のURLから引渡し完了をお知らせください。<br>
+                https://anshin.mota.jp/handover/xxxxxxxx
+              </div>
+              <div style="font-size:10px;color:#aaa;text-align:right;">2026/03/18 14:33</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="design-note" style="margin-top:16px;">
+      <strong>📌 設計メモ</strong>
+      ・決済会社（ペイジェント）からMOTAへの入金通知を受信 → 自動確認<br>
+      ・経理：手動確認フローから外れることへの合意済み<br>
+      ・買取店へはSMS（査定担当者・決済実行者宛）、CSへはSMSで通知<br>
+      ・入金確認から3日経過・引渡し未完了時：CL/CSへリマインド通知を自動送信
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- ===================================================================
+     STEP 09 & 10｜鑑定・検査 → 受取連絡（通常・キャンセル・減額）
+=================================================================== -->
+<div class="screen" id="screen-s09">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑨⑩ STEP</span>
+    <span class="step-desc-title">鑑定・検査 → 受領連絡 — 検査完了後に受領連絡ボタンを押下</span><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（買取店）</span>
+    <span class="step-desc-actor">アクター：買取店（検査）→ 買取店・MOTA運用（報告）</span>
+  </div>
+  <div class="payment-header">
+    <div class="payment-logo">MöTA <span>あんしん決済</span> 管理画面</div>
+    <div style="font-size:12px;color:#aaa;">ログアウト</div>
+  </div>
+  <div class="payment-gnav">
+    <div class="payment-gnav-item active">物件一覧</div>
+  </div>
+
+  <div class="step-bar-wrap">
+    <div class="step-bar">
+      <div class="sb-item"><div class="sb-box done"><span class="sb-num">〜STEP ⑦</span>書類引渡</div></div>
+      <div class="sb-item"><div class="sb-box current"><span class="sb-num">STEP ⑨</span>鑑定・検査</div></div>
+      <div class="sb-item"><div class="sb-box current"><span class="sb-num">STEP ⑩</span>受領連絡</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">STEP ⑪</span>送金</div></div>
+      <div class="sb-item"><div class="sb-box"><span class="sb-num">Fin</span>送金完了連絡</div></div>
+    </div>
+  </div>
+
+  <div class="payment-body">
+    <!-- STEP09：CL管理画面 物件詳細 -->
+    <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:20px 24px;margin-bottom:20px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">物件詳細｜2119387 トヨタ ヴォクシー ZS</div>
+      <div style="font-size:12px;color:#888;margin-bottom:16px;">氏名：菅原 綾香　成約日：2026-03-11</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:20px;">
+        <span class="status-pill status-3">引渡し完了済み・鑑定中</span>
+      </div>
+
+      <div style="background:#e8f5e9;border:2px solid #1D6B35;border-radius:6px;padding:18px 20px;margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:#1D6B35;margin-bottom:6px;">✅ STEP10｜受領連絡</div>
+        <div style="font-size:13px;color:#333;line-height:1.8;margin-bottom:16px;">
+          鑑定・検査が完了し、車両・書類に問題がなければ<strong>受領連絡ボタン</strong>を押してください。<br>
+          受領連絡を受けてから、MOTAが売主への送金処理を行います。
+        </div>
+        <div style="background:#fff8e1;border:1px solid #ffd54f;border-radius:4px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#856404;line-height:1.8;">
+          💡 <strong>受領連絡ボタンは、車両引渡し後4日以内を目安に押下してください。</strong><br>
+          ※ なお、早期に受領連絡を送信いただいた場合でも、<strong>MOTA→売主（またはローン会社）への送金は、買取店からMOTAへの入金（⑥）から4日後以降</strong>となります。あらかじめご了承ください。
+        </div>
+        <button onclick="alert('受領連絡を送信しました。MOTAが送金処理を開始します。')" style="background:#1D6B35;color:white;border:none;border-radius:4px;padding:12px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;">
+          📦 受領連絡を送る
+        </button>
+        <div style="font-size:11px;color:#555;margin-top:10px;">※ 押下後、MOTAが売主への送金処理を開始します。押下後の取り消しはできません。</div>
+      </div>
+
+      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:10px;">問題がある場合は、受領連絡の代わりに以下から対応してください：</div>
+      <div style="display:flex;gap:12px;">
+        <div class="action-card" style="flex:1;">
+          <div class="action-card-title"><span class="tag tag-red">キャンセル</span> 取引をキャンセルする</div>
+          <div class="action-card-body">
+            車両に重大な問題があり、取引を中止する場合。CSとの合意の上、キャンセル依頼を送信してください。
+          </div>
+          <div style="margin-top:12px;"><button class="btn-red">キャンセル依頼を送る</button></div>
+        </div>
+        <div class="action-card" style="flex:1;">
+          <div class="action-card-title"><span class="tag tag-orange">減額</span> 買取金額を減額する</div>
+          <div class="action-card-body">
+            車両の状態に問題があり、CSと減額再合意した場合。減額後の契約書と金額を登録してください。
+          </div>
+          <div style="margin-top:12px;"><button class="btn-secondary">減額依頼を送る</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP10：イレギュラー発生時のMOTA運用対応 -->
+    <div class="section-title" style="color:#c0392b;">⛔ キャンセル発生時｜MOTA運用の対応（STEP10）</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">1️⃣</div><div style="font-weight:700;margin-bottom:4px;">物件一覧で認識</div><div style="color:#888;">キャンセル依頼がある物件を確認</div></div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">2️⃣</div><div style="font-weight:700;margin-bottom:4px;">CSへSMSで確認</div><div style="color:#888;">該当物件がキャンセルで相違ないか確認</div></div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">3️⃣</div><div style="font-weight:700;margin-bottom:4px;">キャンセル受理</div><div style="color:#888;">管理画面でキャンセル受理ボタン押下</div></div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">4️⃣</div><div style="font-weight:700;margin-bottom:4px;">CLへメール連絡</div><div style="color:#888;">キャンセル受理済みをCLにメール連絡</div></div>
+    </div>
+
+    <div class="section-title" style="color:#e67e22;">📉 減額発生時｜MOTA運用の対応（STEP10）</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">1️⃣</div><div style="font-weight:700;margin-bottom:4px;">減額依頼を認識</div><div style="color:#888;">物件一覧から減額依頼物件を確認</div></div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">2️⃣</div><div style="font-weight:700;margin-bottom:4px;">CLメール確認</div><div style="color:#888;">CLからの減額内容メールを確認</div></div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">3️⃣</div><div style="font-weight:700;margin-bottom:4px;">減額金額登録</div><div style="color:#888;">管理画面に減額金額・減額後契約書を登録し受領ボタン押下</div></div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;text-align:center;font-size:12px;"><div style="font-size:20px;margin-bottom:6px;">4️⃣</div><div style="font-weight:700;margin-bottom:4px;">CLへ減額受領連絡</div><div style="color:#888;">CLにメール → CLが管理画面で引渡し完了ボタン押下</div></div>
+    </div>
+
+    <div style="background:#1a1a1a;color:white;padding:12px 20px;margin-top:24px;border-radius:4px 4px 0 0;font-size:13px;font-weight:700;">🔒 以下はMOTA運用専用の管理画面です（買取店・売主には非表示）</div>
+    <div class="section-title" style="margin-top:0;border-top:none;border-left:3px solid #1a1a1a;padding-left:12px;">物件一覧｜イレギュラー対応要物件</div>
+    <table class="property-table">
+      <tr><th>査定番号</th><th>車名</th><th>売主氏名</th><th>買取金額</th><th>ステータス</th><th>依頼種別</th><th>操作</th></tr>
+      <tr>
+        <td><span class="link-blue">2119387</span></td><td>トヨタ ヴォクシー ZS</td><td>菅原 綾香</td><td>¥1,500,000</td>
+        <td><span class="status-pill status-4">キャンセル依頼中</span></td>
+        <td><span class="tag tag-red">キャンセル</span></td>
+        <td><button class="btn-red" style="padding:5px 12px;font-size:12px;">キャンセル受理</button></td>
+      </tr>
+      <tr>
+        <td><span class="link-blue">2119402</span></td><td>ホンダ ステップワゴン</td><td>田中 太郎</td><td>¥980,000 → ¥850,000</td>
+        <td><span class="status-pill status-5">減額依頼中</span></td>
+        <td><span class="tag tag-orange">減額</span></td>
+        <td><button class="btn-secondary" style="padding:5px 12px;font-size:12px;">減額内容を登録</button></td>
+      </tr>
+    </table>
+
+    <div class="design-note" style="margin-top:16px;">
+      <strong>📌 設計メモ</strong>
+      ・STEP09（鑑定）が完了し問題なければ買取店が受領連絡ボタンを押下 → MOTAが売主への送金処理を開始（STEP11）<br>
+      ・問題がある場合のみ買取店がキャンセル／減額依頼ボタンを押下 → MOTA運用がSTEP10で対応<br>
+      ・キャンセル・減額はMOTA運用が介在（初期リリーススコープ）
+    </div>
+
+    <!-- MOTAが介在しない版（将来対応案） -->
+    <div style="margin-top:28px;border:2px dashed #bbb;border-radius:4px;padding:0 0 20px 0;">
+      <div style="background:#e0e0e0;padding:10px 20px;font-size:13px;font-weight:700;color:#555;border-radius:2px 2px 0 0;">
+        💡 将来対応案｜MOTAが介在しないキャンセルフロー（開発工数次第で初期リリース外の可能性あり）
+      </div>
+      <div style="padding:16px 20px;">
+
+        <div style="font-size:13px;font-weight:700;color:#c0392b;margin-bottom:10px;">⛔ 売主都合のキャンセル</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+          <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;">① 売主（買取CSマイページ）</div>
+            <div style="font-size:13px;line-height:1.9;">買取CSマイページにてキャンセル登録</div>
+          </div>
+          <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;">② 買取店（CLマイページ）</div>
+            <div style="font-size:13px;line-height:1.9;">買取店マイページに通知が届き、キャンセル承認ボタンを押下</div>
+          </div>
+        </div>
+
+        <div style="font-size:13px;font-weight:700;color:#e67e22;margin-bottom:10px;">📉 買取店都合のキャンセル</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;">① 買取店（CLマイページ）</div>
+            <div style="font-size:13px;line-height:1.9;">買取店マイページ上で成約キャンセル登録</div>
+          </div>
+          <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;">② 売主（SMS通知 → 買取CSマイページ）</div>
+            <div style="font-size:13px;line-height:1.9;">SMSで通知が届き、買取CSマイページにてキャンセル承認ボタンを押下</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 11｜送金（受領連絡後に送金実行）
+=================================================================== -->
+<div class="screen" id="screen-s11">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">⑪ STEP</span>
+    <span class="step-desc-title">送金 — 受領連絡後にMOTASYSがCSへ送金実行</span><span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（買取店）</span>
+    <span class="step-desc-actor">アクター：MOTASYS（自動）</span>
+  </div>
+
+  <div class="payment-body" style="max-width:860px;margin:0 auto;padding-top:32px;">
+    <div class="alert-success alert-box">
+      ✅ <strong>送金実行済み</strong><br>
+      CLの受領連絡ボタン押下を受け、MOTASYSが送金を実行しました。
+    </div>
+
+    <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:24px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:16px;">送金詳細｜2119387 トヨタ ヴォクシー ZS</div>
+      <div class="info-grid"><div class="ig-label">送金日</div><div class="ig-val">2026年04月01日</div></div>
+      <div class="info-grid"><div class="ig-label">送金先</div><div class="ig-val">菅原 綾香 様（○○銀行 ××支店）</div></div>
+      <div class="info-grid"><div class="ig-label">買取金額</div><div class="ig-val">¥1,500,000</div></div>
+      <div class="info-grid" style="border:2px solid #1D6B35;"><div class="ig-label" style="background:#e8f5e9;">送金額</div><div class="ig-val" style="font-size:20px;font-weight:900;color:#1D6B35;">¥1,500,000</div></div>
+    </div>
+
+    <div class="design-note" style="margin-top:16px;">
+      <strong>📌 設計メモ</strong>
+      ・送金実行トリガー：CLの受領連絡ボタン押下（自動送金ではない）<br>
+      ・経理の承認不要（うっちーさん合意済み）<br>
+      ・規約でMOTA判断で送金していることを明記すること（経理・うっちーさん要件）<br>
+      ・ローン残債がある場合：残債分をローン会社へ送金、差額をCSへ送金<br>
+      ・即金希望ユーザーへの対応は論点として残存（ペイジーの振込タイムラグ課題）
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     STEP 12｜送金完了連絡（SMS・管理画面）
+=================================================================== -->
+<div class="screen" id="screen-s12">
+  <div class="step-desc-bar">
+    <span class="step-desc-num">Fin STEP</span>
+    <span class="step-desc-title">送金完了連絡 — CS・CLへ送金完了をSMSで通知</span>
+    <span class="step-desc-actor">アクター：MOTASYS（自動）</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1080px;margin:24px auto;padding:0 20px;">
+    <!-- CS向けSMS通知 -->
+    <div>
+      <div style="background:#1E56A0;color:white;padding:8px 16px;font-size:12px;font-weight:700;border-radius:4px 4px 0 0;">📱 CS向け：SMS送金完了通知（自動）</div>
+      <div class="sms-outer" style="padding:0;border-radius:0 0 4px 4px;">
+        <div class="sms-wrap" style="max-width:100%;">
+          <div class="sms-header">📱 SMS送信イメージ（売主宛）</div>
+          <div class="sms-body">
+            <div class="sms-bubble">
+              【MOTA あんしん決済】<br>
+              売却代金の送金が完了しました。<br>
+              菅原 綾香 様<br>
+              送金額：¥1,485,000<br>
+              送金日：2026/04/01<br>
+              1〜3営業日以内にご入金されます。<br>
+              ご利用いただきありがとうございました。
+            </div>
+            <div style="font-size:10px;color:#aaa;text-align:right;">2026/04/01 10:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CL向けSMS通知 -->
+    <div>
+      <div style="background:#1D6B35;color:white;padding:8px 16px;font-size:12px;font-weight:700;border-radius:4px 4px 0 0;">📱 CL向け：SMS送金完了通知（自動）</div>
+      <div class="sms-outer" style="padding:0;border-radius:0 0 4px 4px;">
+        <div class="sms-wrap" style="max-width:100%;">
+          <div class="sms-header">📱 SMS送信イメージ（査定担当者・決済実行者宛）</div>
+          <div class="sms-body">
+            <div class="sms-bubble">
+              【MOTA あんしん決済】<br>
+              送金が完了しました。<br>
+              査定番号：2119387 / 菅原綾香様<br>
+              送金額：¥1,485,000<br>
+              送金日：2026/04/01<br>
+              本取引はこれにて完了です。<br>
+              ご利用ありがとうございました。
+            </div>
+            <div style="font-size:10px;color:#aaa;text-align:right;">2026/04/01 10:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 管理画面のステータス更新 -->
+      <div style="margin-top:16px;background:white;border:1px solid #e0e0e0;border-radius:4px;padding:16px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🖥️ 管理画面｜取引完了状態</div>
+        <div class="info-grid"><div class="ig-label">査定番号</div><div class="ig-val">2119387</div></div>
+        <div class="info-grid"><div class="ig-label">車名</div><div class="ig-val">トヨタ ヴォクシー ZS</div></div>
+        <div class="info-grid"><div class="ig-label">売主氏名</div><div class="ig-val">菅原 綾香</div></div>
+        <div class="info-grid"><div class="ig-label">ステータス</div><div class="ig-val"><span class="status-pill status-6">送金完了</span></div></div>
+        <div class="info-grid"><div class="ig-label">送金完了日</div><div class="ig-val">2026年04月01日</div></div>
+        <div class="info-grid"><div class="ig-label">送金額</div><div class="ig-val" style="font-weight:700;color:#1D6B35;">¥1,485,000</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全体完了の表示 -->
+  <div style="max-width:600px;margin:0 auto 40px;padding:0 20px;">
+    <div style="background:white;border:2px solid #1D6B35;border-radius:8px;padding:32px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+      <div style="font-size:20px;font-weight:700;color:#1D6B35;margin-bottom:8px;">取引完了</div>
+      <div style="font-size:13px;color:#666;line-height:1.9;">
+        あんしん決済の全フローが完了しました。<br>
+        STEP01（買取店 成約申告）から STEP12（送金完了連絡）まで、すべてのステップが正常に完了しています。
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleAll(master) {
+  document.querySelectorAll('.card-check').forEach(cb => cb.checked = master.checked);
+  updateCount();
+}
+function updateCount() {
+  var n = document.querySelectorAll('.card-check:checked').length;
+  var el = document.getElementById('selected-count');
+  if (el) {
+    el.textContent = n + '件選択中';
+    el.style.background = n > 0 ? '#1a1a1a' : '#e0e0e0';
+    el.style.color = n > 0 ? 'white' : '#1a1a1a';
+  }
+}
+
+function showScreen(id, el) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// STEP02：対象/対象外タブ
+function switchTab(mode) {
+  const paneTarget = document.getElementById('pane-target');
+  const paneNon = document.getElementById('pane-nontarget');
+  const tabTarget = document.getElementById('tab-target');
+  const tabNon = document.getElementById('tab-nontarget');
+  if (!paneTarget) return;
+  if (mode === 'target') {
+    paneTarget.style.display = 'block';
+    paneNon.style.display = 'none';
+    tabTarget.style.background = '#1D6B35';
+    tabTarget.style.color = 'white';
+    tabNon.style.background = '#f5f5f5';
+    tabNon.style.color = '#999';
+  } else {
+    paneTarget.style.display = 'none';
+    paneNon.style.display = 'block';
+    tabTarget.style.background = '#f5f5f5';
+    tabTarget.style.color = '#999';
+    tabNon.style.background = '#c0392b';
+    tabNon.style.color = 'white';
+  }
+}
+
+// STEP03：CS対象/対象外タブ
+function switchCsTab(mode) {
+  const paneTarget = document.getElementById('cs-pane-target');
+  const paneNon = document.getElementById('cs-pane-nontarget');
+  const tabTarget = document.getElementById('cs-tab-target');
+  const tabNon = document.getElementById('cs-tab-nontarget');
+  if (!paneTarget) return;
+  if (mode === 'target') {
+    paneTarget.style.display = 'block';
+    paneNon.style.display = 'none';
+    tabTarget.style.background = '#1a1a1a';
+    tabTarget.style.color = 'white';
+    tabNon.style.background = '#f5f5f5';
+    tabNon.style.color = '#999';
+  } else {
+    paneTarget.style.display = 'none';
+    paneNon.style.display = 'block';
+    tabTarget.style.background = '#f5f5f5';
+    tabTarget.style.color = '#999';
+    tabNon.style.background = '#c0392b';
+    tabNon.style.color = 'white';
+  }
+}
+</script>
+
+<!-- ===================================================================
+     サマリー・CSV出力画面（ステップ外）
+=================================================================== -->
+<div class="screen" id="screen-summary">
+  <div class="step-desc-bar" style="background:#1E56A0;">
+    <span class="step-desc-num" style="background:#fff;color:#1E56A0;">📊 参考</span>
+    <span class="step-desc-title">車買取サマリー — あんしん決済実績・CSV出力</span>
+    <span class="step-desc-actor">アクター：買取店（マイページ）</span>
+  </div>
+
+  <!-- MOTAマイページ風ヘッダー -->
+  <div style="background:#1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:10px 24px;">
+    <span style="color:white;font-size:18px;font-weight:900;letter-spacing:-0.5px;">MöTA モータ</span>
+    <span style="color:#aaa;font-size:12px;">ログアウト</span>
+  </div>
+  <div style="background:#1a1a1a;display:flex;border-bottom:1px solid #333;">
+    <div style="padding:13px 40px;font-size:13px;color:#888;cursor:pointer;">マイページ</div>
+    <div style="padding:13px 40px;font-size:13px;color:white;font-weight:700;border-bottom:3px solid #c0392b;margin-bottom:-1px;cursor:pointer;">車買取</div>
+    <div style="padding:13px 40px;font-size:13px;color:#888;cursor:pointer;">車買取Plus</div>
+  </div>
+
+  <div style="background:#f5f5f5;padding:28px 40px;min-height:80vh;">
+    <div style="font-size:20px;font-weight:700;margin-bottom:24px;">車買取サマリー</div>
+
+    <!-- 店舗情報 -->
+    <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:20px 24px;margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#555;border-bottom:1px solid #e0e0e0;padding-bottom:8px;">店舗情報</div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;">
+        <div style="width:80px;height:80px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;flex-shrink:0;">NO IMAGE</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;flex:1;font-size:13px;">
+          <div><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">会社名</span>株式会社One For All</div>
+          <div><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">店舗名</span>株式会社One For All</div>
+          <div><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">電話</span>0286128742</div>
+          <div><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">FAX</span>—</div>
+          <div><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">古物商番号</span>411220002398</div>
+          <div><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">郵便番号</span>3210902</div>
+          <div style="grid-column:1/-1;"><span style="color:#888;font-size:11px;display:block;margin-bottom:2px;">住所</span>宇都宮市柳田町587-5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 入札対応残数 + 当月予算使用状況 -->
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:16px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:10px;">入札対応残数</div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;color:#888;margin-bottom:2px;">本日12時締切</div>
+          <div style="font-size:28px;font-weight:900;color:#c0392b;line-height:1;">0<span style="font-size:13px;font-weight:400;color:#888;">件</span></div>
+          <div style="font-size:11px;color:#1E56A0;cursor:pointer;margin-top:2px;">すべてを見る ›</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:2px;">本日18時締切</div>
+          <div style="font-size:28px;font-weight:900;color:#c0392b;line-height:1;">0<span style="font-size:13px;font-weight:400;color:#888;">件</span></div>
+          <div style="font-size:11px;color:#1E56A0;cursor:pointer;margin-top:2px;">すべてを見る ›</div>
+        </div>
+      </div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:16px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:12px;">当月の予算使用状況</div>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(#1E56A0 0%, #e0e0e0 0%);display:flex;align-items:center;justify-content:center;position:relative;">
+            <div style="width:58px;height:58px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#1E56A0;">無制限</div>
+          </div>
+          <div style="font-size:13px;line-height:2.2;">
+            <div>使用金額 合計 <strong>0</strong> 円(税別) ／ 希望上限金額 <strong>無制限</strong></div>
+            <div>車両情報件数 <strong>0</strong> 件 ／ 請求予定金額 <strong>0</strong> 円(税別)</div>
+            <div>現車確認件数 <strong>0</strong> 件 ／ 請求予定金額 <strong>0</strong> 円(税別)</div>
+            <div style="margin-top:4px;"><span style="color:#1E56A0;cursor:pointer;font-size:12px;">今月のご利用状況を見る ›</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 口コミ + 入賞しやすい市区町村 + 価値共創レポート -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:16px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:10px;">口コミ</div>
+        <div style="font-size:12px;color:#888;margin-bottom:8px;">総合評価</div>
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
+          <div style="font-size:32px;font-weight:900;color:#1E56A0;">4.2</div>
+          <div style="font-size:12px;color:#888;">査定価格 4.1　連続対応 4.3　おすすめ度 4.2</div>
+        </div>
+        <div style="font-size:12px;color:#1E56A0;cursor:pointer;margin-top:8px;">口コミを見る ›</div>
+      </div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:16px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">入賞しやすい市区町村情報</div>
+        <div style="font-size:12px;color:#888;line-height:1.8;">売却意向が高く入賞率が低い市区町村をご紹介<br>対象は「売却希望時期が1ヶ月以内または3ヶ月以内」</div>
+        <div style="font-size:12px;color:#1E56A0;cursor:pointer;margin-top:8px;">市区町村を確認する ›</div>
+      </div>
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:16px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">価値共創レポート</div>
+        <div style="font-size:12px;color:#888;line-height:1.8;">ユーザーの生の声（VOC）から加盟店の皆さまと共に新たな価値を創り、サービス体験を高めていくことを目指します</div>
+        <div style="font-size:12px;color:#1E56A0;cursor:pointer;margin-top:8px;">価値共創レポートを確認する ›</div>
+      </div>
+    </div>
+
+    <!-- あんしん決済実績カード -->
+    <div style="background:white;border:1px solid #e0e0e0;border-radius:4px;padding:20px 24px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:#555;">あんしん決済 実績サマリー</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <select style="border:1px solid #ccc;border-radius:2px;padding:5px 10px;font-size:12px;font-family:inherit;background:white;">
+            <option>2026年4月</option><option>2026年3月</option><option>2026年2月</option>
+          </select>
+          <button onclick="alert('CSVをダウンロードします')" style="background:#1E56A0;color:white;border:none;border-radius:3px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;">
+            ⬇ CSV出力
+          </button>
+        </div>
+      </div>
+
+      <!-- 4指標カード -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+        <div style="background:#f8fafd;border:1px solid #d0dcf0;border-radius:4px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:#1E56A0;font-weight:700;margin-bottom:6px;">情報数</div>
+          <div style="font-size:32px;font-weight:900;color:#1a1a1a;line-height:1;">28</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;">件</div>
+        </div>
+        <div style="background:#f8fafd;border:1px solid #d0dcf0;border-radius:4px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:#1E56A0;font-weight:700;margin-bottom:6px;">入札数</div>
+          <div style="font-size:32px;font-weight:900;color:#1a1a1a;line-height:1;">21</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;">件</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #a5d6a7;border-radius:4px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:#1D6B35;font-weight:700;margin-bottom:6px;">入賞数</div>
+          <div style="font-size:32px;font-weight:900;color:#1D6B35;line-height:1;">8</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;">件</div>
+        </div>
+        <div style="background:#fef9e7;border:1px solid #f9ca24;border-radius:4px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:#856404;font-weight:700;margin-bottom:6px;">成約数</div>
+          <div style="font-size:32px;font-weight:900;color:#856404;line-height:1;">5</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;">件 <span style="font-size:10px;">(あんしん決済適用)</span></div>
+        </div>
+      </div>
+
+      <!-- 月別推移テーブル -->
+      <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">月別推移</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="background:#f5f5f5;border-bottom:2px solid #e0e0e0;">
+            <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;">月</th>
+            <th style="padding:8px 12px;text-align:right;font-weight:700;color:#1E56A0;">情報数</th>
+            <th style="padding:8px 12px;text-align:right;font-weight:700;color:#1E56A0;">入札数</th>
+            <th style="padding:8px 12px;text-align:right;font-weight:700;color:#1D6B35;">入賞数</th>
+            <th style="padding:8px 12px;text-align:right;font-weight:700;color:#856404;">成約数</th>
+            <th style="padding:8px 12px;text-align:right;font-weight:700;color:#555;">成約率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa;">
+            <td style="padding:8px 12px;font-weight:700;">2026年4月</td>
+            <td style="padding:8px 12px;text-align:right;">28</td>
+            <td style="padding:8px 12px;text-align:right;">21</td>
+            <td style="padding:8px 12px;text-align:right;color:#1D6B35;font-weight:700;">8</td>
+            <td style="padding:8px 12px;text-align:right;color:#856404;font-weight:700;">5</td>
+            <td style="padding:8px 12px;text-align:right;">62.5%</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f0f0f0;">
+            <td style="padding:8px 12px;">2026年3月</td>
+            <td style="padding:8px 12px;text-align:right;">32</td>
+            <td style="padding:8px 12px;text-align:right;">25</td>
+            <td style="padding:8px 12px;text-align:right;">10</td>
+            <td style="padding:8px 12px;text-align:right;">7</td>
+            <td style="padding:8px 12px;text-align:right;">70.0%</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f0f0f0;">
+            <td style="padding:8px 12px;">2026年2月</td>
+            <td style="padding:8px 12px;text-align:right;">24</td>
+            <td style="padding:8px 12px;text-align:right;">18</td>
+            <td style="padding:8px 12px;text-align:right;">6</td>
+            <td style="padding:8px 12px;text-align:right;">4</td>
+            <td style="padding:8px 12px;text-align:right;">66.7%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="design-note">
+      <strong>📌 設計メモ</strong>
+      ・このサマリー画面はSTEPとは独立。買取店マイページ内「車買取サマリー」または「ご利用状況」画面への追加を想定<br>
+      ・CSV出力対象：情報数・入札数・入賞数・成約数（あんしん決済適用）の月別データ<br>
+      ・月・期間の絞り込みができるとより使いやすい
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     ステップ外｜あんしん決済管理画面：通知先設定
+=================================================================== -->
+<div class="screen" id="screen-notify-setting">
+  <div class="step-desc-bar" style="background:#6a1b9a;">
+    <span class="step-desc-num" style="background:#fff;color:#6a1b9a;">⚙ 設定</span>
+    <span class="step-desc-title">通知先設定 — 査定員・経理への通知先を管理</span>
+    <span class="step-desc-actor">アクター：買取店（あんしん決済管理画面）</span>
+    <span style="background:#c0392b;color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:2px;margin-left:12px;">❤️ あんしん決済管理画面（買取店）</span>
+  </div>
+
+  <div style="background:#1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:10px 28px;">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <span style="color:white;font-size:17px;font-weight:900;letter-spacing:-0.5px;">MöTA モータ</span>
+      <div style="display:flex;gap:4px;">
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">成約</span>
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">オペレータ</span>
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">通知</span>
+        <span style="color:white;font-size:13px;font-weight:700;border-bottom:2px solid #c0392b;padding-bottom:8px;padding:0 16px;cursor:pointer;">設定</span>
+        <span style="color:#888;font-size:13px;padding:0 16px;cursor:pointer;">入金／送金</span>
+      </div>
+    </div>
+    <button style="border:1px solid #555;background:transparent;color:white;padding:6px 18px;border-radius:3px;font-size:12px;cursor:pointer;">ログアウト</button>
+  </div>
+
+  <div style="background:#f0f0ee;min-height:100vh;padding:28px 32px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px;">通知先設定</div>
+    <div style="font-size:12px;color:#888;margin-bottom:24px;">あんしん決済の各通知送信先を管理します。</div>
+
+    <!-- 査定員（物件ごとのSMS通知先） -->
+    <div style="background:white;border-radius:4px;border:1px solid #e0e0e0;margin-bottom:20px;">
+      <div style="padding:16px 20px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:14px;font-weight:700;">査定員 SMS通知先</div>
+          <div style="font-size:12px;color:#888;margin-top:2px;">各物件に紐づく査定担当者の電話番号。SMSのみで通知されます。</div>
+        </div>
+        <button style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">＋ 担当者を追加</button>
+      </div>
+      <div style="padding:16px 20px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#f5f5f5;border-bottom:2px solid #e0e0e0;">
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;">担当者名</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;">SMS通知先（電話番号）</th>
+              
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;width:80px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #f0f0f0;">
+              <td style="padding:10px 12px;"><input type="text" value="田中 一郎（査定担当）" style="width:100%;border:1px solid #ddd;border-radius:2px;padding:6px 8px;font-size:12px;font-family:inherit;"></td>
+              <td style="padding:10px 12px;"><input type="tel" value="090-1234-5678" style="width:100%;border:1px solid #ddd;border-radius:2px;padding:6px 8px;font-size:12px;font-family:inherit;"></td>
+              <td style="padding:10px 12px;"><button style="background:white;color:#c0392b;border:1px solid #c0392b;border-radius:2px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">削除</button></td>
+            </tr>
+            <tr style="border-bottom:1px solid #f0f0f0;">
+              <td style="padding:10px 12px;"><input type="text" value="佐藤 花子（決済担当）" style="width:100%;border:1px solid #ddd;border-radius:2px;padding:6px 8px;font-size:12px;font-family:inherit;"></td>
+              <td style="padding:10px 12px;"><input type="tel" value="080-9876-5432" style="width:100%;border:1px solid #ddd;border-radius:2px;padding:6px 8px;font-size:12px;font-family:inherit;"></td>
+              <td style="padding:10px 12px;"><button style="background:white;color:#c0392b;border:1px solid #c0392b;border-radius:2px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">削除</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;display:flex;justify-content:flex-end;">
+          <button style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:8px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 経理担当（全案件共通のメール通知先） -->
+    <div style="background:white;border-radius:4px;border:1px solid #e0e0e0;margin-bottom:20px;">
+      <div style="padding:16px 20px;border-bottom:1px solid #e0e0e0;">
+        <div style="font-size:14px;font-weight:700;">経理担当 メール通知先</div>
+        <div style="font-size:12px;color:#888;margin-top:2px;">全案件共通の経理側メールアドレス。メールのみで通知されます。複数登録可能です。</div>
+      </div>
+      <div style="padding:16px 20px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#f5f5f5;border-bottom:2px solid #e0e0e0;">
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;">担当者名</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;">メール通知先アドレス</th>
+              
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:#555;width:80px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #f0f0f0;">
+              <td style="padding:10px 12px;"><input type="text" value="経理 鈴木" style="width:100%;border:1px solid #ddd;border-radius:2px;padding:6px 8px;font-size:12px;font-family:inherit;"></td>
+              <td style="padding:10px 12px;"><input type="email" value="keiri@example.com" style="width:100%;border:1px solid #ddd;border-radius:2px;padding:6px 8px;font-size:12px;font-family:inherit;"></td>
+              <td style="padding:10px 12px;"><button style="background:white;color:#c0392b;border:1px solid #c0392b;border-radius:2px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">削除</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:8px;justify-content:space-between;">
+          <button style="background:white;color:#1a1a1a;border:1px solid #bbb;border-radius:3px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">＋ メールアドレスを追加</button>
+          <button style="background:#1a1a1a;color:white;border:none;border-radius:3px;padding:8px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="design-note">
+      <strong>📌 設計メモ</strong>
+      ・査定員SMS通知先：各物件に紐づく担当者の携帯電話番号を登録。物件単位で紐付けを変更できることが望ましい<br>
+      ・経理メール通知先：全案件に共通の設定。複数アドレス登録可。請求書発行時のペイジーURLをメールで自動送付<br>
+      ・通知タイミングはMOTA側で固定定義（CL側では変更不可）
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
