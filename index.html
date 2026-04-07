@@ -501,7 +501,7 @@ function ListPage({pattern, setPattern, onSelect}) {
   return (
     <div style={{background:s.bg,minHeight:"100vh"}}>
       <Header/>
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"0 16px"}}>
+      <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 0 4px",borderBottom:`1px solid ${s.border}`,flexWrap:"wrap",gap:8}}>
           <SubTabs activeTab={activeTab} setActiveTab={setActiveTab}/>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -630,7 +630,7 @@ function DetailPage({car, onBack, onNavigate}) {
   return (
     <div style={{background:s.bg,minHeight:"100vh"}}>
       <Header/>
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"0 16px"}}>
+      <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0 8px"}}>
           <span style={{fontSize:13,color:s.link,cursor:"pointer"}} onClick={onBack}>← 入札一覧に戻る</span>
           <div style={{display:"flex",gap:16,fontSize:13,color:s.muted}}>
@@ -662,7 +662,19 @@ function DetailPage({car, onBack, onNavigate}) {
         <div style={{display:"flex",gap:16,alignItems:"flex-start",flexWrap:"wrap"}}>
           <div style={{flex:1,minWidth:320}}>
 
-            {/* ===== 修正2: 並び順変更 基本情報 → 装備情報 → PRコメント → 写真 → フリーメモ ===== */}
+            {/* 0. フリーメモ（最上部） */}
+            <div style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:12}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
+                <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
+                  style={{width:"100%",fontSize:12,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6,minHeight:48,resize:"vertical",fontFamily:"inherit"}}
+                  placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
+              </div>
+              <button onClick={()=>setMemoSaved(true)} style={{
+                padding:"6px 14px",fontSize:11,fontWeight:500,border:`1px solid #d5d2ca`,borderRadius:20,cursor:"pointer",marginTop:22,whiteSpace:"nowrap",
+                background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
+              }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
+            </div>
 
             {/* 1. 基本情報 */}
             <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>基本情報</div>
@@ -730,20 +742,6 @@ function DetailPage({car, onBack, onNavigate}) {
                     fontSize:11,color:"#fff",fontWeight:500}}>{p.label}</div>
                 </div>
               ))}
-            </div>
-
-            {/* 5. フリーメモ */}
-            <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
-              <div style={{flex:1}}>
-                <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
-                <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
-                  style={{width:"100%",fontSize:12,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6,minHeight:48,resize:"vertical",fontFamily:"inherit"}}
-                  placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
-              </div>
-              <button onClick={()=>setMemoSaved(true)} style={{
-                padding:"6px 14px",fontSize:11,fontWeight:500,border:`1px solid #d5d2ca`,borderRadius:20,cursor:"pointer",marginTop:22,whiteSpace:"nowrap",
-                background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
-              }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
             </div>
 
           </div>
