@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推奨項目の追加・編集 | MOTA車買取</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --mota-red: #E6002D;
+    --mota-red-light: #FFF0F3;
+    --mota-red-bg: #FCEAED;
+    --mota-dark: #1A1A1A;
+    --mota-gray: #666;
+    --mota-gray-light: #F5F5F5;
+    --mota-border: #E0E0E0;
+    --mota-green: #00A651;
+    --mota-green-light: #E6F7ED;
+    --mota-gold: #F5A623;
+    --mota-gold-light: #FFF8E7;
+    --radius: 8px;
+  }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #fff;
+    color: var(--mota-dark);
+    line-height: 1.7;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: #fff;
+    border-bottom: 1px solid var(--mota-border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--mota-dark);
+    letter-spacing: -0.5px;
+  }
+  .header-logo span { color: var(--mota-red); font-size: 14px; margin-left: 4px; }
+  .header-nav { display: flex; gap: 24px; font-size: 14px; font-weight: 500; color: var(--mota-gray); }
+
+  /* ===== LAYOUT ===== */
+  .page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .main-content { min-width: 0; }
+
+  .back-link {
+    font-size: 13px;
+    color: var(--mota-gray);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .back-link:hover { color: var(--mota-red); }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 24px;
+  }
+
+  /* ===== BOOST METER ===== */
+  .boost-meter {
+    background: var(--mota-red-light);
+    border: 1px solid #F5C6CE;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .boost-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .boost-label {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .boost-percent {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--mota-red);
+  }
+  .boost-percent small { font-size: 12px; font-weight: 600; }
+  .boost-track {
+    background: #fff;
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .boost-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--mota-gold), var(--mota-red));
+    transition: width 0.6s ease;
+  }
+  .boost-sub {
+    font-size: 11px;
+    color: var(--mota-gray);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .boost-sub strong { color: var(--mota-red); }
+
+  /* ===== SECTION ===== */
+  .section-block {
+    margin-bottom: 32px;
+  }
+  .section-title-row {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--mota-gray);
+    margin-bottom: 16px;
+  }
+
+  /* ===== 売却希望時期 ===== */
+  .timing-section {
+    background: var(--mota-red-light);
+    border: 1px solid #F5C6CE;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+  .timing-section .section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .timing-badge {
+    font-size: 11px;
+    background: var(--mota-red);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+  .timing-hint {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .timing-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  .timing-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: 2px solid var(--mota-border);
+    border-radius: var(--radius);
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .timing-btn:hover { border-color: var(--mota-red); color: var(--mota-red); }
+  .timing-btn.selected {
+    background: var(--mota-red);
+    color: #fff;
+    border-color: var(--mota-red);
+  }
+
+  /* ===== PHOTO ===== */
+  .photo-formats {
+    font-size: 12px;
+    color: var(--mota-red);
+    margin-bottom: 14px;
+  }
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .photo-slot {
+    border: 2px dashed var(--mota-border);
+    border-radius: var(--radius);
+    padding: 24px 12px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: #FAFAFA;
+  }
+  .photo-slot:hover {
+    border-color: var(--mota-red);
+    background: var(--mota-red-light);
+  }
+  .photo-slot.uploaded {
+    border-style: solid;
+    border-color: var(--mota-green);
+    background: var(--mota-green-light);
+  }
+  .photo-slot .slot-icon { font-size: 28px; color: #ccc; }
+  .photo-slot.uploaded .slot-icon { color: var(--mota-green); }
+  .photo-slot .slot-label { font-size: 13px; font-weight: 600; }
+  .photo-slot .slot-sub { font-size: 11px; color: #999; }
+  .photo-slot .example-link {
+    font-size: 10px;
+    color: var(--mota-red);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .photo-note {
+    font-size: 11px;
+    color: #999;
+    margin-top: 10px;
+  }
+  .photo-counter {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--mota-gray-light);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  .photo-counter .count { color: var(--mota-red); font-weight: 800; font-size: 18px; }
+  .photo-counter .hint { font-size: 12px; color: var(--mota-gray); }
+
+  /* ===== 装備追加情報 ===== */
+  .equip-desc {
+    font-size: 13px;
+    color: var(--mota-gray);
+    margin-bottom: 16px;
+  }
+
+  .field-group { margin-bottom: 18px; }
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tag-suisen {
+    font-size: 10px;
+    background: var(--mota-gold-light);
+    color: #B8860B;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+  .tag-ok {
+    font-size: 10px;
+    background: var(--mota-green-light);
+    color: var(--mota-green);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  .option-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .opt-btn {
+    padding: 9px 18px;
+    border: 1.5px solid var(--mota-border);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .opt-btn:hover { border-color: #999; }
+  .opt-btn.selected {
+    background: var(--mota-dark);
+    color: #fff;
+    border-color: var(--mota-dark);
+  }
+
+  .chip-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 8px 14px;
+    border: 1.5px solid var(--mota-border);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .chip:hover { border-color: #999; }
+  .chip.selected {
+    background: var(--mota-dark);
+    color: #fff;
+    border-color: var(--mota-dark);
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--mota-border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--mota-dark);
+  }
+  textarea.field-input { resize: vertical; min-height: 70px; }
+
+  .inline-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .inline-row select {
+    padding: 9px 12px;
+    border: 1.5px solid var(--mota-border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    min-width: 100px;
+  }
+
+  /* ===== CTA ===== */
+  .cta-area {
+    margin-top: 28px;
+  }
+  .cta-button {
+    display: inline-block;
+    background: var(--mota-red);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 36px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .cta-button:hover { opacity: 0.85; }
+
+  .notice-box {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: var(--mota-gray-light);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--mota-gray);
+    line-height: 1.7;
+  }
+  .notice-box .notice-title {
+    font-weight: 700;
+    color: var(--mota-dark);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar { position: sticky; top: 72px; }
+
+  .sidebar-card {
+    background: #fff;
+    border: 1px solid var(--mota-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* Hero card */
+  .sidebar-hero {
+    background: linear-gradient(135deg, var(--mota-red) 0%, #C40025 100%);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 20px 20px 18px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .sidebar-hero-sub { font-size: 13px; opacity: 0.9; margin-bottom: 4px; }
+  .sidebar-hero-number {
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1.1;
+  }
+  .sidebar-hero-number small { font-size: 16px; font-weight: 700; }
+  .sidebar-hero-caption {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
+  /* Rule card */
+  .rule-card-title {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+  .rule-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #F0F0F0;
+    align-items: flex-start;
+  }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .rule-num.r1 { background: var(--mota-red); }
+  .rule-num.r2 { background: var(--mota-gold); }
+  .rule-num.r3 { background: var(--mota-green); }
+  .rule-text { flex: 1; }
+  .rule-label { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .rule-desc { font-size: 11px; color: var(--mota-gray); line-height: 1.6; }
+
+  /* Reassurance card */
+  .reassurance {
+    background: var(--mota-gray-light);
+    border: none;
+  }
+  .reassurance-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .reassurance-text {
+    font-size: 12px;
+    color: var(--mota-gray);
+    line-height: 1.7;
+  }
+  .reassurance-text strong { color: var(--mota-dark); }
+
+  .sidebar-illust {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .sidebar-illust img { width: 56px; }
+  .illust-placeholder {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    background: var(--mota-gray-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: #999;
+    border-top: 1px solid var(--mota-border);
+    margin-top: 40px;
+  }
+
+  /* ===== Card section (v1 format) ===== */
+  .form-section {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--mota-border);
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--mota-border);
+    background: var(--mota-gray-light);
+  }
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-number {
+    width: 28px; height: 28px;
+    background: var(--mota-red);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .impact-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    background: var(--mota-red-bg);
+    color: var(--mota-red);
+    white-space: nowrap;
+  }
+  .benefit-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--mota-red-light);
+    border-left: 3px solid var(--mota-red);
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .benefit-tip .tip-icon { font-size: 18px; flex-shrink: 0; }
+  .benefit-tip strong { color: var(--mota-red); }
+  .benefit-tip-gold {
+    background: var(--mota-gold-light);
+    border-left-color: var(--mota-gold);
+  }
+  .benefit-tip-gold strong { color: #B8860B; }
+  .impact-badge-mid {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    background: var(--mota-gold-light);
+    color: #B8860B;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 860px) {
+    .page-container { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .header-nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">MOTA <span>モータ</span></div>
+  <div class="header-nav">
+    <span>車を売る</span>
+    <span>車を買う</span>
+    <span>車をリース</span>
+    <span>車を知る</span>
+  </div>
+  <div style="font-size:13px;color:#999;">ログイン中 &nbsp; ≡</div>
+</div>
+
+<div class="page-container">
+
+  <!-- ===== MAIN ===== -->
+  <div class="main-content">
+
+    <a href="#" class="back-link">‹ 戻る</a>
+    <h1 class="page-title">推奨項目の追加・編集</h1>
+
+    <!-- BOOST METER -->
+    <div class="boost-meter" id="boostMeter">
+      <div class="boost-top">
+        <div class="boost-label">🔥 査定額UPの可能性</div>
+        <div class="boost-percent" id="boostPercent">0<small>%</small></div>
+      </div>
+      <div class="boost-track">
+        <div class="boost-fill" id="boostBar" style="width:0%"></div>
+      </div>
+      <div class="boost-sub">入力するほど査定額が<strong>上がりやすく</strong>なります</div>
+    </div>
+
+    <!-- ===== 売却希望時期 ===== -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-number">1</div>
+          <div style="font-size:16px;font-weight:700;">売却希望時期</div>
+        </div>
+        <span class="impact-badge">査定額への影響：大</span>
+      </div>
+      <div style="padding:20px;">
+        <div class="benefit-tip">
+          <span class="tip-icon">💡</span>
+          <div>売却時期が早いほど、買取店は<strong>本気の金額</strong>を提示します。おすすめは<strong>「1ヶ月以内」</strong>です。</div>
+        </div>
+        <div class="timing-buttons" id="timingBtns">
+          <button class="timing-btn" onclick="selectTiming(this)">1ヶ月以内</button>
+          <button class="timing-btn" onclick="selectTiming(this)">3ヶ月以内</button>
+          <button class="timing-btn" onclick="selectTiming(this)">未定</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== お車の写真 ===== -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-number">2</div>
+          <div style="font-size:16px;font-weight:700;">お車の写真</div>
+        </div>
+        <span class="impact-badge">査定額への影響：大</span>
+      </div>
+      <div style="padding:20px;">
+        <div class="benefit-tip">
+          <span class="tip-icon">📸</span>
+          <div>写真があると買取店が車の状態を把握しやすくなり、査定額が<strong>上がる可能性</strong>があります。おすすめは<strong>4枚以上</strong>です。</div>
+        </div>
+        <p class="photo-formats">jpg、png、heicのみ対応しています。</p>
+
+        <div class="photo-grid">
+          <div class="photo-slot" onclick="togglePhoto(this)">
+            <span class="slot-icon">🖼</span>
+            <span class="slot-label">正面</span>
+            <span class="slot-sub">ナンバーが写るように</span>
+            <span class="example-link">📷 正面写真</span>
+          </div>
+          <div class="photo-slot" onclick="togglePhoto(this)">
+            <span class="slot-icon">🖼</span>
+            <span class="slot-label">サイド</span>
+            <span class="slot-sub">斜めからボディ全体</span>
+            <span class="example-link">📷 サイド写真</span>
+          </div>
+          <div class="photo-slot" onclick="togglePhoto(this)">
+            <span class="slot-icon">🖼</span>
+            <span class="slot-label">後方</span>
+            <span class="slot-sub">テールランプまで入るように</span>
+            <span class="example-link">📷 後方写真</span>
+          </div>
+          <div class="photo-slot" onclick="togglePhoto(this)">
+            <span class="slot-icon">🖼</span>
+            <span class="slot-label">ハンドル・メーター</span>
+            <span class="slot-sub">走行距離がわかるように</span>
+            <span class="example-link">📷 ハンドル・メーター写真</span>
+          </div>
+          <div class="photo-slot" onclick="togglePhoto(this)">
+            <span class="slot-icon">🖼</span>
+            <span class="slot-label">その他（傷など）</span>
+            <span class="slot-sub">気になる箇所</span>
+          </div>
+          <div class="photo-slot" onclick="togglePhoto(this)">
+            <span class="slot-icon">🖼</span>
+            <span class="slot-label">その他（傷など）</span>
+            <span class="slot-sub">追加写真</span>
+          </div>
+        </div>
+        <p class="photo-note">※車検証はアップロードしないでください。</p>
+
+        <div class="photo-counter">
+          <div>アップロード済み: <span class="count" id="photoCount">0</span> / 6枚</div>
+          <div class="hint" id="photoHint">4枚以上がおすすめ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 装備追加情報 ===== -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-number">3</div>
+          <div style="font-size:16px;font-weight:700;">装備追加情報</div>
+        </div>
+        <span class="impact-badge-mid">査定額への影響：中</span>
+      </div>
+      <div style="padding:20px;">
+        <div class="benefit-tip benefit-tip-gold">
+          <span class="tip-icon">✨</span>
+          <div>装備やオプションの情報が揃うほど、買取店が<strong>より正確な査定</strong>を行いやすくなります。</div>
+        </div>
+
+      <!-- ローン残債 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> ローン残債</div>
+        <div class="option-row">
+          <button class="opt-btn" onclick="selectOpt(this)">あり</button>
+          <button class="opt-btn" onclick="selectOpt(this)">なし</button>
+        </div>
+      </div>
+
+      <!-- 電動スライドドア -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> 電動スライドドア</div>
+        <div class="option-row">
+          <button class="opt-btn" onclick="selectOpt(this)">片側</button>
+          <button class="opt-btn" onclick="selectOpt(this)">両側</button>
+        </div>
+      </div>
+
+      <!-- カーナビ -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> カーナビ</div>
+        <div class="option-row">
+          <button class="opt-btn" onclick="selectOpt(this)">純正</button>
+          <button class="opt-btn" onclick="selectOpt(this)">社外品</button>
+        </div>
+      </div>
+
+      <!-- その他の装備・状態 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> その他の装備・状態</div>
+        <div class="chip-row" id="equipChips">
+          <button class="chip" onclick="toggleChip(this)">禁煙</button>
+          <button class="chip" onclick="toggleChip(this)">ワンオーナー</button>
+          <button class="chip" onclick="toggleChip(this)">レザーシート</button>
+          <button class="chip" onclick="toggleChip(this)">傷・へこみあり</button>
+          <button class="chip" onclick="toggleChip(this)">ペット乗車実績あり</button>
+          <button class="chip" onclick="toggleChip(this)">サンルーフ</button>
+          <button class="chip" onclick="toggleChip(this)">純正オプション<br>サウンドシステム</button>
+          <button class="chip" onclick="toggleChip(this)">新車時の保証書<br>取扱説明書あり</button>
+          <button class="chip" onclick="toggleChip(this)">全周囲モニター</button>
+          <button class="chip" onclick="toggleChip(this)">純正後席モニター</button>
+          <button class="chip" onclick="toggleChip(this)">純正フルエアロ</button>
+        </div>
+      </div>
+
+      <!-- コメント -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> コメント</div>
+        <textarea class="field-input" placeholder="最大400文字まで。&#10;追加の装備・オプション、損傷箇所をご記載いただくと、より精度の高い入札金額が提示されやすくなります！" oninput="onFieldInput()"></textarea>
+      </div>
+
+      <!-- 乗り換え検討 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> 乗り換え検討</div>
+        <div class="option-row">
+          <button class="opt-btn" onclick="selectOpt(this)">はい</button>
+          <button class="opt-btn" onclick="selectOpt(this)">いいえ</button>
+        </div>
+      </div>
+
+      <!-- 型式 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> 型式</div>
+        <input type="text" class="field-input" value="5BA-AAZA20" oninput="onFieldInput()">
+      </div>
+
+      <!-- 車台番号 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> 車台番号 <span style="font-size:11px;color:var(--mota-red);font-weight:400;cursor:pointer;">ⓘ 車台番号の確認方法</span></div>
+        <input type="text" class="field-input" placeholder="車台番号を記載" oninput="onFieldInput()">
+      </div>
+
+      <!-- 車検期限 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-suisen">推奨</span> 車検期限</div>
+        <div class="inline-row">
+          <select><option>年</option><option>2025</option><option>2026</option><option>2027</option></select>
+          <select><option>月</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+          <button class="opt-btn" onclick="selectOpt(this)" style="flex:none;">車検切れ</button>
+        </div>
+      </div>
+
+      <!-- 排気量 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> 排気量</div>
+        <div class="inline-row">
+          <input type="text" class="field-input" value="2487" style="max-width:140px;" oninput="onFieldInput()">
+          <span style="font-size:14px;">cc</span>
+        </div>
+      </div>
+
+      <!-- 乗車定員 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> 乗車定員</div>
+        <div class="inline-row">
+          <input type="text" class="field-input" value="5" style="max-width:100px;" oninput="onFieldInput()">
+          <span style="font-size:14px;">人</span>
+        </div>
+      </div>
+
+      <!-- ドア数 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> ドア数</div>
+        <div class="inline-row">
+          <input type="text" class="field-input" value="5" style="max-width:100px;" oninput="onFieldInput()">
+          <span style="font-size:14px;">枚</span>
+        </div>
+      </div>
+
+      <!-- 燃料 -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> 燃料</div>
+        <div class="option-row">
+          <button class="opt-btn selected" onclick="selectOpt(this)">ガソリン</button>
+          <button class="opt-btn" onclick="selectOpt(this)">ディーゼル</button>
+          <button class="opt-btn" onclick="selectOpt(this)">その他</button>
+        </div>
+      </div>
+
+      <!-- ミッション -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> ミッション</div>
+        <div class="option-row">
+          <button class="opt-btn" onclick="selectOpt(this)">MT</button>
+          <button class="opt-btn" onclick="selectOpt(this)">CVT</button>
+          <button class="opt-btn selected" onclick="selectOpt(this)">AT</button>
+        </div>
+      </div>
+
+      <!-- ハンドル -->
+      <div class="field-group">
+        <div class="field-label"><span class="tag-ok">OK</span> ハンドル</div>
+        <div class="option-row">
+          <button class="opt-btn" onclick="selectOpt(this)">左</button>
+          <button class="opt-btn selected" onclick="selectOpt(this)">右</button>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-area">
+      <button class="cta-button" onclick="alert('修正内容を確定しました！')">修正を確定する</button>
+    </div>
+
+    <!-- NOTICE -->
+    <div class="notice-box">
+      <div class="notice-title">⚠ ご留意ください</div>
+      追加で入力された内容が査定額に反映される可能性もございますが、すでに買取店がWeb査定額を入力済みの場合は、情報変更前の内容に基づいた査定となりますので、あらかじめご了承ください。<br><br>
+      推奨項目の追加・編集をされた際には、念の為、査定される中古車買取店とのやり取りの際に、お車の追加情報を入力した旨を査定担当にお伝え下さい。
+    </div>
+
+  </div>
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar">
+
+    <div class="sidebar-hero">
+      <div class="sidebar-hero-sub">推奨項目を入力した方は平均</div>
+      <div class="sidebar-hero-number">20%<small>以上</small></div>
+      <div class="sidebar-hero-caption">高値で売却できています</div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="rule-card-title">愛車の買取額をUPさせる方法</div>
+
+      <div class="rule-item">
+        <div class="rule-num r1">1</div>
+        <div class="rule-text">
+          <div class="rule-label">売却時期は早めが◎</div>
+          <div class="rule-desc">車の金額は日々変動します。時期が明確なほど、買取店は積極的な金額を提示しやすくなります。</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num r2">2</div>
+        <div class="rule-text">
+          <div class="rule-label">写真は4枚以上が目安</div>
+          <div class="rule-desc">写真が多いほど車の状態が伝わり、買取店が査定しやすくなります。明るい場所での撮影がおすすめです。</div>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num r3">3</div>
+        <div class="rule-text">
+          <div class="rule-label">装備・状態もしっかり入力</div>
+          <div class="rule-desc">オプションや走行距離などの情報が揃うほど、より正確な査定につながります。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-card reassurance">
+      <div class="reassurance-title">🔒 やりとりするのは上位3社だけ</div>
+      <div class="reassurance-text">
+        何十社もの買取店から電話がかかってくる心配はありません。高額査定の<strong>上位3社</strong>に絞られるから、やりとりも少なく、ラクに比較できます。
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">© MOTA, inc.</div>
+
+<script>
+  let timingSelected = false;
+  let photoCount = 0;
+  let fieldInteractions = 0;
+
+  function updateMeter() {
+    let score = 0;
+    let max = 10;
+
+    if (timingSelected) score += 2;
+    score += Math.min(photoCount, 4); // 4 photos = 4 pts
+    score += Math.min(fieldInteractions, 4); // field interactions up to 4
+
+    const pct = Math.min(Math.round((score / max) * 100), 100);
+    document.getElementById('boostPercent').innerHTML = pct + '<small>%</small>';
+    document.getElementById('boostBar').style.width = pct + '%';
+  }
+
+  function selectTiming(btn) {
+    document.querySelectorAll('#timingBtns .timing-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    timingSelected = true;
+    updateMeter();
+  }
+
+  function togglePhoto(slot) {
+    if (slot.classList.contains('uploaded')) {
+      slot.classList.remove('uploaded');
+      slot.querySelector('.slot-icon').textContent = '🖼';
+      photoCount--;
+    } else {
+      slot.classList.add('uploaded');
+      slot.querySelector('.slot-icon').textContent = '✅';
+      photoCount++;
+    }
+    document.getElementById('photoCount').textContent = photoCount;
+    const hint = document.getElementById('photoHint');
+    if (photoCount >= 4) {
+      hint.innerHTML = '<span style="color:var(--mota-green);font-weight:600;">👍 十分な枚数です！</span>';
+    } else {
+      hint.textContent = `あと${4 - photoCount}枚で目安クリア`;
+    }
+    updateMeter();
+  }
+
+  function selectOpt(btn) {
+    const row = btn.parentElement;
+    row.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    fieldInteractions = Math.min(fieldInteractions + 1, 4);
+    updateMeter();
+  }
+
+  function toggleChip(chip) {
+    chip.classList.toggle('selected');
+    fieldInteractions = Math.min(fieldInteractions + 1, 4);
+    updateMeter();
+  }
+
+  function onFieldInput() {
+    fieldInteractions = Math.min(fieldInteractions + 1, 4);
+    updateMeter();
+  }
+</script>
+</body>
+</html>
