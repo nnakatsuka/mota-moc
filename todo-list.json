@@ -1,0 +1,28 @@
+{
+  "todos": [
+    {
+      "priority": "最高（至急）",
+      "title": "人材の画面フロー作成",
+      "status": "pending"
+    },
+    {
+      "priority": "高",
+      "title": "noteインタビュー事前質問回答",
+      "deadline": "4月24日（金）18:00",
+      "details": "質問シート: タブ「質問項目_v2」\nインタビュー本番: 5月8日",
+      "link": "https://docs.google.com/document/d/1Oqm0CHWVNUvtn9FATLAfOxnVTDYf2iXjaepnUPJiuJ8/edit?tab=t.xnf5ezkm0l5g",
+      "status": "pending"
+    },
+    {
+      "priority": "土日対応",
+      "title": "あんしん決済の画面仕様",
+      "status": "pending"
+    },
+    {
+      "priority": "その他",
+      "title": "ウェブクルーに移転時期を伝える",
+      "status": "pending"
+    }
+  ],
+  "last_updated": "2026-04-16"
+}
