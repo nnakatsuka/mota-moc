@@ -468,7 +468,7 @@ function CarTable({pattern, onSelect}) {
   };
 
   return (
-    <div style={{flex:1,overflowX:"auto",overflowY:"auto",maxHeight:"calc(100vh - 320px)",display:"flex",flexDirection:"column"}}>
+    <div style={{flex:1,display:"flex",flexDirection:"column",minHeight:0,overflow:"hidden"}}>
       {popup && (
         <MemoPopup
           carId={popup.carId}
@@ -501,7 +501,7 @@ function CarTable({pattern, onSelect}) {
       </div>
 
       {/* テーブル本体 */}
-      <div style={{flex:1,overflowY:"auto"}}>
+      <div style={{flex:1,overflowX:"auto",overflowY:"auto",minHeight:0}}>
         <table style={{width:"100%",fontSize:12,borderCollapse:"collapse"}}>
           <thead>
             <tr style={{borderBottom:`1px solid ${s.border}`,position:"sticky",top:0,background:"#fff",zIndex:1}}>
@@ -721,7 +721,7 @@ function ListPage({pattern, setPattern, onSelect}) {
         </div>
 
         {/* テーブル本体 — PC:サイドバー付き / SP:横スクロール全幅 */}
-        <div className="pc-only" style={{display:"flex",background:"#fff",border:`1px solid ${s.border}`,borderRadius:10,overflow:"hidden",marginTop:4,alignItems:"stretch"}}>
+        <div className="pc-only" style={{display:"flex",background:"#fff",border:`1px solid ${s.border}`,borderRadius:10,overflow:"hidden",marginTop:4,alignItems:"stretch",height:"calc(100vh - 320px)"}}>
           {pattern==="A"&&<FilterSidebar open={filterOpen} setOpen={setFilterOpen}/>}
           {pattern==="A"&&!filterOpen&&(
             <div style={{width:36,minWidth:36,borderRight:`1px solid ${s.border}`,display:"flex",alignItems:"flex-start",justifyContent:"center",paddingTop:14,cursor:"pointer",background:s.filterBg}}
