@@ -12,6 +12,36 @@
   body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
   input, select, textarea, button { font-family: inherit; }
   ::selection { background: #e85d3033; }
+  .sp-only { display: none; }
+  @media (max-width: 768px) {
+    .sp-only { display: block; }
+    .pc-only { display: none !important; }
+    .sp-stack { flex-direction: column !important; }
+    .sp-full { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+    .sp-pad { padding-left: 10px !important; padding-right: 10px !important; }
+    .sp-no-sticky { position: static !important; }
+    .sp-scroll-x { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+    .sp-table-height { max-height: none !important; overflow-y: visible !important; }
+    .sp-hide { display: none !important; }
+    .sp-font-sm { font-size: 11px !important; }
+    .sp-1col { grid-template-columns: 1fr !important; }
+    /* SP：テーブルで省略する列 */
+    .sp-col-hide { display: none !important; }
+    /* SP：対応残数パネルをコンパクトに */
+    .sp-alert-row { padding: 8px 12px !important; }
+    .sp-alert-text { font-size: 12px !important; }
+    /* SP：ヘッダーナビを縦積みに */
+    .sp-header-nav { flex-wrap: wrap !important; gap: 4px !important; }
+    /* SP：詳細ページ右カラムを下に */
+    .sp-detail-right { order: 2 !important; }
+    .sp-detail-left { order: 1 !important; }
+    /* SP：車両タイトル行を縦積み */
+    .sp-title-row { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+    /* SP：入札バナーを全幅 */
+    .sp-bid-banner { width: 100% !important; }
+    /* SP：基本情報テーブルを2列に */
+    .sp-spec-2col { grid-template-columns: 1fr 1fr !important; }
+  }
 </style>
 </head>
 <body>
@@ -20,36 +50,36 @@
 const { useState } = React;
 
 const CARS = [
-  { id:"2127615", name:"ホンダ ZR-V", year:"令和5年", km:"2.4万km", repair:false, color:"シルバー", area:"神奈川", price:245, deadline:"12時", status:null },
-  { id:"2127616", name:"トヨタ ヴェルファイア", year:"令和3年", km:"5.8万km", repair:false, color:"パール", area:"東京", price:420, deadline:null, status:"入賞確実" },
-  { id:"2127617", name:"日産 エクストレイル", year:"令和4年", km:"3.1万km", repair:false, color:"ブラック", area:"埼玉", price:280, deadline:"18時", status:null },
-  { id:"2127618", name:"マツダ CX-5", year:"令和2年", km:"6.4万km", repair:true, color:"レッド", area:"大阪", price:198, deadline:"18時", status:null },
-  { id:"2127619", name:"スバル フォレスター", year:"令和3年", km:"4.2万km", repair:false, color:"ホワイト", area:"福岡", price:230, deadline:"12時", status:null },
-  { id:"2127620", name:"レクサス RX", year:"令和4年", km:"1.8万km", repair:false, color:"ブラック", area:"愛知", price:510, deadline:"18時", status:null },
-  { id:"2127621", name:"BMW 3シリーズ", year:"令和2年", km:"3.5万km", repair:false, color:"ブルー", area:"神奈川", price:330, deadline:"12時", status:null },
-  { id:"2127622", name:"トヨタ RAV4", year:"令和5年", km:"0.8万km", repair:false, color:"カーキ", area:"千葉", price:295, deadline:"18時", status:null },
-  { id:"2127623", name:"トヨタ アルファード", year:"令和4年", km:"1.2万km", repair:false, color:"ブラック", area:"東京", price:580, deadline:"12時", status:null },
-  { id:"2127624", name:"ホンダ ヴェゼル", year:"令和5年", km:"0.5万km", repair:false, color:"ホワイト", area:"大阪", price:265, deadline:"18時", status:null },
-  { id:"2127625", name:"日産 セレナ", year:"令和3年", km:"4.8万km", repair:false, color:"ブルー", area:"北海道", price:215, deadline:"12時", status:null },
-  { id:"2127626", name:"トヨタ ハリアー", year:"令和4年", km:"2.1万km", repair:false, color:"ブラック", area:"兵庫", price:345, deadline:null, status:"入賞確実" },
-  { id:"2127627", name:"スズキ ジムニー", year:"令和5年", km:"0.3万km", repair:false, color:"グリーン", area:"長野", price:195, deadline:"18時", status:null },
-  { id:"2127628", name:"マツダ CX-8", year:"令和3年", km:"5.2万km", repair:false, color:"レッド", area:"広島", price:275, deadline:"12時", status:null },
-  { id:"2127629", name:"トヨタ プリウス", year:"令和5年", km:"1.5万km", repair:false, color:"シルバー", area:"京都", price:310, deadline:"18時", status:null },
-  { id:"2127630", name:"ホンダ フィット", year:"令和4年", km:"3.2万km", repair:false, color:"ホワイト", area:"埼玉", price:145, deadline:"12時", status:null },
-  { id:"2127631", name:"日産 ノート", year:"令和4年", km:"2.8万km", repair:false, color:"ブルー", area:"神奈川", price:165, deadline:"18時", status:null },
-  { id:"2127632", name:"トヨタ ランドクルーザー", year:"令和3年", km:"3.5万km", repair:false, color:"ホワイト", area:"愛知", price:720, deadline:"12時", status:null },
-  { id:"2127633", name:"メルセデス Cクラス", year:"令和2年", km:"4.5万km", repair:true, color:"ブラック", area:"東京", price:385, deadline:"18時", status:null },
-  { id:"2127634", name:"アウディ A4", year:"令和3年", km:"3.8万km", repair:false, color:"グレー", area:"大阪", price:340, deadline:"12時", status:null },
-  { id:"2127635", name:"ボルボ XC60", year:"令和4年", km:"2.0万km", repair:false, color:"ホワイト", area:"千葉", price:455, deadline:null, status:"入賞確実" },
-  { id:"2127636", name:"トヨタ クラウン", year:"令和5年", km:"0.9万km", repair:false, color:"ブラック", area:"福岡", price:490, deadline:"18時", status:null },
-  { id:"2127637", name:"ホンダ ステップワゴン", year:"令和3年", km:"5.5万km", repair:false, color:"シルバー", area:"宮城", price:225, deadline:"12時", status:null },
-  { id:"2127638", name:"日産 リーフ", year:"令和4年", km:"2.2万km", repair:false, color:"ホワイト", area:"静岡", price:185, deadline:"18時", status:null },
-  { id:"2127639", name:"スバル レヴォーグ", year:"令和4年", km:"1.8万km", repair:false, color:"ブルー", area:"群馬", price:295, deadline:"12時", status:null },
-  { id:"2127640", name:"マツダ MAZDA3", year:"令和5年", km:"0.6万km", repair:false, color:"レッド", area:"広島", price:255, deadline:"18時", status:null },
-  { id:"2127641", name:"トヨタ ヤリスクロス", year:"令和5年", km:"1.0万km", repair:false, color:"カーキ", area:"岡山", price:215, deadline:"12時", status:null },
-  { id:"2127642", name:"ダイハツ ロッキー", year:"令和4年", km:"3.0万km", repair:false, color:"ブラック", area:"新潟", price:165, deadline:"18時", status:null },
-  { id:"2127643", name:"三菱 アウトランダー", year:"令和4年", km:"2.5万km", repair:true, color:"シルバー", area:"愛知", price:355, deadline:"12時", status:null },
-  { id:"2127644", name:"レクサス NX", year:"令和5年", km:"0.7万km", repair:false, color:"ホワイト", area:"東京", price:535, deadline:"18時", status:null },
+  { id:"2127615", name:"ホンダ ZR-V", year:"令和5年", km:"2.4万km", repair:false, color:"シルバー", area:"神奈川", price:245, priceMin:240, priceMax:260, deadline:"今日12時", status:null, sellTiming:"1ヶ月以内", support:false },
+  { id:"2127616", name:"トヨタ ヴェルファイア", year:"令和3年", km:"5.8万km", repair:false, color:"パール", area:"東京", price:420, priceMin:400, priceMax:440, deadline:null, status:"入賞確実", sellTiming:"3ヶ月以内", support:true },
+  { id:"2127617", name:"日産 エクストレイル", year:"令和4年", km:"3.1万km", repair:false, color:"ブラック", area:"埼玉", price:280, priceMin:270, priceMax:295, deadline:"今日18時", status:null, sellTiming:"未定", support:false },
+  { id:"2127618", name:"マツダ CX-5", year:"令和2年", km:"6.4万km", repair:true, color:"レッド", area:"大阪", price:198, priceMin:180, priceMax:210, deadline:"今日18時", status:null, sellTiming:"1ヶ月以内", support:true },
+  { id:"2127619", name:"スバル フォレスター", year:"令和3年", km:"4.2万km", repair:false, color:"ホワイト", area:"福岡", price:230, priceMin:220, priceMax:245, deadline:"今日12時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127620", name:"レクサス RX", year:"令和4年", km:"1.8万km", repair:false, color:"ブラック", area:"愛知", price:510, priceMin:490, priceMax:530, deadline:"明日18時", status:null, sellTiming:"未定", support:false },
+  { id:"2127621", name:"BMW 3シリーズ", year:"令和2年", km:"3.5万km", repair:false, color:"ブルー", area:"神奈川", price:330, priceMin:315, priceMax:350, deadline:"明日12時", status:null, sellTiming:"1ヶ月以内", support:true },
+  { id:"2127622", name:"トヨタ RAV4", year:"令和5年", km:"0.8万km", repair:false, color:"カーキ", area:"千葉", price:295, priceMin:285, priceMax:310, deadline:"今日18時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127623", name:"トヨタ アルファード", year:"令和4年", km:"1.2万km", repair:false, color:"ブラック", area:"東京", price:580, priceMin:560, priceMax:600, deadline:"今日12時", status:null, sellTiming:"1ヶ月以内", support:false },
+  { id:"2127624", name:"ホンダ ヴェゼル", year:"令和5年", km:"0.5万km", repair:false, color:"ホワイト", area:"大阪", price:265, priceMin:255, priceMax:280, deadline:"明日18時", status:null, sellTiming:"未定", support:true },
+  { id:"2127625", name:"日産 セレナ", year:"令和3年", km:"4.8万km", repair:false, color:"ブルー", area:"北海道", price:215, priceMin:200, priceMax:230, deadline:"今日12時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127626", name:"トヨタ ハリアー", year:"令和4年", km:"2.1万km", repair:false, color:"ブラック", area:"兵庫", price:345, priceMin:330, priceMax:360, deadline:null, status:"入賞確実", sellTiming:"1ヶ月以内", support:true },
+  { id:"2127627", name:"スズキ ジムニー", year:"令和5年", km:"0.3万km", repair:false, color:"グリーン", area:"長野", price:195, priceMin:185, priceMax:205, deadline:"今日18時", status:null, sellTiming:"未定", support:false },
+  { id:"2127628", name:"マツダ CX-8", year:"令和3年", km:"5.2万km", repair:false, color:"レッド", area:"広島", price:275, priceMin:260, priceMax:290, deadline:"明日12時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127629", name:"トヨタ プリウス", year:"令和5年", km:"1.5万km", repair:false, color:"シルバー", area:"京都", price:310, priceMin:295, priceMax:325, deadline:"今日18時", status:null, sellTiming:"1ヶ月以内", support:true },
+  { id:"2127630", name:"ホンダ フィット", year:"令和4年", km:"3.2万km", repair:false, color:"ホワイト", area:"埼玉", price:145, priceMin:135, priceMax:155, deadline:"今日12時", status:null, sellTiming:"未定", support:false },
+  { id:"2127631", name:"日産 ノート", year:"令和4年", km:"2.8万km", repair:false, color:"ブルー", area:"神奈川", price:165, priceMin:155, priceMax:175, deadline:"明日18時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127632", name:"トヨタ ランドクルーザー", year:"令和3年", km:"3.5万km", repair:false, color:"ホワイト", area:"愛知", price:720, priceMin:690, priceMax:750, deadline:"今日12時", status:null, sellTiming:"1ヶ月以内", support:true },
+  { id:"2127633", name:"メルセデス Cクラス", year:"令和2年", km:"4.5万km", repair:true, color:"ブラック", area:"東京", price:385, priceMin:365, priceMax:405, deadline:"明日18時", status:null, sellTiming:"未定", support:false },
+  { id:"2127634", name:"アウディ A4", year:"令和3年", km:"3.8万km", repair:false, color:"グレー", area:"大阪", price:340, priceMin:325, priceMax:355, deadline:"今日12時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127635", name:"ボルボ XC60", year:"令和4年", km:"2.0万km", repair:false, color:"ホワイト", area:"千葉", price:455, priceMin:435, priceMax:475, deadline:null, status:"入賞確実", sellTiming:"1ヶ月以内", support:true },
+  { id:"2127636", name:"トヨタ クラウン", year:"令和5年", km:"0.9万km", repair:false, color:"ブラック", area:"福岡", price:490, priceMin:470, priceMax:510, deadline:"今日18時", status:null, sellTiming:"未定", support:false },
+  { id:"2127637", name:"ホンダ ステップワゴン", year:"令和3年", km:"5.5万km", repair:false, color:"シルバー", area:"宮城", price:225, priceMin:210, priceMax:240, deadline:"明日12時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127638", name:"日産 リーフ", year:"令和4年", km:"2.2万km", repair:false, color:"ホワイト", area:"静岡", price:185, priceMin:175, priceMax:195, deadline:"今日18時", status:null, sellTiming:"1ヶ月以内", support:true },
+  { id:"2127639", name:"スバル レヴォーグ", year:"令和4年", km:"1.8万km", repair:false, color:"ブルー", area:"群馬", price:295, priceMin:280, priceMax:310, deadline:"今日12時", status:null, sellTiming:"未定", support:false },
+  { id:"2127640", name:"マツダ MAZDA3", year:"令和5年", km:"0.6万km", repair:false, color:"レッド", area:"広島", price:255, priceMin:245, priceMax:265, deadline:"明日18時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127641", name:"トヨタ ヤリスクロス", year:"令和5年", km:"1.0万km", repair:false, color:"カーキ", area:"岡山", price:215, priceMin:205, priceMax:225, deadline:"今日12時", status:null, sellTiming:"1ヶ月以内", support:true },
+  { id:"2127642", name:"ダイハツ ロッキー", year:"令和4年", km:"3.0万km", repair:false, color:"ブラック", area:"新潟", price:165, priceMin:155, priceMax:175, deadline:"明日18時", status:null, sellTiming:"未定", support:false },
+  { id:"2127643", name:"三菱 アウトランダー", year:"令和4年", km:"2.5万km", repair:true, color:"シルバー", area:"愛知", price:355, priceMin:335, priceMax:375, deadline:"今日12時", status:null, sellTiming:"3ヶ月以内", support:false },
+  { id:"2127644", name:"レクサス NX", year:"令和5年", km:"0.7万km", repair:false, color:"ホワイト", area:"東京", price:535, priceMin:515, priceMax:555, deadline:"今日18時", status:null, sellTiming:"1ヶ月以内", support:true },
 ];
 
 const DETAIL = {
@@ -413,14 +443,32 @@ function MemoPopup({carId, memo, setMemo, setSaved, onClose}) {
 function CarTable({pattern, onSelect}) {
   const [hovered, setHovered] = useState(null);
   const [popup, setPopup] = useState(null);
-  const cols=["査定番号","車両名","年式","走行距離","エリア","査定額","修復","写真","情報変更","締切","メモ"];
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(50);
+
+  const cols=["査定番号","車両名","年式","走行距離","エリア","査定額（下限〜上限）","売却希望","修復","写真","情報変更","締切","サポート","メモ"];
 
   const openPopup = (carId, memo, setMemo, setSaved) => {
     setPopup({carId, memo, setMemo, setSaved});
   };
 
+  const totalPages = Math.ceil(CARS.length / perPage);
+  const pagedCars = CARS.slice((page-1)*perPage, page*perPage);
+
+  const DeadlineBadge = ({deadline, status}) => {
+    if(status) return <span style={{fontSize:10,padding:"2px 8px",background:s.successBg,color:s.successText,borderRadius:4,whiteSpace:"nowrap"}}>{status}</span>;
+    if(!deadline) return null;
+    const isToday = deadline.startsWith("今日");
+    return (
+      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}>
+        <span style={{fontSize:9,color:isToday?"#c0392b":"#888",fontWeight:600,whiteSpace:"nowrap"}}>{isToday?"本日":"明日"}</span>
+        <span style={{fontSize:11,color:isToday?s.accent:"#555",fontWeight:isToday?700:500,whiteSpace:"nowrap"}}>{deadline.replace("今日","").replace("明日","")}</span>
+      </div>
+    );
+  };
+
   return (
-    <div style={{flex:1,overflowX:"auto",overflowY:"auto",maxHeight:"calc(100vh - 320px)"}}>
+    <div style={{flex:1,overflowX:"auto",overflowY:"auto",maxHeight:"calc(100vh - 320px)",display:"flex",flexDirection:"column"}}>
       {popup && (
         <MemoPopup
           carId={popup.carId}
@@ -430,60 +478,109 @@ function CarTable({pattern, onSelect}) {
           onClose={()=>setPopup(null)}
         />
       )}
+      {/* テーブルヘッダー行 */}
       <div style={{
         display:"flex",alignItems:"center",justifyContent:"space-between",
         padding:"8px 14px",fontSize:13,color:s.muted,
         position:"sticky",top:0,background:"#fff",zIndex:2,
-        borderBottom:`1px solid ${s.borderLight}`
+        borderBottom:`1px solid ${s.borderLight}`,flexShrink:0
       }}>
-        <span>全 <strong style={{color:s.dark}}>{CARS.length}</strong> 件</span>
+        <span>全 <strong style={{color:s.dark}}>{CARS.length}</strong> 件　<span style={{fontSize:11}}>{(page-1)*perPage+1}〜{Math.min(page*perPage,CARS.length)}件表示</span></span>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <select style={{fontSize:12,padding:"4px 8px",border:`1px solid #d5d2ca`,borderRadius:4,background:"#fff"}}>
+          <select style={{fontSize:12,padding:"4px 8px",border:`1px solid #d5d2ca`,borderRadius:4,background:"#fff"}} onChange={e=>setPage(1)}>
             <option>新着順</option><option>都道府県</option><option>メーカー・車種</option><option>締切順</option><option>金額順</option>
           </select>
-          <span style={{fontSize:11,color:"#aaa"}}>表示 30 / 60 / 100件</span>
+          <span style={{fontSize:11,color:"#aaa"}}>表示件数：</span>
+          {[50,100,150].map(n=>(
+            <button key={n} onClick={()=>{setPerPage(n);setPage(1);}} style={{
+              fontSize:11,padding:"3px 8px",border:`1px solid ${perPage===n?"#1a1a1a":"#d5d2ca"}`,borderRadius:4,
+              background:perPage===n?"#1a1a1a":"#fff",color:perPage===n?"#fff":s.muted,cursor:"pointer"
+            }}>{n}件</button>
+          ))}
         </div>
       </div>
-      <table style={{width:"100%",fontSize:12,borderCollapse:"collapse"}}>
-        <thead>
-          <tr style={{borderBottom:`1px solid ${s.border}`,position:"sticky",top:41,background:"#fff",zIndex:1}}>
-            {cols.map(c=>(
-              <th key={c} style={{padding:"8px 10px",textAlign:c==="査定額"||c==="締切"?"right":"left",fontWeight:500,color:s.muted,fontSize:11,whiteSpace:"nowrap"}}>{c}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {CARS.map(car=>(
-            <tr key={car.id} onClick={()=>onSelect(car)}
-              onMouseEnter={()=>setHovered(car.id)} onMouseLeave={()=>setHovered(null)}
-              style={{borderBottom:`1px solid ${s.borderLight}`,cursor:"pointer",background:hovered===car.id?"#f7f5f0":"",transition:"background .1s"}}>
-              <td style={{padding:"11px 10px",fontWeight:500,color:s.link}}>{car.id}</td>
-              <td style={{padding:"11px 10px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontSize:10,padding:"2px 8px",background:s.accent,color:"#fff",borderRadius:3,fontWeight:600,whiteSpace:"nowrap"}}>未入札</span>
-                  <span style={{fontWeight:500,whiteSpace:"nowrap"}}>{car.name}</span>
-                </div>
-              </td>
-              <td style={{padding:"11px 10px",whiteSpace:"nowrap"}}>{car.year}</td>
-              <td style={{padding:"11px 10px",whiteSpace:"nowrap"}}>{car.km}</td>
-              <td style={{padding:"11px 10px"}}>{car.area}</td>
-              <td style={{padding:"11px 10px",textAlign:"right",fontWeight:600}}>{car.price}万</td>
-              <td style={{padding:"11px 10px",color:car.repair?s.accent:"inherit",fontWeight:car.repair?600:400}}>{car.repair?"あり":"なし"}</td>
-              <td style={{padding:"11px 10px",color:s.muted}}>なし</td>
-              <td style={{padding:"11px 10px",color:s.muted}}>なし</td>
-              <td style={{padding:"11px 10px",textAlign:"right"}}>
-                {car.status
-                  ? <span style={{fontSize:10,padding:"2px 8px",background:s.successBg,color:s.successText,borderRadius:4}}>{car.status}</span>
-                  : <span style={{color:s.accent,fontWeight:500}}>{car.deadline}</span>
-                }
-              </td>
-              <td style={{padding:"4px 10px"}}>
-                <MemoCell carId={car.id} onClick={openPopup}/>
-              </td>
+
+      {/* テーブル本体 */}
+      <div style={{flex:1,overflowY:"auto"}}>
+        <table style={{width:"100%",fontSize:12,borderCollapse:"collapse"}}>
+          <thead>
+            <tr style={{borderBottom:`1px solid ${s.border}`,position:"sticky",top:0,background:"#fff",zIndex:1}}>
+              {cols.map(c=>(
+                <th key={c} style={{padding:"8px 10px",textAlign:c==="査定額（下限〜上限）"||c==="締切"?"right":"left",fontWeight:500,color:s.muted,fontSize:11,whiteSpace:"nowrap"}}
+                  className={["年式","走行距離","修復","写真","情報変更","売却希望","サポート"].includes(c)?"sp-col-hide":""}>
+                  {c}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {pagedCars.map(car=>(
+              <tr key={car.id} onClick={()=>onSelect(car)}
+                onMouseEnter={()=>setHovered(car.id)} onMouseLeave={()=>setHovered(null)}
+                style={{borderBottom:`1px solid ${s.borderLight}`,cursor:"pointer",background:hovered===car.id?"#f7f5f0":"",transition:"background .1s"}}>
+                <td style={{padding:"11px 10px",fontWeight:500,color:s.link}}>{car.id}</td>
+                <td style={{padding:"11px 10px"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{fontSize:10,padding:"2px 8px",background:s.accent,color:"#fff",borderRadius:3,fontWeight:600,whiteSpace:"nowrap"}}>未入札</span>
+                    <span style={{fontWeight:500,whiteSpace:"nowrap"}}>{car.name}</span>
+                  </div>
+                </td>
+                <td style={{padding:"11px 10px",whiteSpace:"nowrap"}} className="sp-col-hide">{car.year}</td>
+                <td style={{padding:"11px 10px",whiteSpace:"nowrap"}} className="sp-col-hide">{car.km}</td>
+                <td style={{padding:"11px 10px"}}>{car.area}</td>
+                <td style={{padding:"11px 10px",textAlign:"right",fontWeight:600,whiteSpace:"nowrap"}}>
+                  <span style={{color:"#1a1a1a"}}>{car.priceMin}万</span>
+                  <span style={{color:"#aaa",fontWeight:400,fontSize:10,margin:"0 3px"}}>〜</span>
+                  <span style={{color:"#1a1a1a"}}>{car.priceMax}万</span>
+                </td>
+                <td style={{padding:"11px 10px",whiteSpace:"nowrap",fontSize:11,color:"#555"}} className="sp-col-hide">{car.sellTiming}</td>
+                <td style={{padding:"11px 10px",color:car.repair?s.accent:"inherit",fontWeight:car.repair?600:400}} className="sp-col-hide">{car.repair?"あり":"なし"}</td>
+                <td style={{padding:"11px 10px",color:s.muted}} className="sp-col-hide">なし</td>
+                <td style={{padding:"11px 10px",color:s.muted}} className="sp-col-hide">なし</td>
+                <td style={{padding:"11px 10px",textAlign:"right"}}>
+                  <DeadlineBadge deadline={car.deadline} status={car.status}/>
+                </td>
+                <td style={{padding:"11px 10px",textAlign:"center"}} className="sp-col-hide">
+                  {car.support && (
+                    <span style={{
+                      display:"inline-flex",alignItems:"center",justifyContent:"center",
+                      width:36,height:36,borderRadius:"50%",
+                      background:"#FFF9C4",border:"1.5px solid #F9A825",
+                      fontSize:9,fontWeight:700,color:"#7A6000",whiteSpace:"nowrap",lineHeight:1.1,textAlign:"center"
+                    }}>サポ<br/>ート</span>
+                  )}
+                </td>
+                <td style={{padding:"4px 10px"}}>
+                  <MemoCell carId={car.id} onClick={openPopup}/>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ページネーション */}
+      <div style={{
+        display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+        padding:"10px 14px",borderTop:`1px solid ${s.borderLight}`,
+        background:"#fff",flexShrink:0
+      }}>
+        <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1} style={{
+          padding:"5px 12px",fontSize:12,border:`1px solid #d5d2ca`,borderRadius:4,
+          background:"#fff",color:page===1?"#ccc":"#333",cursor:page===1?"default":"pointer"
+        }}>◀</button>
+        {Array.from({length:totalPages},(_,i)=>i+1).map(p=>(
+          <button key={p} onClick={()=>setPage(p)} style={{
+            width:30,height:30,fontSize:12,border:`1px solid ${page===p?"#1a1a1a":"#d5d2ca"}`,borderRadius:4,
+            background:page===p?"#1a1a1a":"#fff",color:page===p?"#fff":"#333",cursor:"pointer",fontWeight:page===p?600:400
+          }}>{p}</button>
+        ))}
+        <button onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page===totalPages} style={{
+          padding:"5px 12px",fontSize:12,border:`1px solid #d5d2ca`,borderRadius:4,
+          background:"#fff",color:page===totalPages?"#ccc":"#333",cursor:page===totalPages?"default":"pointer"
+        }}>▶</button>
+        <span style={{fontSize:11,color:s.muted,marginLeft:8}}>{page} / {totalPages} ページ</span>
+      </div>
     </div>
   );
 }
@@ -494,6 +591,7 @@ function ListPage({pattern, setPattern, onSelect}) {
   const [topFilterOpen, setTopFilterOpen] = useState(true);
   const [alertFilter, setAlertFilter] = useState(null);
   const [showAlerts, setShowAlerts] = useState(true);
+  const [spFilterOpen, setSpFilterOpen] = useState(false);
 
   const bdg={fontSize:10,padding:"2px 10px",border:"1px solid #d5d2ca",borderRadius:4,fontWeight:600,whiteSpace:"nowrap"};
   const alertRow={display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 16px",cursor:"pointer",borderBottom:"1px solid #f0ede6",transition:"background .1s"};
@@ -501,23 +599,25 @@ function ListPage({pattern, setPattern, onSelect}) {
   return (
     <div style={{background:s.bg,minHeight:"100vh"}}>
       <Header/>
-      <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}}>
+      <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}} className="sp-pad">
+
+        {/* タブ + コントロール */}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 0 4px",borderBottom:`1px solid ${s.border}`,flexWrap:"wrap",gap:8}}>
           <SubTabs activeTab={activeTab} setActiveTab={setActiveTab}/>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             {!showAlerts&&<label style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:s.muted,cursor:"pointer",userSelect:"none"}}>
               <span>対応状況</span>
-              <div onClick={()=>setShowAlerts(true)} style={{width:36,height:20,background:"#d5d2ca",borderRadius:10,position:"relative",transition:"background .2s",cursor:"pointer"}}>
-                <div style={{width:16,height:16,background:"#fff",borderRadius:"50%",position:"absolute",top:2,left:2,transition:"transform .2s"}}/>
+              <div onClick={()=>setShowAlerts(true)} style={{width:36,height:20,background:"#d5d2ca",borderRadius:10,position:"relative",cursor:"pointer"}}>
+                <div style={{width:16,height:16,background:"#fff",borderRadius:"50%",position:"absolute",top:2,left:2}}/>
               </div>
             </label>}
             {showAlerts&&<label style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:s.dark,cursor:"pointer",userSelect:"none"}}>
               <span>対応状況</span>
-              <div onClick={()=>{setShowAlerts(false);setAlertFilter(null)}} style={{width:36,height:20,background:s.link,borderRadius:10,position:"relative",transition:"background .2s",cursor:"pointer"}}>
-                <div style={{width:16,height:16,background:"#fff",borderRadius:"50%",position:"absolute",top:2,left:20,transition:"transform .2s"}}/>
+              <div onClick={()=>{setShowAlerts(false);setAlertFilter(null)}} style={{width:36,height:20,background:s.link,borderRadius:10,position:"relative",cursor:"pointer"}}>
+                <div style={{width:16,height:16,background:"#fff",borderRadius:"50%",position:"absolute",top:2,left:20}}/>
               </div>
             </label>}
-            <div style={{display:"flex",gap:4,background:"#e5e2da",borderRadius:6,padding:2}}>
+            <div className="pc-only" style={{display:"flex",gap:4,background:"#e5e2da",borderRadius:6,padding:2}}>
               {["A","B"].map(p=>(
                 <button key={p} onClick={()=>setPattern(p)} style={{
                   padding:"5px 14px",fontSize:11,fontWeight:600,border:"none",borderRadius:4,cursor:"pointer",
@@ -528,52 +628,71 @@ function ListPage({pattern, setPattern, onSelect}) {
           </div>
         </div>
 
-        {showAlerts&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,margin:"12px 0",position:"relative"}}>
-          <div style={{background:"#fff",border:"1px solid #e5e2da",borderRadius:10,overflow:"hidden"}}>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #f0ede6"}}>
-              <div style={{fontSize:13,fontWeight:700}}>入札対応残数</div>
-              <div style={{fontSize:10,color:s.muted,marginTop:2}}>「入札済」「入札見送り」車両を除く、未入札の車両の件数</div>
+        {/* SP用：絞り込みボタン（上部） */}
+        <div className="sp-only" style={{padding:"8px 0"}}>
+          <button onClick={()=>setSpFilterOpen(!spFilterOpen)} style={{
+            width:"100%",padding:"10px 0",fontSize:13,fontWeight:600,border:`1px solid #d5d2ca`,
+            borderRadius:8,background:"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6
+          }}>
+            <span style={{fontSize:14}}>⚙</span>
+            {spFilterOpen?"▲ 絞り込みを閉じる":"▼ 絞り込みを開く"}
+          </button>
+          {spFilterOpen&&(
+            <div style={{background:"#fff",border:`1px solid ${s.border}`,borderRadius:8,padding:14,marginTop:6}}>
+              <FilterPanel layout="side"/>
             </div>
-            <div style={alertRow} onClick={()=>setAlertFilter(alertFilter==="18h-leak"?null:"18h-leak")}
-              onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="18h-leak"?"#fef8f0":""}>
-              <div style={{display:"flex",alignItems:"center",gap:12}}>
-                <span style={bdg}>本日18時締切</span>
-                <span style={{fontSize:13}}>入札対応残数 <strong style={{color:s.accent,fontSize:15}}>2</strong> 件</span>
+          )}
+        </div>
+
+        {/* 対応状況パネル — PC:grid / SP:通常フロー（縦積み） */}
+        {showAlerts&&(
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,margin:"12px 0"}} className="sp-1col">
+            <div style={{background:"#fff",border:"1px solid #e5e2da",borderRadius:10,overflow:"hidden"}}>
+              <div style={{padding:"12px 16px",borderBottom:"1px solid #f0ede6"}}>
+                <div style={{fontSize:13,fontWeight:700}}>入札対応残数</div>
+                <div style={{fontSize:10,color:s.muted,marginTop:2}}>「入札済」「入札見送り」車両を除く、未入札の車両の件数</div>
               </div>
-              <span style={{fontSize:16,color:s.muted}}>›</span>
+              <div style={alertRow} onClick={()=>setAlertFilter(alertFilter==="18h-leak"?null:"18h-leak")}
+                onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="18h-leak"?"#fef8f0":""}>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <span style={bdg}>本日18時締切</span>
+                  <span style={{fontSize:13}}>入札対応残数 <strong style={{color:s.accent,fontSize:15}}>2</strong> 件</span>
+                </div>
+                <span style={{fontSize:16,color:s.muted}}>›</span>
+              </div>
+              <div style={{...alertRow,borderBottom:"none"}} onClick={()=>setAlertFilter(alertFilter==="12h-leak"?null:"12h-leak")}
+                onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="12h-leak"?"#fef8f0":""}>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <span style={bdg}>翌日12時締切</span>
+                  <span style={{fontSize:13}}>入札対応残数 <strong style={{fontSize:15}}>0</strong> 件</span>
+                </div>
+                <span style={{fontSize:16,color:s.muted}}>›</span>
+              </div>
             </div>
-            <div style={{...alertRow,borderBottom:"none"}} onClick={()=>setAlertFilter(alertFilter==="12h-leak"?null:"12h-leak")}
-              onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="12h-leak"?"#fef8f0":""}>
-              <div style={{display:"flex",alignItems:"center",gap:12}}>
-                <span style={bdg}>翌日12時締切</span>
-                <span style={{fontSize:13}}>入札対応残数 <strong style={{fontSize:15}}>0</strong> 件</span>
+            <div style={{background:"#fff",border:"1px solid #e5e2da",borderRadius:10,overflow:"hidden"}}>
+              <div style={{padding:"12px 16px",borderBottom:"1px solid #f0ede6"}}>
+                <div style={{fontSize:13,fontWeight:700}}>現時点で入賞確実な車両件数</div>
+                <div style={{fontSize:10,color:s.muted,marginTop:2}}>「入札見送り」車両含む、未入札かつ、現時点で入札が3社未満の車両の件数</div>
               </div>
-              <span style={{fontSize:16,color:s.muted}}>›</span>
+              <div style={alertRow} onClick={()=>setAlertFilter(alertFilter==="18h-win"?null:"18h-win")}
+                onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="18h-win"?"#fef8f0":""}>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <span style={bdg}>本日18時締切</span>
+                  <span style={{fontSize:13}}>現時点で入賞確実な車両 <strong style={{color:s.accent,fontSize:15}}>2</strong> 件</span>
+                </div>
+                <span style={{fontSize:16,color:s.muted}}>›</span>
+              </div>
+              <div style={{...alertRow,borderBottom:"none"}} onClick={()=>setAlertFilter(alertFilter==="12h-win"?null:"12h-win")}
+                onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="12h-win"?"#fef8f0":""}>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <span style={bdg}>翌日12時締切</span>
+                  <span style={{fontSize:13}}>現時点で入賞確実な車両 <strong style={{fontSize:15}}>0</strong> 件</span>
+                </div>
+                <span style={{fontSize:16,color:s.muted}}>›</span>
+              </div>
             </div>
           </div>
-          <div style={{background:"#fff",border:"1px solid #e5e2da",borderRadius:10,overflow:"hidden"}}>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #f0ede6"}}>
-              <div style={{fontSize:13,fontWeight:700}}>現時点で入賞確実な車両件数</div>
-              <div style={{fontSize:10,color:s.muted,marginTop:2}}>「入札見送り」車両含む、未入札かつ、現時点で入札が3社未満の車両の件数</div>
-            </div>
-            <div style={alertRow} onClick={()=>setAlertFilter(alertFilter==="18h-win"?null:"18h-win")}
-              onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="18h-win"?"#fef8f0":""}>
-              <div style={{display:"flex",alignItems:"center",gap:12}}>
-                <span style={bdg}>本日18時締切</span>
-                <span style={{fontSize:13}}>現時点で入賞確実な車両 <strong style={{color:s.accent,fontSize:15}}>2</strong> 件</span>
-              </div>
-              <span style={{fontSize:16,color:s.muted}}>›</span>
-            </div>
-            <div style={{...alertRow,borderBottom:"none"}} onClick={()=>setAlertFilter(alertFilter==="12h-win"?null:"12h-win")}
-              onMouseEnter={e=>e.currentTarget.style.background="#f7f5f0"} onMouseLeave={e=>e.currentTarget.style.background=alertFilter==="12h-win"?"#fef8f0":""}>
-              <div style={{display:"flex",alignItems:"center",gap:12}}>
-                <span style={bdg}>翌日12時締切</span>
-                <span style={{fontSize:13}}>現時点で入賞確実な車両 <strong style={{fontSize:15}}>0</strong> 件</span>
-              </div>
-              <span style={{fontSize:16,color:s.muted}}>›</span>
-            </div>
-          </div>
-        </div>}
+        )}
 
         {alertFilter&&(
           <div style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0",fontSize:12}}>
@@ -584,22 +703,25 @@ function ListPage({pattern, setPattern, onSelect}) {
           </div>
         )}
 
-        {pattern==="B"&&(
-          <div style={{display:"flex",justifyContent:"flex-end",padding:"8px 0"}}>
-            <button onClick={()=>setTopFilterOpen(!topFilterOpen)} style={{
-              fontSize:12,padding:"6px 14px",border:`1px solid #d5d2ca`,borderRadius:6,background:"#fff",cursor:"pointer"
-            }}>{topFilterOpen?"▲ 絞り込みを閉じる":"▼ 絞り込みを開く"}</button>
-          </div>
-        )}
-        {pattern==="B"&&topFilterOpen&&(
-          <div style={{background:"#fff",border:`1px solid ${s.border}`,borderRadius:8,padding:14,marginBottom:6}}>
-            <div style={{fontSize:14,fontWeight:600,marginBottom:8}}>入札受付中の車両一覧</div>
-            <FilterPanel layout="top"/>
-          </div>
-        )}
+        {/* PC用 パターンB 上部フィルタ */}
+        <div className="pc-only">
+          {pattern==="B"&&(
+            <div style={{display:"flex",justifyContent:"flex-end",padding:"8px 0"}}>
+              <button onClick={()=>setTopFilterOpen(!topFilterOpen)} style={{
+                fontSize:12,padding:"6px 14px",border:`1px solid #d5d2ca`,borderRadius:6,background:"#fff",cursor:"pointer"
+              }}>{topFilterOpen?"▲ 絞り込みを閉じる":"▼ 絞り込みを開く"}</button>
+            </div>
+          )}
+          {pattern==="B"&&topFilterOpen&&(
+            <div style={{background:"#fff",border:`1px solid ${s.border}`,borderRadius:8,padding:14,marginBottom:6}}>
+              <div style={{fontSize:14,fontWeight:600,marginBottom:8}}>入札受付中の車両一覧</div>
+              <FilterPanel layout="top"/>
+            </div>
+          )}
+        </div>
 
-        {/* ===== 修正1: サイドバーと一覧の外枠をflexにして高さ揃え ===== */}
-        <div style={{display:"flex",background:"#fff",border:`1px solid ${s.border}`,borderRadius:10,overflow:"hidden",marginTop:4,alignItems:"stretch"}}>
+        {/* テーブル本体 — PC:サイドバー付き / SP:横スクロール全幅 */}
+        <div className="pc-only" style={{display:"flex",background:"#fff",border:`1px solid ${s.border}`,borderRadius:10,overflow:"hidden",marginTop:4,alignItems:"stretch"}}>
           {pattern==="A"&&<FilterSidebar open={filterOpen} setOpen={setFilterOpen}/>}
           {pattern==="A"&&!filterOpen&&(
             <div style={{width:36,minWidth:36,borderRight:`1px solid ${s.border}`,display:"flex",alignItems:"flex-start",justifyContent:"center",paddingTop:14,cursor:"pointer",background:s.filterBg}}
@@ -609,7 +731,13 @@ function ListPage({pattern, setPattern, onSelect}) {
           )}
           <CarTable pattern={pattern} onSelect={onSelect}/>
         </div>
-        <div style={{textAlign:"center",padding:"16px 0",fontSize:12,color:s.muted}}>
+
+        {/* SP用テーブル */}
+        <div className="sp-only" style={{background:"#fff",border:`1px solid ${s.border}`,borderRadius:10,overflow:"hidden",marginTop:4}}>
+          <CarTable pattern="B" onSelect={onSelect}/>
+        </div>
+
+        <div className="pc-only" style={{textAlign:"center",padding:"16px 0",fontSize:12,color:s.muted}}>
           {pattern==="A"?"パターンA — 左サイドバー型（開閉式フィルタ）":"パターンB — 上部フィルタ型（開閉式・テーブル全幅）"}
         </div>
       </div>
@@ -617,7 +745,119 @@ function ListPage({pattern, setPattern, onSelect}) {
   );
 }
 
+const DETAIL_SUPPORT = {
+  fullName:"トヨタ アルファード 2.5 S",
+  assessDate:"2026/4/8",
+  specs:[
+    ["車種","トヨタ アルファード 2.5 S","修復歴","無し","車検期限","2026年3月26日"],
+    ["エリア","千葉南市川市","年式","2023年式","初年度登録","2023年"],
+    ["査定番号","2226347","車体色","アルピンホワイト","車歴","自家用車"],
+    ["型式","DAA-ZWA10","燃料","ガソリン","国産・輸入車区分","正規"],
+    ["車台番号","WBA1J72070V230061","ミッション","FAT","モデル年","－"],
+    ["排気量","3000cc","乗車定員","4名","型式指定番号","1230"],
+    ["走行距離","〜91972km","ドア枚数","4枚","類別区分番号","3"],
+    ["駆動","2WD","ローン残債","－","最大積載量","－"],
+    ["カーナビ","－","メーター単位","km","リサイクル預託金","18110円"],
+    ["電動スライドドア","－","メーター交換歴","無し","入庫予定日","－"],
+    ["外装色No","300","色替","－","NOx","－"],
+    ["車両引渡し可能予定日","－","シリアル","－","NOx適合期限","－"],
+  ],
+  exterior:"B",
+  interior:"A",
+  inspectorComment:"外装Bランク。フロントバンパーに小傷あり。内装は良好。",
+  equipment:["禁煙車","サンルーフ","傷・へこみあり","ペット乗車実績あり","全周囲モニター","純正オプションサウンドシステム","純正後席モニター","純正フルエアロ","レザーシート","ワンオーナー","新車時の保証書・取扱説明書あり"],
+  inspectedEquipment:{
+    "サンルーフ":true,"革シート":false,"ナビ":true,"後席モニター":true,
+    "TV":true,"パワスラ":true,"リアゲート":false,"先進安全":true,
+    "バックカメラ":true,"フロントカメラ":false,"全方向カメラ":false,
+  },
+  camera:"バック",
+  awSize:"18",
+  tire:"夏タイヤ",
+  legRound:"純正",
+  attention:{
+    exterior:["外品ダメージ","ヘッドライトくもり","マフラー下回り不具合","サビ貼り","内装ダメージ","内装りキズ","ハンドルスレ"],
+    other:["外装小A・U・タッチP済","Fウィンドウモール劣化","テールライト内燃炎","シートへたり"],
+  },
+  photos:[
+    {label:"外装1",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop"},
+    {label:"外装2",img:"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop"},
+    {label:"内装1",img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop"},
+    {label:"内装2",img:"https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&h=300&fit=crop"},
+    {label:"エンジン",img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop"},
+    {label:"その他",img:"https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&h=300&fit=crop"},
+  ],
+};
+
+function SpecTable({specs}) {
+  return (
+    <div style={{border:`1px solid #e5e2da`,borderRadius:8,overflow:"hidden",marginBottom:12,background:"#fff"}}>
+      <table style={{width:"100%",fontSize:11,borderCollapse:"collapse",tableLayout:"fixed"}}>
+        <colgroup>
+          <col style={{width:"13%"}}/><col style={{width:"20%"}}/>
+          <col style={{width:"13%"}}/><col style={{width:"20%"}}/>
+          <col style={{width:"14%"}}/><col style={{width:"20%"}}/>
+        </colgroup>
+        <tbody>
+          {specs.map((row,ri)=>{
+            const cells=[];
+            for(let ci=0;ci<6;ci+=2){
+              const label=row[ci],val=row[ci+1];
+              if(!label&&!val){const prev=cells[cells.length-1];if(prev)prev.span+=2;continue;}
+              cells.push({label,val,span:1,ci});
+            }
+            return (
+              <tr key={ri} style={{borderBottom:ri<specs.length-1?`1px solid #f0ede6`:"none"}}>
+                {cells.map(c=>{
+                  const isRepair=c.val==="修復済"||c.val==="走行不可";
+                  return [
+                    <td key={c.ci} style={{padding:"6px 8px",color:"#666",background:"#efede6",whiteSpace:"nowrap",fontSize:11}}>{c.label}</td>,
+                    <td key={c.ci+1} colSpan={c.span} style={{padding:"6px 8px",color:isRepair?"#c0392b":"#1a1a1a",fontWeight:isRepair?700:500,whiteSpace:"nowrap"}}>{c.val}</td>
+                  ];
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function PhotoStrip({photos, lightbox, setLightbox}) {
+  return (
+    <>
+      <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>写真（クリックで拡大）</div>
+      <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4,marginBottom:12}}>
+        {photos.map((p,pi)=>(
+          <div key={p.label} onClick={e=>{e.stopPropagation();setLightbox(pi)}} style={{
+            width:140,height:105,flexShrink:0,borderRadius:8,overflow:"hidden",
+            cursor:"pointer",position:"relative",border:`1px solid #e5e2da`,transition:"transform .15s"
+          }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform=""}>
+            <img src={p.img} alt={p.label} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"4px 8px",
+              background:"linear-gradient(transparent,rgba(0,0,0,0.6))",fontSize:11,color:"#fff",fontWeight:500}}>{p.label}</div>
+          </div>
+        ))}
+      </div>
+      {lightbox!==null&&(
+        <div onClick={()=>setLightbox(null)} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+          <div style={{position:"relative",maxWidth:"90vw",maxHeight:"90vh"}} onClick={e=>e.stopPropagation()}>
+            <img src={photos[lightbox].img.replace("w=400&h=300","w=1200&h=900")} alt={photos[lightbox].label}
+              style={{maxWidth:"90vw",maxHeight:"80vh",objectFit:"contain",borderRadius:8,display:"block"}}/>
+            <div style={{textAlign:"center",color:"#fff",fontSize:14,marginTop:10,fontWeight:500}}>{photos[lightbox].label}</div>
+            <div style={{position:"absolute",top:-40,right:0,color:"#fff",fontSize:28,cursor:"pointer",fontWeight:300}} onClick={()=>setLightbox(null)}>×</div>
+            {lightbox>0&&<div onClick={()=>setLightbox(lightbox-1)} style={{position:"absolute",left:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>‹</div>}
+            {lightbox<photos.length-1&&<div onClick={()=>setLightbox(lightbox+1)} style={{position:"absolute",right:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>›</div>}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function DetailPage({car, onBack, onNavigate}) {
+  const [price,setPrice]=useState("");
   const [minPrice,setMinPrice]=useState("");
   const [maxPrice,setMaxPrice]=useState("");
   const [message,setMessage]=useState("");
@@ -625,12 +865,16 @@ function DetailPage({car, onBack, onNavigate}) {
   const [bidDone,setBidDone]=useState(false);
   const [memoSaved,setMemoSaved]=useState(false);
   const [lightbox,setLightbox]=useState(null);
+  const [mode,setMode]=useState(car.support?"support":"buy");
   const carIdx=CARS.findIndex(c=>c.id===car.id);
+  const isSupport=mode==="support";
+  const det=isSupport?DETAIL_SUPPORT:DETAIL;
+  const gradeColor={A:"#2e7d32",B:"#1565c0",C:"#e65100",D:"#c62828"};
 
   return (
     <div style={{background:s.bg,minHeight:"100vh"}}>
       <Header/>
-      <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}}>
+      <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}} className="sp-pad">
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0 8px"}}>
           <span style={{fontSize:13,color:s.link,cursor:"pointer"}} onClick={onBack}>← 入札一覧に戻る</span>
           <div style={{display:"flex",gap:16,fontSize:13,color:s.muted}}>
@@ -641,28 +885,41 @@ function DetailPage({car, onBack, onNavigate}) {
           </div>
         </div>
 
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8,gap:12}}>
-          <div style={{display:"flex",alignItems:"center",gap:14}}>
-            <h1 style={{fontSize:20,fontWeight:700,margin:0,letterSpacing:-.5}}>{DETAIL.fullName}</h1>
-            <div style={{display:"flex",alignItems:"center",gap:8,background:"linear-gradient(135deg, #fff3e0, #fff8e1)",border:"1px solid #ffe0b2",borderRadius:8,padding:"6px 14px"}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#e65100",whiteSpace:"nowrap"}}>本日12時締切 <span style={{fontSize:14}}>50</span>件</div>
-              <div style={{width:1,height:20,background:"#ffe0b2"}}/>
-              <div style={{fontSize:14,fontWeight:800,color:"#bf360c",whiteSpace:"nowrap"}}>あと2件！</div>
-              <div style={{display:"flex",flexDirection:"column",gap:2}}>
-                <div style={{width:80,height:6,background:"#ffe0b2",borderRadius:3}}>
-                  <div style={{width:"96%",height:"100%",background:"#ff9800",borderRadius:3}}/>
-                </div>
-                <div style={{fontSize:9,color:"#bf360c",textAlign:"right"}}>48/50</div>
-              </div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8,gap:12}} className="sp-title-row">
+          <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+            <h1 style={{fontSize:20,fontWeight:700,margin:0,letterSpacing:-.5}}>{det.fullName}</h1>
+            {/* モード切替タブ */}
+            <div style={{display:"flex",gap:0,border:"1px solid #d5d2ca",borderRadius:6,overflow:"hidden"}}>
+              <button onClick={()=>setMode("buy")} style={{
+                padding:"5px 16px",fontSize:12,fontWeight:600,border:"none",cursor:"pointer",
+                background:!isSupport?s.dark:"#fff",color:!isSupport?"#fff":s.muted,transition:"all .15s"
+              }}>買取</button>
+              <button onClick={()=>setMode("support")} style={{
+                padding:"5px 16px",fontSize:12,fontWeight:600,border:"none",cursor:"pointer",
+                background:isSupport?"#F9A825":"#fff",color:isSupport?"#fff":s.muted,transition:"all .15s",borderLeft:"1px solid #d5d2ca"
+              }}>サポート</button>
             </div>
+            {!isSupport&&(
+              <div style={{display:"flex",alignItems:"center",gap:8,background:"#fff8e1",border:"1px solid #ffe0b2",borderRadius:8,padding:"6px 14px"}} className="sp-bid-banner">
+                <div style={{fontSize:12,fontWeight:700,color:"#e65100",whiteSpace:"nowrap"}}>本日12時締切 <span style={{fontSize:14}}>50</span>件</div>
+                <div style={{width:1,height:20,background:"#ffe0b2"}}/>
+                <div style={{fontSize:14,fontWeight:800,color:"#bf360c",whiteSpace:"nowrap"}}>あと2件！</div>
+                <div style={{display:"flex",flexDirection:"column",gap:2}}>
+                  <div style={{width:80,height:6,background:"#ffe0b2",borderRadius:3}}>
+                    <div style={{width:"96%",height:"100%",background:"#ff9800",borderRadius:3}}/>
+                  </div>
+                  <div style={{fontSize:9,color:"#bf360c",textAlign:"right"}}>48/50</div>
+                </div>
+              </div>
+            )}
           </div>
-          <span style={{fontSize:13,color:s.muted,whiteSpace:"nowrap"}}>査定日 {DETAIL.assessDate}</span>
+          <span style={{fontSize:13,color:s.muted,whiteSpace:"nowrap"}}>査定日 {det.assessDate}</span>
         </div>
 
-        <div style={{display:"flex",gap:16,alignItems:"flex-start",flexWrap:"wrap"}}>
-          <div style={{flex:1,minWidth:320}}>
+        <div style={{display:"flex",gap:16,alignItems:"flex-start"}} className="sp-stack">
+          <div style={{flex:1,minWidth:320}} className="sp-full sp-detail-left">
 
-            {/* 0. フリーメモ（最上部） */}
+            {/* フリーメモ */}
             <div style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:12}}>
               <div style={{flex:1}}>
                 <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
@@ -676,102 +933,213 @@ function DetailPage({car, onBack, onNavigate}) {
               }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
             </div>
 
-            {/* 1. 基本情報 */}
+            {/* 基本情報 */}
             <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>基本情報</div>
-            <div style={{border:`1px solid ${s.border}`,borderRadius:8,overflow:"hidden",marginBottom:12,background:"#fff"}}>
-              <table style={{width:"100%",fontSize:11,borderCollapse:"collapse",tableLayout:"fixed"}}>
-                <colgroup>
-                  <col style={{width:"13%"}}/>
-                  <col style={{width:"20%"}}/>
-                  <col style={{width:"13%"}}/>
-                  <col style={{width:"20%"}}/>
-                  <col style={{width:"14%"}}/>
-                  <col style={{width:"20%"}}/>
-                </colgroup>
-                <tbody>
-                  {DETAIL.specs.map((row,ri)=>{
-                    const cells=[];
-                    for(let ci=0;ci<6;ci+=2){
-                      const label=row[ci],val=row[ci+1];
-                      if(!label&&!val) {
-                        const prev=cells[cells.length-1];
-                        if(prev) prev.span+=2;
-                        continue;
-                      }
-                      cells.push({label,val,span:1,ci});
-                    }
-                    return (
-                      <tr key={ri} style={{borderBottom:ri<DETAIL.specs.length-1?`1px solid ${s.borderLight}`:"none"}}>
-                        {cells.map(c=>{
-                          const isRepair=c.val==="修復済"||c.val==="走行不可";
-                          return [
-                            <td key={c.ci} style={{padding:"6px 8px",color:"#666",background:"#efede6",whiteSpace:"nowrap",fontSize:11}}>{c.label}</td>,
-                            <td key={c.ci+1} colSpan={c.span} style={{padding:"6px 8px",color:isRepair?s.accent:s.dark,fontWeight:isRepair?700:500,whiteSpace:"nowrap"}}>{c.val}</td>
-                          ];
-                        })}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <SpecTable specs={det.specs}/>
 
-            {/* 2. 装備情報 */}
+            {/* サポート追加：外装・内装評価 + 展開図 + 検査員コメント */}
+            {isSupport&&(
+              <div style={{marginBottom:12}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>評価</div>
+
+                {/* 評価グレード + 俯瞰図 横並び */}
+                <div style={{display:"flex",gap:12,marginBottom:8,alignItems:"flex-start"}}>
+
+                  {/* 左：グレード + 検査員コメント */}
+                  <div style={{display:"flex",flexDirection:"column",gap:8,minWidth:160}}>
+                    {[["外装評価",det.exterior],["内装評価",det.interior]].map(([lbl,grade])=>(
+                      <div key={lbl} style={{border:`1px solid #e5e2da`,borderRadius:8,padding:"10px 14px",background:"#fff",display:"flex",alignItems:"center",gap:10}}>
+                        <div style={{fontSize:11,color:"#888"}}>{lbl}</div>
+                        <div style={{fontSize:28,fontWeight:800,color:gradeColor[grade]||"#333"}}>{grade}</div>
+                      </div>
+                    ))}
+                    <div style={{border:`1px solid #e5e2da`,borderRadius:8,padding:"10px 14px",background:"#fff"}}>
+                      <div style={{fontSize:11,color:"#888",marginBottom:4}}>検査員コメント</div>
+                      <div style={{fontSize:12,color:"#1a1a1a",lineHeight:1.7}}>{det.inspectorComment}</div>
+                    </div>
+                  </div>
+
+                  {/* 右：車両俯瞰図 */}
+                  <div style={{flex:1,border:`1px solid #e5e2da`,borderRadius:8,background:"#fff",padding:"10px",overflow:"hidden"}}>
+                    <div style={{fontSize:11,color:"#888",marginBottom:6}}>損傷マップ</div>
+                    <svg width="100%" viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+                      {/* 凡例 */}
+                      <circle cx="12" cy="10" r="5" fill="#E24B4A" opacity="0.85"/>
+                      <text x="20" y="14" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">外装損傷</text>
+                      <circle cx="76" cy="10" r="5" fill="#F9A825" opacity="0.85"/>
+                      <text x="84" y="14" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">軽微な傷</text>
+                      <text x="220" y="10" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">評価点総合</text>
+                      <text x="288" y="22" fontFamily="-apple-system,sans-serif" fontSize="20" fontWeight="800" fill="#1565c0">4</text>
+                      <text x="306" y="22" fontFamily="-apple-system,sans-serif" fontSize="16" fontWeight="700" fill="#c0392b">B</text>
+
+                      {/* ボディ */}
+                      <rect x="100" y="34" width="160" height="152" rx="24" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="1"/>
+                      {/* フロントバンパー */}
+                      <rect x="108" y="22" width="144" height="18" rx="6" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+                      {/* リアバンパー */}
+                      <rect x="108" y="180" width="144" height="18" rx="6" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+                      {/* ルーフ */}
+                      <rect x="118" y="58" width="124" height="104" rx="5" fill="#d4d0c8" stroke="#b0aa9e" strokeWidth="0.8"/>
+                      {/* フロントガラス */}
+                      <rect x="120" y="42" width="120" height="22" rx="3" fill="#c8dff0" stroke="#9ab5cc" strokeWidth="0.8"/>
+                      {/* リアガラス */}
+                      <rect x="120" y="156" width="120" height="18" rx="3" fill="#c8dff0" stroke="#9ab5cc" strokeWidth="0.8"/>
+                      {/* ドア境界 */}
+                      <line x1="100" y1="108" x2="260" y2="108" stroke="#b0aa9e" strokeWidth="0.8" strokeDasharray="4 3"/>
+                      {/* ミラー左 */}
+                      <rect x="83" y="50" width="18" height="12" rx="3" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+                      {/* ミラー右 */}
+                      <rect x="259" y="50" width="18" height="12" rx="3" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+                      {/* タイヤ FL */}
+                      <rect x="78" y="38" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+                      {/* タイヤ FR */}
+                      <rect x="260" y="38" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+                      {/* タイヤ RL */}
+                      <rect x="78" y="144" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+                      {/* タイヤ RR */}
+                      <rect x="260" y="144" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+
+                      {/* 方向ラベル */}
+                      <text x="180" y="20" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">前</text>
+                      <text x="180" y="210" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">後</text>
+                      <text x="66" y="112" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">左</text>
+                      <text x="294" y="112" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">右</text>
+
+                      {/* === 損傷マーカー === */}
+                      {/* フロントバンパー左 赤 */}
+                      <circle cx="126" cy="27" r="6" fill="#E24B4A" opacity="0.85"/>
+                      <text x="126" y="30" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">×</text>
+                      <line x1="120" y1="27" x2="52" y2="44" stroke="#E24B4A" strokeWidth="0.7" strokeDasharray="3 2"/>
+                      <text x="4" y="46" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">外品</text>
+                      <text x="4" y="55" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">ダメージ</text>
+
+                      {/* ヘッドライトくもり右 黄 */}
+                      <circle cx="228" cy="40" r="5" fill="#F9A825" opacity="0.85"/>
+                      <text x="228" y="43" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
+                      <line x1="233" y1="38" x2="292" y2="46" stroke="#F9A825" strokeWidth="0.7" strokeDasharray="3 2"/>
+                      <text x="294" y="46" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#854F0B">HLくもり</text>
+
+                      {/* サビ 左リア 黄 */}
+                      <circle cx="108" cy="162" r="5" fill="#F9A825" opacity="0.85"/>
+                      <text x="108" y="165" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
+                      <line x1="103" y1="162" x2="52" y2="158" stroke="#F9A825" strokeWidth="0.7" strokeDasharray="3 2"/>
+                      <text x="4" y="160" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#854F0B">サビ貼り</text>
+
+                      {/* マフラー右リア 赤 */}
+                      <circle cx="240" cy="184" r="6" fill="#E24B4A" opacity="0.85"/>
+                      <text x="240" y="187" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">×</text>
+                      <line x1="246" y1="184" x2="292" y2="188" stroke="#E24B4A" strokeWidth="0.7" strokeDasharray="3 2"/>
+                      <text x="294" y="186" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">マフラー</text>
+                      <text x="294" y="195" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">不具合</text>
+
+                      {/* 内装 黄 */}
+                      <circle cx="180" cy="108" r="5" fill="#F9A825" opacity="0.85"/>
+                      <text x="180" y="111" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* サポート追加：注意事項 */}
+            {isSupport&&(
+              <div style={{marginBottom:12}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>注意事項</div>
+                <div style={{border:`1px solid #e5e2da`,borderRadius:8,padding:"10px 14px",background:"#fff"}}>
+                  <div style={{marginBottom:6}}>
+                    <span style={{fontSize:10,fontWeight:600,color:"#fff",background:"#c0392b",borderRadius:3,padding:"1px 6px",marginRight:6}}>■</span>
+                    <span style={{fontSize:11,color:"#888"}}>外装・下廻り</span>
+                  </div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>
+                    {det.attention.exterior.map(a=><span key={a} style={{fontSize:11,color:"#333",padding:"2px 8px",background:"#f5f3ee",borderRadius:3}}>{a}</span>)}
+                  </div>
+                  <div style={{marginBottom:6}}>
+                    <span style={{fontSize:10,fontWeight:600,color:"#fff",background:"#888",borderRadius:3,padding:"1px 6px",marginRight:6}}>■</span>
+                    <span style={{fontSize:11,color:"#888"}}>その他</span>
+                  </div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                    {det.attention.other.map(a=><span key={a} style={{fontSize:11,color:"#333",padding:"2px 8px",background:"#f5f3ee",borderRadius:3}}>{a}</span>)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 装備情報 */}
             <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>装備情報</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
-              {DETAIL.equipment.map(eq=>(
+              {det.equipment.map(eq=>(
                 <span key={eq} style={{fontSize:11,padding:"5px 14px",border:"1px solid #d5d2ca",borderRadius:20,whiteSpace:"nowrap",background:"#fff",color:"#4a4a47",fontWeight:500}}>{eq}</span>
               ))}
             </div>
 
-            {/* 3. PRコメント（装備情報と写真の間） */}
+            {/* サポート追加：検査済み装備情報 */}
+            {isSupport&&(
+              <div style={{marginBottom:12}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>検査済み装備情報</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {Object.entries(det.inspectedEquipment).map(([eq,ok])=>(
+                    <span key={eq} style={{
+                      fontSize:11,padding:"5px 14px",border:`1px solid ${ok?"#a5d6a7":"#e0ddd6"}`,borderRadius:20,
+                      whiteSpace:"nowrap",background:ok?"#e8f5e9":"#f5f5f5",
+                      color:ok?"#2e7d32":"#aaa",fontWeight:500,
+                      display:"flex",alignItems:"center",gap:4
+                    }}>
+                      <span style={{fontSize:12}}>{ok?"✓":"－"}</span>{eq}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* PRコメント */}
             <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>PRコメント</div>
             <div style={{fontSize:12,color:s.muted,marginBottom:12,lineHeight:1.7}}>（未入力）</div>
 
-            {/* 4. 写真 */}
-            <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>写真（クリックで拡大）</div>
-            <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4,marginBottom:12}}>
-              {DETAIL.photos.map((p,pi)=>(
-                <div key={p.label} onClick={e=>{e.stopPropagation();setLightbox(pi)}} style={{
-                  width:140,height:105,flexShrink:0,borderRadius:8,overflow:"hidden",
-                  cursor:"pointer",position:"relative",border:`1px solid ${s.border}`,transition:"transform .15s"
-                }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform=""}>
-                  <img src={p.img} alt={p.label} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
-                  <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"4px 8px",
-                    background:"linear-gradient(transparent,rgba(0,0,0,0.6))",
-                    fontSize:11,color:"#fff",fontWeight:500}}>{p.label}</div>
-                </div>
-              ))}
-            </div>
-
+            {/* 写真 */}
+            <PhotoStrip photos={det.photos} lightbox={lightbox} setLightbox={setLightbox}/>
           </div>
 
-          <div style={{width:280,minWidth:280}}>
+          {/* 右カラム：入札パネル */}
+          <div style={{width:280,minWidth:280}} className="sp-full sp-detail-right">
             <div style={{border:`1px solid ${s.border}`,borderRadius:10,padding:18,background:"#fff",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
                 <div style={{fontSize:16,fontWeight:700}}>入札フォーム</div>
                 {car.deadline&&<span style={{fontSize:11,padding:"4px 12px",background:s.dangerBg,color:s.accent,borderRadius:20,fontWeight:600,display:"flex",alignItems:"center",gap:4}}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   {car.deadline}締切
                 </span>}
               </div>
-              <div style={{marginBottom:12}}>
-                <div style={{fontSize:12,color:s.muted,marginBottom:4}}>下限金額</div>
-                <input type="text" value={minPrice} onChange={e=>setMinPrice(e.target.value)}
-                  style={{width:"100%",fontSize:14,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6}} placeholder="円"/>
-              </div>
-              <div style={{marginBottom:12}}>
-                <div style={{fontSize:12,color:s.muted,marginBottom:4}}>上限金額</div>
-                <input type="text" value={maxPrice} onChange={e=>setMaxPrice(e.target.value)}
-                  style={{width:"100%",fontSize:14,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6}} placeholder="円"/>
-              </div>
+
+              {isSupport ? (
+                /* サポート：入札金額ひとつ */
+                <div style={{marginBottom:12}}>
+                  <div style={{fontSize:12,color:s.muted,marginBottom:4}}>入札金額</div>
+                  <input type="text" value={price} onChange={e=>setPrice(e.target.value)}
+                    style={{width:"100%",fontSize:14,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6}} placeholder="円"/>
+                </div>
+              ) : (
+                /* 買取：下限・上限 */
+                <>
+                  <div style={{marginBottom:12}}>
+                    <div style={{fontSize:12,color:s.muted,marginBottom:4}}>下限金額</div>
+                    <input type="text" value={minPrice} onChange={e=>setMinPrice(e.target.value)}
+                      style={{width:"100%",fontSize:14,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6}} placeholder="円"/>
+                  </div>
+                  <div style={{marginBottom:12}}>
+                    <div style={{fontSize:12,color:s.muted,marginBottom:4}}>上限金額</div>
+                    <input type="text" value={maxPrice} onChange={e=>setMaxPrice(e.target.value)}
+                      style={{width:"100%",fontSize:14,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6}} placeholder="円"/>
+                  </div>
+                </>
+              )}
+
               <div style={{marginBottom:14}}>
                 <div style={{fontSize:12,color:s.muted,marginBottom:4}}>メッセージ（任意）</div>
                 <textarea value={message} onChange={e=>setMessage(e.target.value)}
                   style={{width:"100%",fontSize:12,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6,minHeight:64,resize:"vertical",fontFamily:"inherit"}}
                   placeholder="400文字以内" maxLength={400}/>
               </div>
-              <div style={{fontSize:11,color:s.muted,marginBottom:10}}>他に <strong style={{color:s.dark}}>0社</strong> が入札　{DETAIL.assessDate} 18:00締切</div>
+              <div style={{fontSize:11,color:s.muted,marginBottom:10}}>他に <strong style={{color:s.dark}}>0社</strong> が入札　{det.assessDate} 12:00締切</div>
               <button onClick={()=>setBidDone(true)} style={{
                 width:"100%",padding:"12px 0",fontSize:15,fontWeight:700,border:"none",borderRadius:8,cursor:"pointer",transition:"all .2s",
                 background:bidDone?s.successBg:s.accent,color:bidDone?s.successText:"#fff"
@@ -781,50 +1149,61 @@ function DetailPage({car, onBack, onNavigate}) {
 
             <div style={{border:`1px solid ${s.border}`,borderRadius:10,padding:16,background:"#fff",marginBottom:14}}>
               <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>入札見送り設定</div>
-              <div style={{fontSize:11,color:s.muted,marginBottom:8,lineHeight:1.5}}>この車両の入札を行わない場合の送りを設定してください。</div>
+              <div style={{fontSize:11,color:s.muted,marginBottom:8,lineHeight:1.5}}>この車両の入札を行わない場合は、入札見送りを設定してください。</div>
               <button style={{fontSize:12,padding:"6px 16px",border:`1px solid #d5d2ca`,borderRadius:6,background:"#fff",cursor:"pointer"}}>入札見送り</button>
             </div>
 
-            <div style={{border:`1px solid ${s.border}`,borderRadius:10,padding:16,background:"#fff"}}>
-              <div style={{fontSize:14,fontWeight:600,marginBottom:8}}>入札のご注意</div>
-              <div style={{fontSize:11,color:s.muted,lineHeight:1.7,marginBottom:12}}>入札額の上限を基準に、以下の通り入札できる金額に制限がございます。下記をご覧いただき、期限内での入札をお願いいたします。</div>
-              <table style={{width:"100%",fontSize:11,borderCollapse:"collapse"}}>
-                <tbody>
-                  {[
-                    ["〜49万9,000円","20万円幅"],
-                    ["50万〜99万9,000円","30万円幅"],
-                    ["100万〜199万9,000円","40万円幅"],
-                    ["200万〜299万9,000円","50万円幅"],
-                    ["300万〜499万9,000円","100万円幅"],
-                    ["500万円〜","150万円幅"],
-                  ].map((r,i)=>(
-                    <tr key={i} style={{borderBottom:i<5?`1px solid ${s.borderLight}`:"none"}}>
-                      <td style={{padding:"6px 0",color:s.dark}}>{r[0]}</td>
-                      <td style={{padding:"6px 0",textAlign:"right",color:s.muted}}>{r[1]}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {!isSupport&&(
+              <div style={{border:`1px solid ${s.border}`,borderRadius:10,padding:16,background:"#fff"}}>
+                <div style={{fontSize:14,fontWeight:600,marginBottom:8}}>入札のご注意</div>
+                <div style={{fontSize:11,color:s.muted,lineHeight:1.7,marginBottom:12}}>入札額の上限を基準に、以下の通り入札できる金額に制限がございます。</div>
+                <table style={{width:"100%",fontSize:11,borderCollapse:"collapse"}}>
+                  <tbody>
+                    {[
+                      ["〜49万9,000円","20万円幅"],
+                      ["50万〜99万9,000円","30万円幅"],
+                      ["100万〜199万9,000円","40万円幅"],
+                      ["200万〜299万9,000円","50万円幅"],
+                      ["300万〜499万9,000円","100万円幅"],
+                      ["500万円〜","150万円幅"],
+                    ].map((r,i)=>(
+                      <tr key={i} style={{borderBottom:i<5?`1px solid ${s.borderLight}`:"none"}}>
+                        <td style={{padding:"6px 0",color:s.dark}}>{r[0]}</td>
+                        <td style={{padding:"6px 0",textAlign:"right",color:s.muted}}>{r[1]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {isSupport&&(
+              <div style={{border:`1px solid #ffe0b2`,borderRadius:10,padding:16,background:"#fffde7"}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:8,color:"#7A6000"}}>入札のご注意（サポート）</div>
+                <div style={{fontSize:11,color:"#7A6000",lineHeight:1.7,marginBottom:12}}>入札額の上限を基準に、以下の通り入札できる金額に手数料がかかります。</div>
+                <table style={{width:"100%",fontSize:11,borderCollapse:"collapse"}}>
+                  <tbody>
+                    {[
+                      ["〜500,000円","40,000円"],
+                      ["500,001〜1,000,000円","50,000円"],
+                      ["1,000,001〜1,500,000円","60,000円"],
+                      ["1,500,001〜2,000,000円","70,000円"],
+                      ["2,000,001〜2,500,000円","75,000円"],
+                      ["2,500,001〜3,000,000円","80,000円"],
+                      ["3,000,001円〜","85,000円"],
+                    ].map((r,i)=>(
+                      <tr key={i} style={{borderBottom:i<6?`1px solid #ffe0b2`:"none"}}>
+                        <td style={{padding:"6px 0",color:"#5D4037"}}>{r[0]}</td>
+                        <td style={{padding:"6px 0",textAlign:"right",color:"#7A6000",fontWeight:600}}>{r[1]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      {lightbox!==null&&(
-        <div onClick={()=>setLightbox(null)} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-          <div style={{position:"relative",maxWidth:"90vw",maxHeight:"90vh"}} onClick={e=>e.stopPropagation()}>
-            <img src={DETAIL.photos[lightbox].img.replace("w=400&h=300","w=1200&h=900")} alt={DETAIL.photos[lightbox].label}
-              style={{maxWidth:"90vw",maxHeight:"80vh",objectFit:"contain",borderRadius:8,display:"block"}}/>
-            <div style={{textAlign:"center",color:"#fff",fontSize:14,marginTop:10,fontWeight:500}}>{DETAIL.photos[lightbox].label}</div>
-            <div style={{position:"absolute",top:-40,right:0,color:"#fff",fontSize:28,cursor:"pointer",fontWeight:300}} onClick={()=>setLightbox(null)}>×</div>
-            {lightbox>0&&(
-              <div onClick={()=>setLightbox(lightbox-1)} style={{position:"absolute",left:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>‹</div>
-            )}
-            {lightbox<DETAIL.photos.length-1&&(
-              <div onClick={()=>setLightbox(lightbox+1)} style={{position:"absolute",right:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>›</div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
