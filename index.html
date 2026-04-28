@@ -1116,36 +1116,36 @@ function DetailPage({car, onBack, onNavigate}) {
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
                 <div>
                   <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>PRコメント</div>
-                  <div style={{fontSize:12,color:s.muted,padding:"8px 10px",border:"1px solid #e5e2da",borderRadius:6,minHeight:80,background:"#faf9f6",lineHeight:1.7}}>（未入力）</div>
+                  <div style={{fontSize:12,color:s.muted,padding:"8px 10px",border:"1px solid #e5e2da",borderRadius:6,minHeight:60,background:"#faf9f6",lineHeight:1.7}}>（未入力）</div>
                 </div>
                 <div>
-                  <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
-                  <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
-                    style={{width:"100%",fontSize:12,padding:"8px 10px",border:"1px solid #d5d2ca",borderRadius:6,minHeight:80,resize:"vertical",fontFamily:"inherit"}}
-                    placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
-                  <div style={{display:"flex",justifyContent:"flex-end",marginTop:4}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                    <div style={{fontSize:13,fontWeight:600}}>フリーメモ</div>
                     <button onClick={()=>setMemoSaved(true)} style={{
-                      padding:"4px 12px",fontSize:11,fontWeight:500,border:"1px solid #d5d2ca",borderRadius:20,cursor:"pointer",
+                      padding:"2px 10px",fontSize:11,fontWeight:500,border:"1px solid #d5d2ca",borderRadius:20,cursor:"pointer",
                       background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
-                    }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
+                    }}>{memoSaved?"✓ 保存済":"↻ 更新"}</button>
                   </div>
+                  <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
+                    style={{width:"100%",fontSize:12,padding:"8px 10px",border:"1px solid #d5d2ca",borderRadius:6,minHeight:60,resize:"vertical",fontFamily:"inherit"}}
+                    placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
                 </div>
               </div>
             )}
 
             {/* サポート：フリーメモ（最上部） */}
             {isSupport&&(
-              <div style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:12}}>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
-                  <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
-                    style={{width:"100%",fontSize:12,padding:"8px 10px",border:"1px solid #d5d2ca",borderRadius:6,minHeight:48,resize:"vertical",fontFamily:"inherit"}}
-                    placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
+              <div style={{marginBottom:12}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                  <div style={{fontSize:13,fontWeight:600}}>フリーメモ</div>
+                  <button onClick={()=>setMemoSaved(true)} style={{
+                    padding:"2px 10px",fontSize:11,fontWeight:500,border:"1px solid #d5d2ca",borderRadius:20,cursor:"pointer",
+                    background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
+                  }}>{memoSaved?"✓ 保存済":"↻ 更新"}</button>
                 </div>
-                <button onClick={()=>setMemoSaved(true)} style={{
-                  padding:"6px 14px",fontSize:11,fontWeight:500,border:"1px solid #d5d2ca",borderRadius:20,cursor:"pointer",marginTop:22,whiteSpace:"nowrap",
-                  background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
-                }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
+                <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
+                  style={{width:"100%",fontSize:12,padding:"8px 10px",border:"1px solid #d5d2ca",borderRadius:6,minHeight:44,resize:"vertical",fontFamily:"inherit"}}
+                  placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
               </div>
             )}
 
