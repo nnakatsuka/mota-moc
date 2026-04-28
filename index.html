@@ -96,12 +96,12 @@ const DETAIL = {
   ],
   equipment:["禁煙車","サンルーフ","傷・へこみあり","ペット乗車実績あり","全周囲モニター","純正オプション サウンドシステム","純正後席モニター","純正フルエアロ","レザーシート","ワンオーナー","新車時の保証書 取扱説明書あり"],
   photos:[
-    {label:"外装1",img:"https://picsum.photos/seed/car1/400/300"},
-    {label:"外装2",img:"https://picsum.photos/seed/car2/400/300"},
-    {label:"内装1",img:"https://picsum.photos/seed/car3/400/300"},
-    {label:"内装2",img:"https://picsum.photos/seed/car4/400/300"},
-    {label:"エンジン",img:"https://picsum.photos/seed/car5/400/300"},
-    {label:"その他",img:"https://picsum.photos/seed/car6/400/300"},
+    {label:"外装1",img:"https://picsum.photos/id/111/400/300"},
+    {label:"外装2",img:"https://picsum.photos/id/133/400/300"},
+    {label:"内装1",img:"https://picsum.photos/id/211/400/300"},
+    {label:"内装2",img:"https://picsum.photos/id/137/400/300"},
+    {label:"エンジン",img:"https://picsum.photos/id/174/400/300"},
+    {label:"その他",img:"https://picsum.photos/id/142/400/300"},
   ],
 };
 
@@ -894,12 +894,12 @@ const DETAIL_SUPPORT = {
     other:["外装小A・U・タッチP済","Fウィンドウモール劣化","テールライト内燃炎","シートへたり"],
   },
   photos:[
-    {label:"外装1",img:"https://picsum.photos/seed/car1/400/300"},
-    {label:"外装2",img:"https://picsum.photos/seed/car2/400/300"},
-    {label:"内装1",img:"https://picsum.photos/seed/car3/400/300"},
-    {label:"内装2",img:"https://picsum.photos/seed/car4/400/300"},
-    {label:"エンジン",img:"https://picsum.photos/seed/car5/400/300"},
-    {label:"その他",img:"https://picsum.photos/seed/car6/400/300"},
+    {label:"外装1",img:"https://picsum.photos/id/111/400/300"},
+    {label:"外装2",img:"https://picsum.photos/id/133/400/300"},
+    {label:"内装1",img:"https://picsum.photos/id/211/400/300"},
+    {label:"内装2",img:"https://picsum.photos/id/137/400/300"},
+    {label:"エンジン",img:"https://picsum.photos/id/174/400/300"},
+    {label:"その他",img:"https://picsum.photos/id/142/400/300"},
   ],
 };
 
@@ -976,7 +976,7 @@ function PhotoStrip({photos, lightbox, setLightbox}) {
       {lightbox!==null&&(
         <div onClick={()=>setLightbox(null)} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
           <div style={{position:"relative",maxWidth:"90vw",maxHeight:"90vh"}} onClick={e=>e.stopPropagation()}>
-            <img src={photos[lightbox].img.replace("w=400&h=300","w=1200&h=900")} alt={photos[lightbox].label}
+            <img src={photos[lightbox].img.replace("/400/300","/1200/900")} alt={photos[lightbox].label}
               style={{maxWidth:"90vw",maxHeight:"80vh",objectFit:"contain",borderRadius:8,display:"block"}}/>
             <div style={{textAlign:"center",color:"#fff",fontSize:14,marginTop:10,fontWeight:500}}>{photos[lightbox].label}</div>
             <div style={{position:"absolute",top:-40,right:0,color:"#fff",fontSize:28,cursor:"pointer",fontWeight:300}} onClick={()=>setLightbox(null)}>×</div>
@@ -1152,21 +1152,8 @@ function DetailPage({car, onBack, onNavigate}) {
             {isSupport ? (
               /* ===== サポートモード専用レイアウト ===== */
               <>
-                {/* 1. 写真：横スクロール全幅 */}
-                <div style={{marginBottom:14}}>
-                  <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>写真（クリックで拡大）</div>
-                  <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:6}}>
-                    {det.photos.map((p,pi)=>(
-                      <div key={p.label} onClick={()=>setLightbox(pi)} style={{
-                        width:180,height:130,flexShrink:0,borderRadius:8,overflow:"hidden",
-                        cursor:"pointer",position:"relative",border:"1px solid #e5e2da",transition:"transform .15s"
-                      }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform=""}>
-                        <img src={p.img} alt={p.label} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
-                        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"4px 8px",background:"linear-gradient(transparent,rgba(0,0,0,0.6))",fontSize:11,color:"#fff",fontWeight:500}}>{p.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* 1. 写真：横スクロール＋ライトボックス */}
+                <PhotoStrip photos={det.photos} lightbox={lightbox} setLightbox={setLightbox}/>
 
                 {/* 2. 展開図＋評価（左） ＋ 車種情報（右） */}
                 <div style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:12}}>
