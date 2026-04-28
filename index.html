@@ -973,18 +973,6 @@ function PhotoStrip({photos, lightbox, setLightbox}) {
           </div>
         ))}
       </div>
-      {lightbox!==null&&(
-        <div onClick={()=>setLightbox(null)} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-          <div style={{position:"relative",maxWidth:"90vw",maxHeight:"90vh"}} onClick={e=>e.stopPropagation()}>
-            <img src={photos[lightbox].img.replace("/400/300","/1200/900")} alt={photos[lightbox].label}
-              style={{maxWidth:"90vw",maxHeight:"80vh",objectFit:"contain",borderRadius:8,display:"block"}}/>
-            <div style={{textAlign:"center",color:"#fff",fontSize:14,marginTop:10,fontWeight:500}}>{photos[lightbox].label}</div>
-            <div style={{position:"absolute",top:-40,right:0,color:"#fff",fontSize:28,cursor:"pointer",fontWeight:300}} onClick={()=>setLightbox(null)}>×</div>
-            {lightbox>0&&<div onClick={()=>setLightbox(lightbox-1)} style={{position:"absolute",left:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>‹</div>}
-            {lightbox<photos.length-1&&<div onClick={()=>setLightbox(lightbox+1)} style={{position:"absolute",right:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>›</div>}
-          </div>
-        </div>
-      )}
     </>
   );
 }
@@ -1064,6 +1052,18 @@ function DetailPage({car, onBack, onNavigate}) {
               <button onClick={()=>setLightboxDamage(false)} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#888",lineHeight:1}}>×</button>
             </div>
             <DamageMapSVG/>
+          </div>
+        </div>
+      )}
+      {lightbox!==null&&(
+        <div onClick={()=>setLightbox(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+          <div style={{position:"relative",maxWidth:"90vw",maxHeight:"90vh"}} onClick={e=>e.stopPropagation()}>
+            <img src={det.photos[lightbox].img.replace("/400/300","/1200/900")} alt={det.photos[lightbox].label}
+              style={{maxWidth:"90vw",maxHeight:"80vh",objectFit:"contain",borderRadius:8,display:"block"}}/>
+            <div style={{textAlign:"center",color:"#fff",fontSize:14,marginTop:10,fontWeight:500}}>{det.photos[lightbox].label}</div>
+            <div style={{position:"absolute",top:-40,right:0,color:"#fff",fontSize:28,cursor:"pointer",fontWeight:300}} onClick={()=>setLightbox(null)}>×</div>
+            {lightbox>0&&<div onClick={()=>setLightbox(lightbox-1)} style={{position:"absolute",left:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>‹</div>}
+            {lightbox<det.photos.length-1&&<div onClick={()=>setLightbox(lightbox+1)} style={{position:"absolute",right:-50,top:"50%",transform:"translateY(-50%)",color:"#fff",fontSize:36,cursor:"pointer",padding:"10px"}}>›</div>}
           </div>
         </div>
       )}
@@ -1196,6 +1196,9 @@ function DetailPage({car, onBack, onNavigate}) {
             ) : (
               /* ===== 買取モードレイアウト ===== */
               <>
+                {/* 写真 */}
+                <PhotoStrip photos={det.photos} lightbox={lightbox} setLightbox={setLightbox}/>
+
                 {/* 基本情報 */}
                 <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>基本情報</div>
                 <SpecTable specs={det.specs}/>
@@ -1207,9 +1210,6 @@ function DetailPage({car, onBack, onNavigate}) {
                     <span key={eq} style={{fontSize:11,padding:"5px 14px",border:"1px solid #d5d2ca",borderRadius:20,whiteSpace:"nowrap",background:"#fff",color:"#4a4a47",fontWeight:500}}>{eq}</span>
                   ))}
                 </div>
-
-                {/* 写真 */}
-                <PhotoStrip photos={det.photos} lightbox={lightbox} setLightbox={setLightbox}/>
               </>
             )}
           </div>
