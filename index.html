@@ -96,12 +96,12 @@ const DETAIL = {
   ],
   equipment:["禁煙車","サンルーフ","傷・へこみあり","ペット乗車実績あり","全周囲モニター","純正オプション サウンドシステム","純正後席モニター","純正フルエアロ","レザーシート","ワンオーナー","新車時の保証書 取扱説明書あり"],
   photos:[
-    {label:"外装1",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop"},
-    {label:"外装2",img:"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop"},
-    {label:"内装1",img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop"},
-    {label:"内装2",img:"https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&h=300&fit=crop"},
-    {label:"エンジン",img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop"},
-    {label:"その他",img:"https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&h=300&fit=crop"},
+    {label:"外装1",img:"https://picsum.photos/seed/car1/400/300"},
+    {label:"外装2",img:"https://picsum.photos/seed/car2/400/300"},
+    {label:"内装1",img:"https://picsum.photos/seed/car3/400/300"},
+    {label:"内装2",img:"https://picsum.photos/seed/car4/400/300"},
+    {label:"エンジン",img:"https://picsum.photos/seed/car5/400/300"},
+    {label:"その他",img:"https://picsum.photos/seed/car6/400/300"},
   ],
 };
 
@@ -844,6 +844,38 @@ const DETAIL_SUPPORT = {
     ["外装色No","300","色替","－","NOx","－"],
     ["車両引渡し可能予定日","－","シリアル","－","NOx適合期限","－"],
   ],
+  /* 車種情報：参考画像準拠のフラット配列（ラベル・値のペア） */
+  vehicleSpecs:[
+    ["車種","トヨタ アルファードハイブリッド GIエディション"],
+    ["グレード補定情報","グレード補定情報"],
+    ["エリア","東京都 世田谷区"],
+    ["査定番号","362730"],
+    ["年式","2023年"],
+    ["走行距離","〜12500km"],
+    ["車台番号","ADBA123-363"],
+    ["初年度登録年月","2024年3月"],
+    ["車両引渡し可能予定日","2024年1月15日"],
+    ["確定型式","DBAADH-2356"],
+    ["類別区分番号","3"],
+    ["車歴","－"],
+    ["登録番号（除事）","DBAADH-2356"],
+    ["登録番号（分類番号）","DBAADH-2356"],
+    ["型式","DBAADH-2356"],
+    ["排気量","1500cc"],
+    ["シフト","AT"],
+    ["駆動","4WD"],
+    ["定員","4名"],
+    ["燃料","ガソリン"],
+    ["車検","2026年3月25日"],
+    ["外装色（メイン）","ブラック（黒）"],
+    ["色No","ブラック（黒）"],
+    ["国産・輸入車区分","なし"],
+    ["モデル年","2024年3月"],
+    ["シリアル","ADBA123-363"],
+    ["最大積載量（kg）","400kg"],
+    ["メーター交換歴","ADBA123-363"],
+    ["リサイクル供託金","45,000円"],
+  ],
   exterior:"B",
   interior:"A",
   inspectorComment:"外装Bランク。フロントバンパーに小傷あり。内装は良好。",
@@ -862,14 +894,33 @@ const DETAIL_SUPPORT = {
     other:["外装小A・U・タッチP済","Fウィンドウモール劣化","テールライト内燃炎","シートへたり"],
   },
   photos:[
-    {label:"外装1",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop"},
-    {label:"外装2",img:"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop"},
-    {label:"内装1",img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop"},
-    {label:"内装2",img:"https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&h=300&fit=crop"},
-    {label:"エンジン",img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop"},
-    {label:"その他",img:"https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&h=300&fit=crop"},
+    {label:"外装1",img:"https://picsum.photos/seed/car1/400/300"},
+    {label:"外装2",img:"https://picsum.photos/seed/car2/400/300"},
+    {label:"内装1",img:"https://picsum.photos/seed/car3/400/300"},
+    {label:"内装2",img:"https://picsum.photos/seed/car4/400/300"},
+    {label:"エンジン",img:"https://picsum.photos/seed/car5/400/300"},
+    {label:"その他",img:"https://picsum.photos/seed/car6/400/300"},
   ],
 };
+
+/* 車種情報テーブル：ラベル上・値下の2列または3列グリッド */
+function VehicleSpecTable({items, cols}) {
+  var numCols = cols || 3;
+  var colStr = numCols === 2 ? "repeat(2,1fr)" : "repeat(3,1fr)";
+  return (
+    <div style={{border:"1px solid #e5e2da",borderRadius:8,overflow:"hidden",marginBottom:12,display:"grid",gridTemplateColumns:colStr,background:"#faf9f6"}}>
+      {items.map(function(item, i) {
+        var isWide = item[0]==="車種" || item[0]==="グレード補定情報" || item[0]==="注意事項";
+        return (
+          <div key={i} style={{gridColumn:isWide?"1 / -1":"span 1",borderBottom:"1px solid #f0ede6",padding:"8px 10px",background:"#fff"}}>
+            <div style={{fontSize:10,color:"#888",marginBottom:2}}>{item[0]}</div>
+            <div style={{fontSize:12,fontWeight:500,color:"#1a1a1a",wordBreak:"break-all",lineHeight:1.5}}>{item[1]||"－"}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function SpecTable({specs}) {
   return (
@@ -947,14 +998,75 @@ function DetailPage({car, onBack, onNavigate}) {
   const [bidDone,setBidDone]=useState(false);
   const [memoSaved,setMemoSaved]=useState(false);
   const [lightbox,setLightbox]=useState(null);
+  const [lightboxDamage,setLightboxDamage]=useState(false);
   const [mode,setMode]=useState(car.support?"support":"buy");
   const carIdx=CARS.findIndex(c=>c.id===car.id);
   const isSupport=mode==="support";
   const det=isSupport?DETAIL_SUPPORT:DETAIL;
   const gradeColor={A:"#2e7d32",B:"#1565c0",C:"#e65100",D:"#c62828"};
 
+  const DamageMapSVG = () => (
+    <svg width="100%" viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="10" r="5" fill="#E24B4A" opacity="0.85"/>
+      <text x="20" y="14" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">外装損傷</text>
+      <circle cx="76" cy="10" r="5" fill="#F9A825" opacity="0.85"/>
+      <text x="84" y="14" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">軽微な傷</text>
+      <text x="220" y="10" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">評価点総合</text>
+      <text x="288" y="22" fontFamily="-apple-system,sans-serif" fontSize="20" fontWeight="800" fill="#1565c0">4</text>
+      <text x="306" y="22" fontFamily="-apple-system,sans-serif" fontSize="16" fontWeight="700" fill="#c0392b">B</text>
+      <rect x="100" y="34" width="160" height="152" rx="24" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="1"/>
+      <rect x="108" y="22" width="144" height="18" rx="6" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+      <rect x="108" y="180" width="144" height="18" rx="6" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+      <rect x="118" y="58" width="124" height="104" rx="5" fill="#d4d0c8" stroke="#b0aa9e" strokeWidth="0.8"/>
+      <rect x="120" y="42" width="120" height="22" rx="3" fill="#c8dff0" stroke="#9ab5cc" strokeWidth="0.8"/>
+      <rect x="120" y="156" width="120" height="18" rx="3" fill="#c8dff0" stroke="#9ab5cc" strokeWidth="0.8"/>
+      <line x1="100" y1="108" x2="260" y2="108" stroke="#b0aa9e" strokeWidth="0.8" strokeDasharray="4 3"/>
+      <rect x="83" y="50" width="18" height="12" rx="3" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+      <rect x="259" y="50" width="18" height="12" rx="3" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
+      <rect x="78" y="38" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+      <rect x="260" y="38" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+      <rect x="78" y="144" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+      <rect x="260" y="144" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
+      <text x="180" y="20" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">前</text>
+      <text x="180" y="210" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">後</text>
+      <text x="66" y="112" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">左</text>
+      <text x="294" y="112" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">右</text>
+      <circle cx="126" cy="27" r="6" fill="#E24B4A" opacity="0.85"/>
+      <text x="126" y="30" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">×</text>
+      <line x1="120" y1="27" x2="52" y2="44" stroke="#E24B4A" strokeWidth="0.7" strokeDasharray="3 2"/>
+      <text x="4" y="46" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">外品</text>
+      <text x="4" y="55" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">ダメージ</text>
+      <circle cx="228" cy="40" r="5" fill="#F9A825" opacity="0.85"/>
+      <text x="228" y="43" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
+      <line x1="233" y1="38" x2="292" y2="46" stroke="#F9A825" strokeWidth="0.7" strokeDasharray="3 2"/>
+      <text x="294" y="46" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#854F0B">HLくもり</text>
+      <circle cx="108" cy="162" r="5" fill="#F9A825" opacity="0.85"/>
+      <text x="108" y="165" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
+      <line x1="103" y1="162" x2="52" y2="158" stroke="#F9A825" strokeWidth="0.7" strokeDasharray="3 2"/>
+      <text x="4" y="160" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#854F0B">サビ貼り</text>
+      <circle cx="240" cy="184" r="6" fill="#E24B4A" opacity="0.85"/>
+      <text x="240" y="187" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">×</text>
+      <line x1="246" y1="184" x2="292" y2="188" stroke="#E24B4A" strokeWidth="0.7" strokeDasharray="3 2"/>
+      <text x="294" y="186" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">マフラー</text>
+      <text x="294" y="195" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">不具合</text>
+      <circle cx="180" cy="108" r="5" fill="#F9A825" opacity="0.85"/>
+      <text x="180" y="111" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
+    </svg>
+  );
+
   return (
     <div style={{background:s.bg,minHeight:"100vh"}}>
+      {lightboxDamage&&(
+        <div onClick={()=>setLightboxDamage(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:12,padding:24,maxWidth:"90vw",width:720,position:"relative"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <span style={{fontSize:14,fontWeight:600}}>損傷マップ</span>
+              <button onClick={()=>setLightboxDamage(false)} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#888",lineHeight:1}}>×</button>
+            </div>
+            <DamageMapSVG/>
+          </div>
+        </div>
+      )}
       <Header/>
       <div style={{maxWidth:1600,margin:"0 auto",padding:"0 16px"}} className="sp-pad">
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0 8px"}}>
@@ -981,19 +1093,17 @@ function DetailPage({car, onBack, onNavigate}) {
                 background:isSupport?"#F9A825":"#fff",color:isSupport?"#fff":s.muted,transition:"all .15s",borderLeft:"1px solid #d5d2ca"
               }}>サポート</button>
             </div>
-            {!isSupport&&(
-              <div style={{display:"flex",alignItems:"center",gap:8,background:"#fff8e1",border:"1px solid #ffe0b2",borderRadius:8,padding:"6px 14px"}} className="sp-bid-banner">
-                <div style={{fontSize:12,fontWeight:700,color:"#e65100",whiteSpace:"nowrap"}}>本日12時締切 <span style={{fontSize:14}}>50</span>件</div>
-                <div style={{width:1,height:20,background:"#ffe0b2"}}/>
-                <div style={{fontSize:14,fontWeight:800,color:"#bf360c",whiteSpace:"nowrap"}}>あと2件！</div>
-                <div style={{display:"flex",flexDirection:"column",gap:2}}>
-                  <div style={{width:80,height:6,background:"#ffe0b2",borderRadius:3}}>
-                    <div style={{width:"96%",height:"100%",background:"#ff9800",borderRadius:3}}/>
-                  </div>
-                  <div style={{fontSize:9,color:"#bf360c",textAlign:"right"}}>48/50</div>
+            <div style={{display:"flex",alignItems:"center",gap:8,background:"#fff8e1",border:"1px solid #ffe0b2",borderRadius:8,padding:"6px 14px"}} className="sp-bid-banner">
+              <div style={{fontSize:12,fontWeight:700,color:"#e65100",whiteSpace:"nowrap"}}>本日12時締切 <span style={{fontSize:14}}>50</span>件</div>
+              <div style={{width:1,height:20,background:"#ffe0b2"}}/>
+              <div style={{fontSize:14,fontWeight:800,color:"#bf360c",whiteSpace:"nowrap"}}>あと2件！</div>
+              <div style={{display:"flex",flexDirection:"column",gap:2}}>
+                <div style={{width:80,height:6,background:"#ffe0b2",borderRadius:3}}>
+                  <div style={{width:"96%",height:"100%",background:"#ff9800",borderRadius:3}}/>
                 </div>
+                <div style={{fontSize:9,color:"#bf360c",textAlign:"right"}}>48/50</div>
               </div>
-            )}
+            </div>
           </div>
           <span style={{fontSize:13,color:s.muted,whiteSpace:"nowrap"}}>査定日 {det.assessDate}</span>
         </div>
@@ -1001,188 +1111,124 @@ function DetailPage({car, onBack, onNavigate}) {
         <div style={{display:"flex",gap:16,alignItems:"flex-start"}} className="sp-stack">
           <div style={{flex:1,minWidth:320}} className="sp-full sp-detail-left">
 
-            {/* フリーメモ */}
-            <div style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:12}}>
-              <div style={{flex:1}}>
-                <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
-                <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
-                  style={{width:"100%",fontSize:12,padding:"8px 10px",border:`1px solid #d5d2ca`,borderRadius:6,minHeight:48,resize:"vertical",fontFamily:"inherit"}}
-                  placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
+            {/* 買取：PRコメント（左）＋ フリーメモ（右）横並び（最上部） */}
+            {!isSupport&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
+                <div>
+                  <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>PRコメント</div>
+                  <div style={{fontSize:12,color:s.muted,padding:"8px 10px",border:"1px solid #e5e2da",borderRadius:6,minHeight:80,background:"#faf9f6",lineHeight:1.7}}>（未入力）</div>
+                </div>
+                <div>
+                  <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
+                  <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
+                    style={{width:"100%",fontSize:12,padding:"8px 10px",border:"1px solid #d5d2ca",borderRadius:6,minHeight:80,resize:"vertical",fontFamily:"inherit"}}
+                    placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
+                  <div style={{display:"flex",justifyContent:"flex-end",marginTop:4}}>
+                    <button onClick={()=>setMemoSaved(true)} style={{
+                      padding:"4px 12px",fontSize:11,fontWeight:500,border:"1px solid #d5d2ca",borderRadius:20,cursor:"pointer",
+                      background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
+                    }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
+                  </div>
+                </div>
               </div>
-              <button onClick={()=>setMemoSaved(true)} style={{
-                padding:"6px 14px",fontSize:11,fontWeight:500,border:`1px solid #d5d2ca`,borderRadius:20,cursor:"pointer",marginTop:22,whiteSpace:"nowrap",
-                background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
-              }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
-            </div>
+            )}
 
-            {/* 基本情報 */}
-            <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>基本情報</div>
-            <SpecTable specs={det.specs}/>
-
-            {/* サポート追加：外装・内装評価 + 展開図 + 検査員コメント */}
+            {/* サポート：フリーメモ（最上部） */}
             {isSupport&&(
-              <div style={{marginBottom:12}}>
-                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>評価</div>
+              <div style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:12}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>フリーメモ</div>
+                  <textarea value={memo} onChange={e=>{setMemo(e.target.value);setMemoSaved(false)}}
+                    style={{width:"100%",fontSize:12,padding:"8px 10px",border:"1px solid #d5d2ca",borderRadius:6,minHeight:48,resize:"vertical",fontFamily:"inherit"}}
+                    placeholder="ユーザーには表示されません。300文字以内でご入力ください。" maxLength={300}/>
+                </div>
+                <button onClick={()=>setMemoSaved(true)} style={{
+                  padding:"6px 14px",fontSize:11,fontWeight:500,border:"1px solid #d5d2ca",borderRadius:20,cursor:"pointer",marginTop:22,whiteSpace:"nowrap",
+                  background:memoSaved?s.successBg:"#fff",color:memoSaved?s.successText:s.dark,transition:"all .2s"
+                }}>{memoSaved?"✓ 保存済":"↻ フリーメモを更新"}</button>
+              </div>
+            )}
 
-                {/* 評価グレード + 俯瞰図 横並び */}
-                <div style={{display:"flex",gap:12,marginBottom:8,alignItems:"flex-start"}}>
-
-                  {/* 左：グレード + 検査員コメント */}
-                  <div style={{display:"flex",flexDirection:"column",gap:8,minWidth:160}}>
-                    {[["外装評価",det.exterior],["内装評価",det.interior]].map(([lbl,grade])=>(
-                      <div key={lbl} style={{border:`1px solid #e5e2da`,borderRadius:8,padding:"10px 14px",background:"#fff",display:"flex",alignItems:"center",gap:10}}>
-                        <div style={{fontSize:11,color:"#888"}}>{lbl}</div>
-                        <div style={{fontSize:28,fontWeight:800,color:gradeColor[grade]||"#333"}}>{grade}</div>
+            {isSupport ? (
+              /* ===== サポートモード専用レイアウト ===== */
+              <>
+                {/* 1. 写真：横スクロール全幅 */}
+                <div style={{marginBottom:14}}>
+                  <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>写真（クリックで拡大）</div>
+                  <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:6}}>
+                    {det.photos.map((p,pi)=>(
+                      <div key={p.label} onClick={()=>setLightbox(pi)} style={{
+                        width:180,height:130,flexShrink:0,borderRadius:8,overflow:"hidden",
+                        cursor:"pointer",position:"relative",border:"1px solid #e5e2da",transition:"transform .15s"
+                      }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform=""}>
+                        <img src={p.img} alt={p.label} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
+                        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"4px 8px",background:"linear-gradient(transparent,rgba(0,0,0,0.6))",fontSize:11,color:"#fff",fontWeight:500}}>{p.label}</div>
                       </div>
                     ))}
-                    <div style={{border:`1px solid #e5e2da`,borderRadius:8,padding:"10px 14px",background:"#fff"}}>
-                      <div style={{fontSize:11,color:"#888",marginBottom:4}}>検査員コメント</div>
-                      <div style={{fontSize:12,color:"#1a1a1a",lineHeight:1.7}}>{det.inspectorComment}</div>
+                  </div>
+                </div>
+
+                {/* 2. 展開図＋評価（左） ＋ 車種情報（右） */}
+                <div style={{display:"flex",gap:14,alignItems:"flex-start",marginBottom:12}}>
+                  <div style={{flexShrink:0,width:240}}>
+                    <div onClick={()=>setLightboxDamage(true)} style={{border:"1px solid #e5e2da",borderRadius:8,background:"#fff",padding:"8px",marginBottom:10,overflow:"hidden",cursor:"pointer",transition:"opacity .15s"}}
+                      onMouseEnter={e=>e.currentTarget.style.opacity=".85"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                        <div style={{fontSize:11,color:"#888"}}>損傷マップ</div>
+                        <div style={{fontSize:10,color:"#2980b9"}}>クリックで拡大 ›</div>
+                      </div>
+                      <DamageMapSVG/>
+                    </div>
+                    <div style={{fontSize:11,color:"#888",marginBottom:6}}>評価</div>
+                    <div style={{display:"flex",gap:8,marginBottom:8}}>
+                      {[["外装",det.exterior],["内装",det.interior]].map(([lbl,grade])=>(
+                        <div key={lbl} style={{flex:1,border:"1px solid #e5e2da",borderRadius:8,padding:"8px 10px",background:"#fff",display:"flex",alignItems:"center",gap:6}}>
+                          <div style={{fontSize:11,color:"#888"}}>{lbl}</div>
+                          <div style={{fontSize:26,fontWeight:800,color:gradeColor[grade]||"#333"}}>{grade}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{fontSize:11,color:"#888",marginBottom:4}}>装備コメント</div>
+                    <div style={{border:"1px solid #e5e2da",borderRadius:8,padding:"8px 12px",background:"#fff",fontSize:12,color:"#1a1a1a",lineHeight:1.7,marginBottom:10}}>
+                      {det.inspectorComment}
+                    </div>
+                    <div style={{fontSize:11,color:"#888",marginBottom:4}}>注意事項</div>
+                    <div style={{border:"1px solid #ffe0b2",borderRadius:8,padding:"8px 12px",background:"#fffde7",fontSize:12,color:"#5D4037",lineHeight:1.8}}>
+                      {det.attention.exterior.concat(det.attention.other).join("　/　")}
                     </div>
                   </div>
-
-                  {/* 右：車両俯瞰図 */}
-                  <div style={{flex:1,border:`1px solid #e5e2da`,borderRadius:8,background:"#fff",padding:"10px",overflow:"hidden"}}>
-                    <div style={{fontSize:11,color:"#888",marginBottom:6}}>損傷マップ</div>
-                    <svg width="100%" viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-                      {/* 凡例 */}
-                      <circle cx="12" cy="10" r="5" fill="#E24B4A" opacity="0.85"/>
-                      <text x="20" y="14" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">外装損傷</text>
-                      <circle cx="76" cy="10" r="5" fill="#F9A825" opacity="0.85"/>
-                      <text x="84" y="14" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">軽微な傷</text>
-                      <text x="220" y="10" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#888">評価点総合</text>
-                      <text x="288" y="22" fontFamily="-apple-system,sans-serif" fontSize="20" fontWeight="800" fill="#1565c0">4</text>
-                      <text x="306" y="22" fontFamily="-apple-system,sans-serif" fontSize="16" fontWeight="700" fill="#c0392b">B</text>
-
-                      {/* ボディ */}
-                      <rect x="100" y="34" width="160" height="152" rx="24" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="1"/>
-                      {/* フロントバンパー */}
-                      <rect x="108" y="22" width="144" height="18" rx="6" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
-                      {/* リアバンパー */}
-                      <rect x="108" y="180" width="144" height="18" rx="6" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
-                      {/* ルーフ */}
-                      <rect x="118" y="58" width="124" height="104" rx="5" fill="#d4d0c8" stroke="#b0aa9e" strokeWidth="0.8"/>
-                      {/* フロントガラス */}
-                      <rect x="120" y="42" width="120" height="22" rx="3" fill="#c8dff0" stroke="#9ab5cc" strokeWidth="0.8"/>
-                      {/* リアガラス */}
-                      <rect x="120" y="156" width="120" height="18" rx="3" fill="#c8dff0" stroke="#9ab5cc" strokeWidth="0.8"/>
-                      {/* ドア境界 */}
-                      <line x1="100" y1="108" x2="260" y2="108" stroke="#b0aa9e" strokeWidth="0.8" strokeDasharray="4 3"/>
-                      {/* ミラー左 */}
-                      <rect x="83" y="50" width="18" height="12" rx="3" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
-                      {/* ミラー右 */}
-                      <rect x="259" y="50" width="18" height="12" rx="3" fill="#e8e5de" stroke="#b0aa9e" strokeWidth="0.8"/>
-                      {/* タイヤ FL */}
-                      <rect x="78" y="38" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
-                      {/* タイヤ FR */}
-                      <rect x="260" y="38" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
-                      {/* タイヤ RL */}
-                      <rect x="78" y="144" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
-                      {/* タイヤ RR */}
-                      <rect x="260" y="144" width="22" height="38" rx="5" fill="#444" stroke="#333" strokeWidth="0.5"/>
-
-                      {/* 方向ラベル */}
-                      <text x="180" y="20" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">前</text>
-                      <text x="180" y="210" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">後</text>
-                      <text x="66" y="112" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">左</text>
-                      <text x="294" y="112" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="9" fill="#aaa">右</text>
-
-                      {/* === 損傷マーカー === */}
-                      {/* フロントバンパー左 赤 */}
-                      <circle cx="126" cy="27" r="6" fill="#E24B4A" opacity="0.85"/>
-                      <text x="126" y="30" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">×</text>
-                      <line x1="120" y1="27" x2="52" y2="44" stroke="#E24B4A" strokeWidth="0.7" strokeDasharray="3 2"/>
-                      <text x="4" y="46" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">外品</text>
-                      <text x="4" y="55" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">ダメージ</text>
-
-                      {/* ヘッドライトくもり右 黄 */}
-                      <circle cx="228" cy="40" r="5" fill="#F9A825" opacity="0.85"/>
-                      <text x="228" y="43" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
-                      <line x1="233" y1="38" x2="292" y2="46" stroke="#F9A825" strokeWidth="0.7" strokeDasharray="3 2"/>
-                      <text x="294" y="46" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#854F0B">HLくもり</text>
-
-                      {/* サビ 左リア 黄 */}
-                      <circle cx="108" cy="162" r="5" fill="#F9A825" opacity="0.85"/>
-                      <text x="108" y="165" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
-                      <line x1="103" y1="162" x2="52" y2="158" stroke="#F9A825" strokeWidth="0.7" strokeDasharray="3 2"/>
-                      <text x="4" y="160" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#854F0B">サビ貼り</text>
-
-                      {/* マフラー右リア 赤 */}
-                      <circle cx="240" cy="184" r="6" fill="#E24B4A" opacity="0.85"/>
-                      <text x="240" y="187" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">×</text>
-                      <line x1="246" y1="184" x2="292" y2="188" stroke="#E24B4A" strokeWidth="0.7" strokeDasharray="3 2"/>
-                      <text x="294" y="186" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">マフラー</text>
-                      <text x="294" y="195" fontFamily="-apple-system,sans-serif" fontSize="8" fill="#c0392b">不具合</text>
-
-                      {/* 内装 黄 */}
-                      <circle cx="180" cy="108" r="5" fill="#F9A825" opacity="0.85"/>
-                      <text x="180" y="111" textAnchor="middle" fontFamily="-apple-system,sans-serif" fontSize="7" fontWeight="700" fill="#fff">△</text>
-                    </svg>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:6}}>
+                      <div style={{fontSize:13,fontWeight:600}}>車種情報</div>
+                      <div style={{fontSize:11,color:"#aaa"}}>査定確定日：{det.assessDate}</div>
+                    </div>
+                    <VehicleSpecTable cols={3} items={det.vehicleSpecs}/>
                   </div>
                 </div>
-              </div>
-            )}
+              </>
+            ) : (
+              /* ===== 買取モードレイアウト ===== */
+              <>
+                {/* 基本情報 */}
+                <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>基本情報</div>
+                <SpecTable specs={det.specs}/>
 
-            {/* サポート追加：注意事項 */}
-            {isSupport&&(
-              <div style={{marginBottom:12}}>
-                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>注意事項</div>
-                <div style={{border:`1px solid #e5e2da`,borderRadius:8,padding:"10px 14px",background:"#fff"}}>
-                  <div style={{marginBottom:6}}>
-                    <span style={{fontSize:10,fontWeight:600,color:"#fff",background:"#c0392b",borderRadius:3,padding:"1px 6px",marginRight:6}}>■</span>
-                    <span style={{fontSize:11,color:"#888"}}>外装・下廻り</span>
-                  </div>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}}>
-                    {det.attention.exterior.map(a=><span key={a} style={{fontSize:11,color:"#333",padding:"2px 8px",background:"#f5f3ee",borderRadius:3}}>{a}</span>)}
-                  </div>
-                  <div style={{marginBottom:6}}>
-                    <span style={{fontSize:10,fontWeight:600,color:"#fff",background:"#888",borderRadius:3,padding:"1px 6px",marginRight:6}}>■</span>
-                    <span style={{fontSize:11,color:"#888"}}>その他</span>
-                  </div>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
-                    {det.attention.other.map(a=><span key={a} style={{fontSize:11,color:"#333",padding:"2px 8px",background:"#f5f3ee",borderRadius:3}}>{a}</span>)}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 装備情報 */}
-            <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>装備情報</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
-              {det.equipment.map(eq=>(
-                <span key={eq} style={{fontSize:11,padding:"5px 14px",border:"1px solid #d5d2ca",borderRadius:20,whiteSpace:"nowrap",background:"#fff",color:"#4a4a47",fontWeight:500}}>{eq}</span>
-              ))}
-            </div>
-
-            {/* サポート追加：検査済み装備情報 */}
-            {isSupport&&(
-              <div style={{marginBottom:12}}>
-                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>検査済み装備情報</div>
-                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                  {Object.entries(det.inspectedEquipment).map(([eq,ok])=>(
-                    <span key={eq} style={{
-                      fontSize:11,padding:"5px 14px",border:`1px solid ${ok?"#a5d6a7":"#e0ddd6"}`,borderRadius:20,
-                      whiteSpace:"nowrap",background:ok?"#e8f5e9":"#f5f5f5",
-                      color:ok?"#2e7d32":"#aaa",fontWeight:500,
-                      display:"flex",alignItems:"center",gap:4
-                    }}>
-                      <span style={{fontSize:12}}>{ok?"✓":"－"}</span>{eq}
-                    </span>
+                {/* 装備情報 */}
+                <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>装備情報</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
+                  {det.equipment.map(eq=>(
+                    <span key={eq} style={{fontSize:11,padding:"5px 14px",border:"1px solid #d5d2ca",borderRadius:20,whiteSpace:"nowrap",background:"#fff",color:"#4a4a47",fontWeight:500}}>{eq}</span>
                   ))}
                 </div>
-              </div>
+
+                {/* 写真 */}
+                <PhotoStrip photos={det.photos} lightbox={lightbox} setLightbox={setLightbox}/>
+              </>
             )}
-
-            {/* PRコメント */}
-            <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>PRコメント</div>
-            <div style={{fontSize:12,color:s.muted,marginBottom:12,lineHeight:1.7}}>（未入力）</div>
-
-            {/* 写真 */}
-            <PhotoStrip photos={det.photos} lightbox={lightbox} setLightbox={setLightbox}/>
           </div>
 
-          {/* 右カラム：入札パネル */}
-          <div style={{width:280,minWidth:280}} className="sp-full sp-detail-right">
+          {/* 右カラム：入札パネル（sticky） */}
+          <div style={{width:280,minWidth:280,position:"sticky",top:16,alignSelf:"flex-start"}} className="sp-full sp-detail-right">
             <div style={{border:`1px solid ${s.border}`,borderRadius:10,padding:18,background:"#fff",marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
                 <div style={{fontSize:16,fontWeight:700}}>入札フォーム</div>
